@@ -16,6 +16,7 @@ data/raw/cbeta/
 
 # ─── ETL 生成的数据库（启动时自动构建） ─────────────
 data/db/*.db
+!data/db/lineage.db
 
 # ─── 用户个人数据 ──────────────────────────────────
 data/user_data/

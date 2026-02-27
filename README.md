@@ -168,9 +168,9 @@ fa-yin/
 ## 致谢
 
 **数据**
-- 经文与目录：[CBETA](https://cbeta.org/downloads)（CC BY-NC-SA 2.5 TW）
+- 经文与目录：[CBETA](https://www.cbeta.org/download)（CC BY-NC-SA 2.5 TW）
 - 人名/地名/时间：[DILA 佛学规范资料库](https://authority.dila.edu.tw)（CC BY-SA 3.0）
-- 词典：主要来自 [CBETA](https://cbeta.org/downloads) 和 [华夏佛典宝库](https://www.fodian.net/)（域名可能已变更），具体包括，丁福保《佛學大辭典》、Soothill–Hodous 漢英佛學詞典、法相辞典（朱芾煌 编, 1939）、三藏法数（明·一如等 撰）、祖庭事苑（北宋·陈善卿），以及通用汉语词典 [萌典](https://github.com/g0v/moedict-data)（原文 CC BY-ND 3.0 TW；格式转换部分 CC0）
+- 词典：主要来自 [CBETA](https://www.cbeta.org/download) 和 [华夏佛典宝库](https://www.fodian.net/)（域名可能已变更），具体包括，丁福保《佛學大辭典》、Soothill–Hodous 漢英佛學詞典、法相辞典（朱芾煌 编, 1939）、三藏法数（明·一如等 撰）、祖庭事苑（北宋·陈善卿），以及通用汉语词典 [萌典](https://github.com/g0v/moedict-data)（原文 CC BY-ND 3.0 TW；格式转换部分 CC0）
 
 **字体**
 - [Source Han Serif / 思源宋体](https://github.com/adobe-fonts/source-han-serif) · [Source Han Sans / 思源黑体](https://github.com/adobe-fonts/source-han-sans)（Adobe · Google, OFL 1.1）
@@ -180,7 +180,7 @@ fa-yin/
 
 **AI**
 - 开发过程中使用 Google Antigravity 和 GitHub Copilot 作为编程助手（代码生成/重构/排错等）
-- 运行时“AI 释义”为可选功能，由用户自行配置第三方（api费用）或本地模型服务（显卡+电费）
+- 运行时“AI 释义”为可选功能，由用户自行配置第三方（Token 费用）或本地模型服务（显卡+电费）
 
 **技术栈**
 - [FastAPI](https://fastapi.tiangolo.com) (MIT) · [HTMX](https://htmx.org) (BSD) · [Alpine.js](https://alpinejs.dev) (MIT) · [D3.js](https://d3js.org) (ISC) · [Leaflet](https://leafletjs.com) (BSD) · [Lucide](https://lucide.dev) (ISC) · [OpenCC](https://github.com/BYVoid/OpenCC) (Apache-2.0) · [Split.js](https://split.js.org) (MIT)
