@@ -85,10 +85,9 @@
 
 ### 方案 B：在 1Panel 等服务器面板上运行
 1. 进入控制台的 **容器 -> 编排 (Compose)**。
-2. 点击 **创建编排**。
-3. 名称填入 `fa-yin`。
-4. **路径选择您在第一步建立的项目主目录**（例如 `/opt/fa-yin`）。
-5. 点击 **确认** 并启动。
+2. 点击 **创建编排 -> 路径选择**。
+3. 填入您在第一步建立的项目主目录下的 YAML 配置（例如 `/opt/1panel/docker/compose/fayin/docker-compose.yml`）。
+4. 点击 **保存** 并启动。
 
 ### 方案 C：纯命令行运行 (Linux/VPS 极客)
 确保您已安装 `docker` 与 `docker-compose` 插件：
