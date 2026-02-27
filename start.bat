@@ -3,7 +3,10 @@ setlocal EnableDelayedExpansion
 
 cd /d "%~dp0"
 
-echo Checking Environment...
+echo ============================================
+echo   Fa-Yin Launcher (Default PyPI Source)
+echo ============================================
+echo.
 
 :: --- Step 1: Detect Python ---
 set "PYTHON_CMD="
@@ -22,7 +25,7 @@ if defined PYTHON_CMD goto :found_python
 :: --- Try auto-install via winget (Windows 10/11) ---
 where winget >nul 2>&1
 if !errorlevel! equ 0 (
-    echo [!] Python 3.10+ not found. Trying auto-install via winget...
+    echo [WARN] Python 3.10+ not found. Trying auto-install via winget...
     winget install Python.Python.3.12 --accept-package-agreements --accept-source-agreements
     if !errorlevel! equ 0 (
         echo.
@@ -32,7 +35,7 @@ if !errorlevel! equ 0 (
     )
 )
 
-echo [!] Python 3.10+ not found.
+echo [WARN] Python 3.10+ not found.
 echo Please install Python from python.org
 echo Make sure to check "Add Python to PATH"
 pause
@@ -50,17 +53,24 @@ if not exist ".venv" (
 :: --- Step 3: Install Deps ---
 call .venv\Scripts\activate.bat
 if not exist ".venv\.deps_installed" (
-    echo Installing dependencies (first run may take a few minutes)...
+    echo Installing dependencies, first run may take a few minutes...
     python -m pip install --quiet --upgrade pip
-    pip install --quiet -r requirements.txt
-    if !errorlevel! equ 0 (
-        echo done > .venv\.deps_installed
-        echo [OK] Dependencies installed.
-    ) else (
-        echo [X] Failed to install dependencies.
+    if !errorlevel! neq 0 (
+        echo [X] Failed to upgrade pip.
         pause
         exit /b 1
     )
+
+    pip install --quiet -r requirements.txt
+    if !errorlevel! neq 0 (
+        echo [X] Failed to install dependencies.
+        echo If you are in mainland China, please use start_cn.bat instead.
+        pause
+        exit /b 1
+    )
+
+    echo done > .venv\.deps_installed
+    echo [OK] Dependencies installed.
 ) else (
     echo [OK] Dependencies ready.
 )
