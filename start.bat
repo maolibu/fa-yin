@@ -1,105 +1,71 @@
 @echo off
-chcp 65001 >nul 2>&1
 setlocal EnableDelayedExpansion
-
-:: 法印对照 · 一键启动脚本 (Windows)
-:: 自动检测 Python、创建虚拟环境、安装依赖、启动服务
 
 cd /d "%~dp0"
 
-echo.
-echo   ╔══════════════════════════════════╗
-echo   ║       法印对照 · Fa-Yin          ║
-echo   ╚══════════════════════════════════╝
-echo.
+echo Checking Environment...
 
-:: ─── Step 1: 检测 Python ────────────────────────────────────
+:: --- Step 1: Detect Python ---
 set "PYTHON_CMD="
 
-:: 尝试 python3
-where python3 >nul 2>&1
-if %errorlevel%==0 (
-    for /f "tokens=*" %%v in ('python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2^>nul') do set "PY_VER=%%v"
+for /f "tokens=2" %%v in ('python -V 2^>nul') do set "PY_VER=%%v"
+if defined PY_VER (
     for /f "tokens=1,2 delims=." %%a in ("!PY_VER!") do (
-        if %%a GEQ 3 if %%b GEQ 10 set "PYTHON_CMD=python3"
-    )
-)
-
-:: 尝试 python
-if not defined PYTHON_CMD (
-    where python >nul 2>&1
-    if %errorlevel%==0 (
-        for /f "tokens=*" %%v in ('python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2^>nul') do set "PY_VER=%%v"
-        for /f "tokens=1,2 delims=." %%a in ("!PY_VER!") do (
-            if %%a GEQ 3 if %%b GEQ 10 set "PYTHON_CMD=python"
+        if %%a GEQ 3 (
+            if %%b GEQ 10 set "PYTHON_CMD=python"
         )
     )
 )
 
-:: 尝试 py launcher (Windows)
-if not defined PYTHON_CMD (
-    where py >nul 2>&1
-    if %errorlevel%==0 (
-        for /f "tokens=*" %%v in ('py -3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2^>nul') do set "PY_VER=%%v"
-        for /f "tokens=1,2 delims=." %%a in ("!PY_VER!") do (
-            if %%a GEQ 3 if %%b GEQ 10 set "PYTHON_CMD=py -3"
-        )
-    )
-)
+if defined PYTHON_CMD goto :found_python
 
-:: 尝试自动安装 Python (winget, Windows 10/11 自带)
-if not defined PYTHON_CMD (
-    where winget >nul 2>&1
-    if !errorlevel!==0 (
-        echo   ❌ 未找到 Python 3.10+，正在尝试自动安装...
+:: --- Try auto-install via winget (Windows 10/11) ---
+where winget >nul 2>&1
+if !errorlevel! equ 0 (
+    echo [!] Python 3.10+ not found. Trying auto-install via winget...
+    winget install Python.Python.3.12 --accept-package-agreements --accept-source-agreements
+    if !errorlevel! equ 0 (
         echo.
-        winget install Python.Python.3.12 --accept-package-agreements --accept-source-agreements
-        if !errorlevel!==0 (
-            echo.
-            echo   ✅ Python 安装完成，请关闭此窗口，重新双击 start.bat
-            pause
-            exit /b 0
-        )
+        echo [OK] Python installed. Please close this window and double-click start.bat again.
+        pause
+        exit /b 0
     )
-    echo   ❌ 未找到 Python 3.10+，自动安装也未成功
-    echo.
-    echo   请手动下载安装 Python：
-    echo     https://www.python.org/downloads/
-    echo.
-    echo   安装时请勾选 "Add Python to PATH"
-    echo.
-    pause
-    exit /b 1
 )
 
-for /f "tokens=*" %%v in ('%PYTHON_CMD% -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')"') do set "FULL_VER=%%v"
-echo   ✅ Python %FULL_VER%
+echo [!] Python 3.10+ not found.
+echo Please install Python from python.org
+echo Make sure to check "Add Python to PATH"
+pause
+exit /b 1
 
-:: ─── Step 2: 创建虚拟环境 ───────────────────────────────────
+:found_python
+echo [OK] Python !PY_VER! found.
+
+:: --- Step 2: Virtual Env ---
 if not exist ".venv" (
-    echo   ⏳ 创建虚拟环境...
-    %PYTHON_CMD% -m venv .venv
-    echo   ✅ 虚拟环境已创建
+    echo Creating virtual environment...
+    python -m venv .venv
 )
 
-:: 激活虚拟环境
+:: --- Step 3: Install Deps ---
 call .venv\Scripts\activate.bat
-
-:: ─── Step 3: 安装依赖 ───────────────────────────────────────
 if not exist ".venv\.deps_installed" (
-    echo   ⏳ 安装依赖包（首次可能需要几分钟）...
-    pip install --quiet --upgrade pip
+    echo Installing dependencies (first run may take a few minutes)...
+    python -m pip install --quiet --upgrade pip
     pip install --quiet -r requirements.txt
-    echo done > .venv\.deps_installed
-    echo   ✅ 依赖安装完成
+    if !errorlevel! equ 0 (
+        echo done > .venv\.deps_installed
+        echo [OK] Dependencies installed.
+    ) else (
+        echo [X] Failed to install dependencies.
+        pause
+        exit /b 1
+    )
 ) else (
-    echo   ✅ 依赖已就绪
+    echo [OK] Dependencies ready.
 )
 
-:: ─── Step 4: 启动 ───────────────────────────────────────────
-echo.
-echo   🚀 正在启动法印对照...
-echo.
-python launcher.py %*
-
+:: --- Step 4: Launch ---
+echo Starting Fa-Yin...
+python launcher.py
 pause

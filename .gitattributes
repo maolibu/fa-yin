@@ -1,2 +1,5 @@
 # 无需 Git LFS — 所有文件均小于 100 MB
 # 字体文件已拆分为单个 woff2，直接提交到 src/static/fonts/
+
+# Windows 批处理脚本必须使用 CRLF 行尾
+*.bat text eol=crlf
