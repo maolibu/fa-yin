@@ -18,7 +18,7 @@ echo ""
 
 # ─── Step 1: 检测 Python ────────────────────────────────────
 find_python() {
-    for cmd in python3 python; do
+    for cmd in python3.14 python3.13 python3.12 python3.11 python3.10 python3 python; do
         if command -v "$cmd" &>/dev/null; then
             version=$("$cmd" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null)
             major=$("$cmd" -c "import sys; print(sys.version_info.major)" 2>/dev/null)
@@ -55,9 +55,21 @@ PYTHON_CMD=$(find_python) || {
         # Ubuntu/Debian: 尝试 apt 安装
         if command -v apt &>/dev/null; then
             echo "  ⏳ 正在通过 apt 安装 Python..."
-            sudo apt update && sudo apt install -y python3 python3-venv python3-pip
+            sudo apt update
+            # 尝试安装 python3.12 及其 venv
+            if ! sudo apt install -y python3.12 python3.12-venv python3-pip; then
+                echo "  ⚠️ 默认源未找到 Python 3.12，尝试添加 deadsnakes PPA..."
+                if ! command -v add-apt-repository &>/dev/null; then
+                    sudo apt install -y software-properties-common
+                fi
+                sudo add-apt-repository -y ppa:deadsnakes/ppa
+                sudo apt update
+                sudo apt install -y python3.12 python3.12-venv python3-pip
+            fi
+            
             PYTHON_CMD=$(find_python) || {
-                echo "  ❌ 安装失败，请手动运行：sudo apt install python3 python3-venv python3-pip"
+                echo "  ❌ 安装失败，请确保已安装 Python 3.10+ (推荐 3.12)"
+                echo "  手动命令参考: sudo apt install python3.12 python3.12-venv"
                 exit 1
             }
         else
