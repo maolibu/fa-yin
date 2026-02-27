@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="ink-blur-enso_zang" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.8"/>
+    </filter>
+    <filter id="rough-enso_zang" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+
+  <!-- Layer 1: Main Circle (More closed) -->
+  <circle cx="128.0" cy="128.0" r="100"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="8"
+    stroke-linecap="round"
+    stroke-dasharray="600 60"
+    stroke-dashoffset="20"
+    opacity="0.9"
+    filter="url(#rough-enso_zang)"
+    transform="rotate(-30 128.0 128.0)"
+  />
+
+  <!-- Layer 2: Artistic Stroke -->
+  <circle cx="128.0" cy="128.0" r="100"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="4"
+    stroke-linecap="round"
+    stroke-dasharray="400 230"
+    stroke-dashoffset="60"
+    opacity="0.5"
+    transform="rotate(15 128.0 128.0)"
+  />
+
+  <!-- Character -->
+  <text x="128.0" y="138.0"
+    text-anchor="middle"
+    dominant-baseline="central"
+    font-family="'Noto Serif TC', 'Noto Serif CJK TC', 'Source Han Serif TC', 'SimSun', 'Songti SC', serif"
+    font-size="140"
+    font-weight="900"
+    fill="currentColor"
+    filter="url(#ink-blur-enso_zang)"
+    letter-spacing="0"
+  >藏</text>
+</svg>

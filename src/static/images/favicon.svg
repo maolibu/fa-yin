@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <style>
+    path { stroke: #c8a45a; }
+    @media (prefers-color-scheme: light) {
+      path { stroke: #5a4a2a; }
+    }
+  </style>
+  <!-- 菩提叶 - 与导航栏 logo 完全一致 -->
+  <path d="M18 4c0 0-6 8-6 12s6 12 6 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M18 4c0 0 6 8 6 12s-6 12-6 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M14 8c0 0-6 6-6 10s6 10 6 10" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+  <path d="M14 8c0 0 6 6 6 10s-6 10-6 10" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+</svg>

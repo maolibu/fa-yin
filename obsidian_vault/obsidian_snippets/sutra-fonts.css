@@ -1,0 +1,130 @@
+/*
+ * 法印对照 — Obsidian 佛经阅读字体配置
+ * 
+ * 使用方法：
+ *   1. 将此文件复制到你的 Vault 的 .obsidian/snippets/ 目录下
+ *   2. 打开 Obsidian → 设置 → 外观 → CSS 代码片段 → 启用 sutra-fonts
+ *   3. 如果使用本地字体，修改下方 @font-face 中的路径
+ *
+ * 两层字体策略：
+ *   主字体 → 思源宋体（现代清晰，BMP + 扩展A）
+ *   回退　 → 字雲明朝（扩展B~I，100% CJK 覆盖）
+ */
+
+/* ============================================================
+ * 第一层：思源宋体（Noto Serif CJK / Source Han Serif）
+ * 通常已通过系统安装，无需 @font-face
+ * 如需指定本地文件，取消下方注释并修改路径
+ * ============================================================ */
+/*
+@font-face {
+  font-family: "SutraSerif";
+  src: url("app://local/你的字体目录/SourceHanSerifSC-Regular.otf");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "SutraSerif";
+  src: url("app://local/你的字体目录/SourceHanSerifSC-Bold.otf");
+  font-weight: 700;
+}
+*/
+
+/* ============================================================
+ * 第二层：字雲明朝（Jigmo）— CJK 扩展回退
+ * 覆盖扩展B~I，100% CJK 收录，是最全的开源汉字字体
+ * ============================================================ */
+/*
+@font-face {
+  font-family: "Jigmo";
+  src: url("app://local/你的字体目录/Jigmo.ttf");
+  font-weight: 400;
+}
+*/
+
+
+/* ============================================================
+ * 阅读区字体设置
+ * ============================================================ */
+body {
+  /* 正文字体回退链 — 按需取消注释 SutraSerif / Jigmo */
+  --font-text-theme:
+    /* "SutraSerif", */
+    "Noto Serif CJK SC",
+    "Noto Serif CJK TC",
+    "Source Han Serif SC",
+    "Source Han Serif TC",
+    /* "Jigmo", */
+    "Songti SC",
+    "PMingLiU",
+    serif;
+
+  /* 界面字体 — 黑体更适合 UI */
+  --font-interface-theme:
+    "Noto Sans CJK SC",
+    "Source Han Sans SC",
+    "PingFang SC",
+    "Microsoft YaHei",
+    sans-serif;
+}
+
+/* ============================================================
+ * 排版优化
+ * ============================================================ */
+
+/* 正文行高：经文阅读推荐 1.8~2.0 */
+.markdown-rendered {
+  line-height: 1.85;
+  letter-spacing: 0.02em;
+}
+
+/* 标题样式 — 经名用宋体加粗 */
+.markdown-rendered h1 {
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--text-faint);
+  padding-bottom: 0.3em;
+}
+
+/* 卷标题 */
+.markdown-rendered h2 {
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* 偈颂引用块 — 居中、间距加大 */
+.markdown-rendered blockquote {
+  text-align: center;
+  border-left: 3px solid var(--text-faint);
+  padding: 0.5em 1.5em;
+  margin: 1.5em auto;
+  max-width: 32em;
+  font-style: normal;
+  /* 中文不用斜体 */
+  line-height: 2.2;
+}
+
+/* 校勘記样式 — 小字灰色 */
+.markdown-rendered h2+ul {
+  font-size: 0.85em;
+  color: var(--text-muted);
+}
+
+/* 作者名斜体还原 — 中文斜体不美观，改为小字居中 */
+.markdown-rendered em {
+  font-style: normal;
+  color: var(--text-muted);
+}
+
+/* 陀罗尼 / 咒语 — 强调显示 */
+.markdown-rendered blockquote:has(> p:first-child > .emoji) {
+  background: var(--background-modifier-border);
+  border-radius: 8px;
+  border-left: none;
+  padding: 1em 2em;
+}
+
+/* YAML frontmatter 属性面板 — 不抢眼 */
+.metadata-container {
+  font-size: 0.8em;
+  opacity: 0.7;
+}

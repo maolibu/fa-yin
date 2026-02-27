@@ -1,0 +1,801 @@
+{% extends "base.html" %}
+{% block title %}法印对照 · 首页{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/lib/leaflet.css">
+<link rel="stylesheet" href="/static/css/lib/MarkerCluster.css">
+<link rel="stylesheet" href="/static/css/lib/MarkerCluster.Default.css">
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/lib/d3.min.js"></script>
+<script src="/static/js/lib/leaflet.js"></script>
+<script src="/static/js/lib/leaflet.markercluster.js"></script>
+<script src="/static/js/lib/split.min.js"></script>
+<script src="/static/js/lib/lucide.min.js"></script>
+<script src="/static/js/lib/sortable.min.js"></script>
+<script src="/static/js/lineage.js"></script>
+{% endblock %}
+
+{% block content %}
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     警策區域 — 每日一偈（可翻閱、自題、置頂）
+     ═══════════════════════════════════════════════════════════ -->
+<section class="search-hero" x-data="verseApp()" x-init="init()">
+    <div class="section-header">
+        <h2 class="section-title">
+            <div class="section-icon icon-jue" title="覺"></div>
+            警策
+            <span class="section-subtitle">晝夜提撕</span>
+        </h2>
+    </div>
+    <div class="verse-card">
+        <div class="verse-card-content">
+            <!-- 偈颂正文 -->
+            <blockquote class="verse-card-body">
+                <template x-for="(line, li) in currentVerse.lines" :key="li">
+                    <p x-text="line"></p>
+                </template>
+            </blockquote>
+            <!-- 出处 -->
+            <cite class="verse-card-source">
+                <span x-text="currentVerse.source"></span>
+                <span class="verse-custom-badge" x-show="currentVerse.type === 'custom'" x-cloak>✎ 自題</span>
+            </cite>
+            <!-- 工具列 -->
+            <div class="verse-toolbar">
+                <button class="verse-tool-btn" @click="prevVerse()" title="上一偈">
+                    <i data-lucide="chevron-left" style="width:16px;height:16px"></i>
+                </button>
+                <span class="verse-counter" x-show="!editingCounter" @click="startEditCounter()" title="點擊輸入序號"
+                    style="cursor:pointer" x-text="(currentIndex + 1) + ' / ' + verses.length"></span>
+                <input class="verse-counter-input" x-show="editingCounter" x-cloak type="number" min="1"
+                    :max="verses.length" x-model="counterInput" @keydown.enter="jumpToVerse()"
+                    @keydown.escape="editingCounter = false" @blur="editingCounter = false" x-ref="counterInput">
+                <button class="verse-tool-btn" @click="nextVerse()" title="下一偈">
+                    <i data-lucide="chevron-right" style="width:16px;height:16px"></i>
+                </button>
+                <span class="verse-toolbar-sep"></span>
+                <button class="verse-tool-btn" :class="isPinned ? 'is-active' : ''" @click="togglePin()"
+                    :title="isPinned ? '取消置頂' : '設為今日'">
+                    <i data-lucide="pin" style="width:14px;height:14px"></i>
+                </button>
+                <button class="verse-tool-btn" @click="showAddModal = true" title="自題偈頌">
+                    <i data-lucide="pen-line" style="width:14px;height:14px"></i>
+                </button>
+                <button class="verse-tool-btn verse-tool-delete" x-show="currentVerse.type === 'custom'" x-cloak
+                    @click="deleteCurrentVerse()" title="刪除此偈">
+                    <i data-lucide="trash-2" style="width:14px;height:14px"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ 自題偈頌彈窗 ═══ -->
+    <div class="verse-modal-overlay" x-show="showAddModal" x-cloak @click.self="showAddModal = false"
+        x-transition:enter="fade-enter" x-transition:enter-start="fade-enter-start"
+        x-transition:enter-end="fade-enter-end">
+        <div class="verse-modal">
+            <div class="verse-modal-header">
+                <h3>自題偈頌</h3>
+                <button class="verse-modal-close" @click="showAddModal = false">✕</button>
+            </div>
+            <div class="verse-modal-body">
+                <label class="verse-label">偈頌正文</label>
+                <textarea class="verse-textarea" x-model="newVerseText" rows="4"
+                    placeholder="每行一句，如：&#10;諸惡莫作，眾善奉行&#10;自淨其意，是諸佛教"></textarea>
+                <label class="verse-label">出處</label>
+                <input class="verse-input" type="text" x-model="newVerseSource" placeholder="如：《法句經》或 自題"
+                    @keydown.enter="addVerse()">
+            </div>
+            <div class="verse-modal-footer">
+                <button class="verse-btn verse-btn-secondary" @click="showAddModal = false">取消</button>
+                <button class="verse-btn verse-btn-primary" @click="addVerse()"
+                    :disabled="!newVerseText.trim() || !newVerseSource.trim()">題偈</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="verse-toast" :class="toastVisible ? 'is-visible' : ''" x-text="toastMsg"></div>
+</section>
+
+<script>
+function verseApp() {
+    return {
+        verses: [],
+        currentIndex: {{ daily_index }},
+        pinnedId: null,
+        pinnedType: null,
+        showAddModal: false,
+        newVerseText: '',
+        newVerseSource: '',
+        toastMsg: '',
+        toastVisible: false,
+        editingCounter: false,
+        counterInput: '',
+
+        get currentVerse() {
+            if (this.verses.length === 0) {
+                return {
+                    lines: {{ daily_verse.lines | tojson }},
+                    source: {{ daily_verse.source | tojson }},
+                    type: 'builtin', id: 0
+                };
+            }
+            return this.verses[this.currentIndex] || this.verses[0];
+        },
+
+        get isPinned() {
+            const v = this.currentVerse;
+            return v && this.pinnedId === v.id && this.pinnedType === v.type;
+        },
+
+        async init() {
+            try {
+                const res = await fetch('/api/verses');
+                const data = await res.json();
+                this.verses = data.verses;
+                this.currentIndex = data.daily_index;
+                this.pinnedId = data.pinned_id;
+                this.pinnedType = data.pinned_type;
+            } catch (e) {
+                console.error('載入偈頌失敗', e);
+            }
+            this.$nextTick(() => { if (window.lucide) lucide.createIcons(); });
+        },
+
+        prevVerse() {
+            if (this.verses.length === 0) return;
+            this.currentIndex = (this.currentIndex - 1 + this.verses.length) % this.verses.length;
+        },
+
+        nextVerse() {
+            if (this.verses.length === 0) return;
+            this.currentIndex = (this.currentIndex + 1) % this.verses.length;
+        },
+
+        startEditCounter() {
+            this.counterInput = this.currentIndex + 1;
+            this.editingCounter = true;
+            this.$nextTick(() => this.$refs.counterInput?.select());
+        },
+
+        jumpToVerse() {
+            const n = parseInt(this.counterInput);
+            if (n >= 1 && n <= this.verses.length) {
+                this.currentIndex = n - 1;
+            }
+            this.editingCounter = false;
+        },
+
+        async togglePin() {
+            const v = this.currentVerse;
+            if (!v) return;
+            try {
+                const res = await fetch('/api/verses/pin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: v.id, type: v.type })
+                });
+                const data = await res.json();
+                if (data.pinned) {
+                    this.pinnedId = v.id;
+                    this.pinnedType = v.type;
+                    this.toast('已置頂為今日偈頌');
+                } else {
+                    this.pinnedId = null;
+                    this.pinnedType = null;
+                    this.toast('已取消置頂');
+                }
+            } catch (e) {
+                this.toast('操作失敗');
+            }
+        },
+
+        async addVerse() {
+            if (!this.newVerseText.trim() || !this.newVerseSource.trim()) return;
+            const lines = this.newVerseText.split('\n').filter(l => l.trim());
+            try {
+                const res = await fetch('/api/verses', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ lines, source: this.newVerseSource.trim() })
+                });
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    this.verses.push(data.verse);
+                    this.currentIndex = this.verses.length - 1;
+                    this.newVerseText = '';
+                    this.newVerseSource = '';
+                    this.showAddModal = false;
+                    this.toast('偈頌已題');
+                }
+            } catch (e) {
+                this.toast('題偈失敗');
+            }
+        },
+
+        async deleteCurrentVerse() {
+            const v = this.currentVerse;
+            if (!v || v.type !== 'custom') return;
+            if (!confirm('確定刪除此偈頌？')) return;
+            try {
+                const res = await fetch(`/api/verses/${v.id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    this.verses = this.verses.filter(x => !(x.id === v.id && x.type === 'custom'));
+                    if (this.currentIndex >= this.verses.length) {
+                        this.currentIndex = Math.max(0, this.verses.length - 1);
+                    }
+                    this.toast('已刪除');
+                }
+            } catch (e) {
+                this.toast('刪除失敗');
+            }
+        },
+
+        toast(msg) {
+            this.toastMsg = msg;
+            this.toastVisible = true;
+            setTimeout(() => { this.toastVisible = false; }, 2000);
+        }
+    };
+}
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     案头 — 可自定义的核心书架（完整 CRUD 交互）
+     ═══════════════════════════════════════════════════════════ -->
+<section class="desk-section" x-data="favoritesApp()">
+    <div class="section-header" style="display:flex;align-items:center;justify-content:space-between;">
+        <h2 class="section-title">
+            <div class="section-icon icon-wen" title="聞"></div>
+            案頭
+            <span class="section-subtitle">隨文入觀</span>
+        </h2>
+        <div style="display:flex;gap:8px;align-items:center;">
+            <button class="fav-edit-toggle" :class="editMode ? 'is-active' : ''" @click="toggleEditMode()"
+                :title="editMode ? '退出編輯' : '編輯模式'">
+                <span x-text="editMode ? '✓ 完成' : '✎ 編輯'"></span>
+            </button>
+            <!-- 显示隐藏模块数量提示 -->
+            <span class="fav-hidden-hint" x-show="hiddenCount > 0" x-cloak x-text="hiddenCount + ' 個已隱藏'"></span>
+        </div>
+    </div>
+
+    <div class="modules-grid" x-ref="modulesGrid">
+        <template x-for="(mod, index) in modules" :key="mod.id">
+            <div class="module-card" :class="'module-' + mod.color" x-show="mod.visible || editMode"
+                :data-module-index="index">
+                <!-- 模块标题栏 -->
+                <div class="module-header-row">
+                    <button class="module-header" @click="!editMode && toggleModuleCollapse(index)"
+                        :aria-expanded="!mod.collapsed" :style="editMode ? 'cursor:default' : ''">
+                        <i data-lucide="lamp-desk"
+                            style="width:18px;height:18px;color:var(--text-secondary);flex-shrink:0;"></i>
+                        <div class="module-title-group">
+                            <!-- 模块名：编辑模式可重命名 -->
+                            <template x-if="editingId === 'mod_' + index + '_name'">
+                                <input class="inline-edit-input" type="text" :id="'inline-edit-mod_' + index + '_name'"
+                                    x-model="editingValue" @keydown.enter="confirmRename(index, null, 'name')"
+                                    @keydown.escape="cancelEdit()" @blur="confirmRename(index, null, 'name')"
+                                    @click.stop>
+                            </template>
+                            <template x-if="editingId !== 'mod_' + index + '_name'">
+                                <span class="module-name" x-text="mod.name"
+                                    @dblclick="editMode && startRename('mod_' + index + '_name', mod.name)"></span>
+                            </template>
+
+                            <!-- 副标语：编辑模式可重命名 -->
+                            <template x-if="editingId === 'mod_' + index + '_subtitle'">
+                                <input class="inline-edit-input inline-edit-sub" type="text"
+                                    :id="'inline-edit-mod_' + index + '_subtitle'" x-model="editingValue"
+                                    @keydown.enter="confirmRename(index, null, 'subtitle')"
+                                    @keydown.escape="cancelEdit()" @blur="confirmRename(index, null, 'subtitle')"
+                                    @click.stop placeholder="副標語">
+                            </template>
+                            <template x-if="editingId !== 'mod_' + index + '_subtitle'">
+                                <span class="module-subtitle" x-text="mod.subtitle" x-show="mod.subtitle || editMode"
+                                    @dblclick="editMode && startRename('mod_' + index + '_subtitle', mod.subtitle || '')"></span>
+                            </template>
+                        </div>
+                        <span class="module-count" x-text="mod.children.length + ' 項'"
+                            x-show="mod.children.length > 0 && !editMode"></span>
+                        <span class="module-chevron" :class="!mod.collapsed ? 'is-open' : ''" x-show="!editMode">
+                            ▾
+                        </span>
+                    </button>
+                    <!-- 编辑模式工具按钮 -->
+                    <div class="module-edit-tools" x-show="editMode" x-cloak>
+                        <button class="mod-tool-btn mod-tool-rename"
+                            @click="startRename('mod_' + index + '_name', mod.name)" title="重新命名">✎</button>
+                        <button class="mod-tool-btn mod-tool-hide" @click="toggleModuleVisibility(index)"
+                            :title="mod.visible ? '隱藏' : '顯示'">
+                            <span x-text="mod.visible ? '👁' : '👁‍🗨'"></span>
+                        </button>
+                        <button class="mod-tool-btn mod-tool-delete" @click="deleteModule(index)"
+                            title="刪除書架">✕</button>
+                    </div>
+                </div>
+
+                <!-- 模块内容（编辑模式下始终展开） -->
+                <div class="module-body" x-show="!mod.collapsed || editMode" x-cloak x-transition:enter="slide-enter"
+                    x-transition:enter-start="slide-enter-start" x-transition:enter-end="slide-enter-end"
+                    x-transition:leave="slide-leave" x-transition:leave-start="slide-leave-start"
+                    x-transition:leave-end="slide-leave-end">
+
+                    <!-- 空状态 -->
+                    <div class="module-empty" x-show="mod.children.length === 0 && showFolderInput !== index">
+                        <p class="empty-hint">點擊 <strong>＋</strong> 建立梵篋或本卷</p>
+                        <p class="empty-sub">在搜尋欄找到經文後，可收藏至本書架</p>
+                    </div>
+
+                    <!-- 文件夹和经文列表 -->
+                    <template x-for="(child, ci) in mod.children" :key="child.id">
+                        <div :data-child-index="ci">
+                            <!-- 文件夹 -->
+                            <template x-if="child.type === 'folder'">
+                                <div class="folder-group">
+                                    <div class="folder-header" @click="!editMode && toggleFolderCollapse(index, ci)"
+                                        :style="editMode ? 'cursor:default' : 'cursor:pointer'">
+                                        <span class="folder-chevron" :class="!child.collapsed ? 'is-open' : ''"
+                                            x-show="!editMode">▾</span>
+                                        <span class="folder-icon-sm"><i data-lucide="library"
+                                                style="width:16px;height:16px"></i></span>
+                                        <!-- 文件夹名：编辑模式双击可重命名 -->
+                                        <template x-if="editingId === 'folder_' + index + '_' + ci + '_name'">
+                                            <input class="inline-edit-input" type="text"
+                                                :id="'inline-edit-folder_' + index + '_' + ci + '_name'"
+                                                x-model="editingValue" @keydown.enter="confirmRename(index, ci, 'name')"
+                                                @keydown.escape="cancelEdit()" @blur="confirmRename(index, ci, 'name')"
+                                                @click.stop>
+                                        </template>
+                                        <template x-if="editingId !== 'folder_' + index + '_' + ci + '_name'">
+                                            <span x-text="child.name"
+                                                @dblclick="editMode && startRename('folder_' + index + '_' + ci + '_name', child.name)"></span>
+                                        </template>
+                                        <span class="folder-count" x-text="child.children.length + ' 部'"></span>
+                                        <button class="item-delete-btn" x-show="editMode" x-cloak
+                                            @click.stop="deleteFolder(index, ci)" title="刪除梵篋">✕</button>
+                                    </div>
+                                    <div x-show="!child.collapsed || editMode" x-cloak x-transition:enter="slide-enter"
+                                        x-transition:enter-start="slide-enter-start"
+                                        x-transition:enter-end="slide-enter-end" x-transition:leave="slide-leave"
+                                        x-transition:leave-start="slide-leave-start"
+                                        x-transition:leave-end="slide-leave-end">
+                                        <template x-for="(sutra, si) in child.children" :key="sutra.id">
+                                            <div class="sutra-item-row">
+                                                <a class="sutra-item" :href="'/read/' + sutra.id">
+                                                    <span class="sutra-item-id" x-text="sutra.id"></span>
+                                                    <span class="sutra-item-title" x-text="sutra.title"></span>
+                                                </a>
+                                                <button class="item-delete-btn" x-show="editMode" x-cloak
+                                                    @click="deleteSutra(index, ci, si)" title="移除">✕</button>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- 直接经文 -->
+                            <template x-if="child.type === 'sutra'">
+                                <div class="sutra-item-row">
+                                    <a class="sutra-item" :href="'/read/' + child.id">
+                                        <span class="sutra-item-id" x-text="child.id"></span>
+                                        <span class="sutra-item-title" x-text="child.title"></span>
+                                    </a>
+                                    <button class="item-delete-btn" x-show="editMode" x-cloak
+                                        @click="deleteSutra(index, ci)" title="移除">✕</button>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <!-- 新建文件夹输入框 -->
+                    <div class="new-folder-row" x-show="showFolderInput === index" x-cloak>
+                        <span class="folder-icon-sm"><i data-lucide="library" style="width:16px;height:16px"></i></span>
+                        <input class="inline-edit-input" type="text" placeholder="梵篋名稱"
+                            :id="'new-folder-input-' + index" x-model="newFolderName"
+                            @keydown.enter="createFolder(index)" @keydown.escape="cancelNewFolder()">
+                        <button class="fav-btn-sm fav-btn-ok" @click="createFolder(index)">✓</button>
+                        <button class="fav-btn-sm fav-btn-cancel" @click="cancelNewFolder()">✕</button>
+                    </div>
+
+                    <!-- 添加按钮 + 弹出菜单 -->
+                    <div class="module-add-wrapper" style="position:relative;">
+                        <button class="module-add-btn" @click="openAddMenu(index)">
+                            ＋ 加入
+                        </button>
+                        <!-- 添加菜单 -->
+                        <div class="add-menu" x-show="addMenuModule === index" x-cloak @click.outside="closeAddMenu()"
+                            x-transition>
+                            <button class="add-menu-item" @click="startNewFolder(index)">
+                                <i data-lucide="library"
+                                    style="width:14px;height:14px;vertical-align:-2px;margin-right:6px"></i> 新增梵篋
+                            </button>
+                            <button class="add-menu-item" @click="openFavModal(index)">
+                                <i data-lucide="book-open-text"
+                                    style="width:14px;height:14px;vertical-align:-2px;margin-right:6px"></i> 加入經卷
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <!-- 显示隐藏的模块列表（编辑模式下） -->
+    <div class="hidden-modules-hint" x-show="editMode && hiddenCount > 0" x-cloak>
+        <small>已隱藏的書架會在編輯模式下以半透明顯示，退出編輯後不可見。</small>
+    </div>
+
+    <!-- 新建分区按钮 -->
+    <!-- 按钮组：新建书架 + 导出数据 -->
+    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+        <button class="new-module-btn" @click="openNewModuleModal()" style="flex: 1;">
+            ＋ 新增書架
+        </button>
+        <a href="/api/user_data/export" target="_blank" class="new-module-btn"
+            style="flex: 0 0 auto; width: auto; background: rgba(255,255,255,0.05); border-style: solid; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; color: var(--text-secondary);">
+            <i data-lucide="download" style="width: 1.2em; height: 1.2em; margin-right: 0.5em;"></i>
+            備份
+        </a>
+    </div>
+
+    <!-- ═══ 新建分区弹窗 ═══ -->
+    <div class="fav-modal-overlay" x-show="showNewModuleModal" x-cloak @click.self="showNewModuleModal = false"
+        x-transition:enter="fade-enter" x-transition:enter-start="fade-enter-start"
+        x-transition:enter-end="fade-enter-end" x-transition:leave="fade-leave"
+        x-transition:leave-start="fade-leave-start" x-transition:leave-end="fade-leave-end">
+        <div class="fav-modal">
+            <div class="fav-modal-header">
+                <h3>新增書架</h3>
+                <button class="fav-modal-close" @click="showNewModuleModal = false">✕</button>
+            </div>
+            <div class="fav-modal-body">
+                <label class="fav-label">書架名稱</label>
+                <input class="fav-input" type="text" id="new-module-name-input" x-model="newModule.name"
+                    placeholder="如：禪宗部" @keydown.enter="createModule()">
+
+                <label class="fav-label">副標語（選填）</label>
+                <input class="fav-input" type="text" x-model="newModule.subtitle" placeholder="如：直指人心"
+                    @keydown.enter="createModule()">
+
+                <label class="fav-label">顏色</label>
+                <div class="fav-color-picker">
+                    <template x-for="c in colorOptions" :key="c.value">
+                        <button class="color-dot" :class="newModule.color === c.value ? 'is-selected' : ''"
+                            :style="'background:' + c.css" :title="c.label" @click="newModule.color = c.value"></button>
+                    </template>
+                </div>
+            </div>
+            <div class="fav-modal-footer">
+                <button class="fav-btn fav-btn-secondary" @click="showNewModuleModal = false">取消</button>
+                <button class="fav-btn fav-btn-primary" @click="createModule()"
+                    :disabled="!newModule.name.trim()">建立</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ 收藏经文弹窗 ═══ -->
+    <div class="fav-modal-overlay" x-show="showFavModal" x-cloak @click.self="closeFavModal()"
+        x-transition:enter="fade-enter" x-transition:enter-start="fade-enter-start"
+        x-transition:enter-end="fade-enter-end" x-transition:leave="fade-leave"
+        x-transition:leave-start="fade-leave-start" x-transition:leave-end="fade-leave-end">
+        <div class="fav-modal fav-modal-lg">
+            <div class="fav-modal-header">
+                <h3>加入經卷至「<span x-text="favTargetModule !== null ? modules[favTargetModule]?.name : ''"></span>」</h3>
+                <button class="fav-modal-close" @click="closeFavModal()">✕</button>
+            </div>
+            <div class="fav-modal-body">
+                <!-- 目标文件夹选择 -->
+                <div class="fav-target-row"
+                    x-show="favTargetModule !== null && modules[favTargetModule]?.children.some(c => c.type === 'folder')">
+                    <label class="fav-label">放入梵篋</label>
+                    <select class="fav-select" x-model="favTargetFolder">
+                        <option :value="null">— 直接放入書架根目錄 —</option>
+                        <template
+                            x-for="(child, fi) in (favTargetModule !== null ? modules[favTargetModule]?.children.filter(c => c.type === 'folder') : [])"
+                            :key="fi">
+                            <option
+                                :value="favTargetModule !== null ? modules[favTargetModule]?.children.indexOf(child) : fi"
+                                x-text="'📖 ' + child.name"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <!-- 搜索 -->
+                <label class="fav-label">搜尋經文</label>
+                <input class="fav-input" type="text" id="fav-search-input" x-model="favSearchQuery"
+                    placeholder="輸入經號或經名…" @input.debounce.300ms="doFavSearch()">
+
+                <!-- 搜索结果 -->
+                <div class="fav-results" x-show="favSearchResults.length > 0">
+                    <template x-for="r in favSearchResults" :key="r.sutra_id">
+                        <div class="fav-result-item" @click="addSutraToTarget(r)">
+                            <span class="fav-result-id" x-text="r.sutra_id"></span>
+                            <span class="fav-result-title" x-text="r.title"></span>
+                            <span class="fav-result-add">＋</span>
+                        </div>
+                    </template>
+                </div>
+                <div class="fav-no-result"
+                    x-show="favSearchQuery.length > 0 && favSearchResults.length === 0 && !favSearchLoading">
+                    未找到相符經文
+                </div>
+            </div>
+            <div class="fav-modal-footer">
+                <button class="fav-btn fav-btn-secondary" @click="closeFavModal()">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ Toast 提示 ═══ -->
+    <div class="fav-toast" :class="toastVisible ? 'is-visible' : ''" x-text="toastMsg"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     区域 ② — 祖师（法脉图）
+     ═══════════════════════════════════════════════════════════ -->
+<section class="content-section" id="lineage-section">
+    <div class="section-header">
+        <h2 class="section-title">
+            <div class="section-icon icon-deng" title="灯"></div>
+            祖師
+            <span class="section-subtitle">人天眼目</span>
+        </h2>
+    </div>
+
+    <!-- 搜索欄 + 推薦 Chips（同一行） -->
+    <div class="lineage-header">
+        <div class="lineage-search-box">
+            <input type="text" id="lineage-search-input" placeholder="搜尋人物…" autocomplete="off">
+            <div class="lineage-search-results" id="lineage-search-results"></div>
+        </div>
+        <div class="lineage-search-chips" id="lineage-search-chips">
+            <span class="chip-group">
+                <button class="chip" data-q="釋迦牟尼佛">釋迦牟尼佛</button>
+                <button class="chip" data-q="菩提達摩">達摩</button>
+                <button class="chip" data-q="玄奘">玄奘</button>
+                <button class="chip" data-q="鳩摩羅什">羅什</button>
+                <button class="chip" data-q="趙州">趙州</button>
+                <button class="chip" data-q="希運">黃檗</button>
+                <button class="chip" data-q="宗杲">大慧</button>
+                <button class="chip" data-q="克勤">圓悟</button>
+                <button class="chip" data-q="虛雲">虛雲</button>
+                <button class="chip" data-q="慧遠">慧遠</button>
+                <button class="chip" data-q="道宣">道宣</button>
+                <button class="chip" data-q="窺基">窺基</button>
+            </span>
+            <span class="chip-group">
+                <button class="chip chip-sect" data-founder="A003627">臨濟</button>
+                <button class="chip chip-sect" data-founder="A009489">曹洞</button>
+                <button class="chip chip-sect" data-founder="A003703">雲門</button>
+                <button class="chip chip-sect" data-founder="A000174">法眼</button>
+                <button class="chip chip-sect" data-founder="A001984">溈仰</button>
+                <button class="chip chip-sect" data-founder="A004146">楊岐</button>
+                <button class="chip chip-sect" data-founder="A003921">黃龍</button>
+                <button class="chip chip-sect" data-founder="A010291">石頭</button>
+                <button class="chip chip-sect" data-founder="A003623">洪州</button>
+                <button class="chip chip-sect" data-founder="A009582">北宗</button>
+                <button class="chip chip-sect" data-founder="A001719">南宗</button>
+                <button class="chip chip-sect" data-founder="A003867">牛頭</button>
+                <button class="chip chip-sect" data-founder="A005612">荷澤</button>
+            </span>
+        </div>
+    </div>
+
+    <!-- ===== 四面板仪表盘 ===== -->
+    <main class="lineage-dashboard">
+        <!-- ⓪ 左侧：编年时间轴 (320px) -->
+        <aside id="panel-timeline" class="ln-panel">
+            <div class="ln-panel-header">
+                <h2><i data-lucide="scroll-text" class="ln-panel-icon"></i> 編年</h2>
+                <div style="display:flex;gap:4px;align-items:center">
+                    <button class="chr-tool-btn active" id="monk-all" onclick="setMonkFilter(null)">全</button>
+                    <button class="chr-tool-btn" id="monk-monk" onclick="setMonkFilter('monk')">僧</button>
+                    <button class="chr-tool-btn" id="monk-lay" onclick="setMonkFilter('lay')">非僧</button>
+                </div>
+            </div>
+            <div class="chronicle-scroll" id="chronicle-container"></div>
+        </aside>
+
+        <!-- 右侧区域 -->
+        <div class="ln-right-area">
+            <!-- ① 右上：人物详情 (40%) -->
+            <div id="panel-detail" class="ln-panel split-v">
+                <div class="ln-panel-header">
+                    <h2 id="detail-title"><i data-lucide="circle-user-round" class="ln-panel-icon"></i> 人物</h2>
+                </div>
+                <div id="detail-content" class="ln-panel-body">
+                    <div class="ln-empty-state">
+                        <div class="icon"><i data-lucide="circle-user-round" style="width:36px;height:36px"></i></div>
+                        <div>點擊節點查看人物詳情</div>
+                        <div class="hint">或使用搜尋欄尋找</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ② ③ 右下：法脉图 + 地图 (60%) -->
+            <div class="ln-bottom-split split-v">
+                <div id="panel-lineage" class="ln-panel split-h">
+                    <div class="ln-panel-header">
+                        <h2><i data-lucide="git-branch" class="ln-panel-icon"></i> 法脈</h2>
+                        <div style="display:flex;gap:6px;align-items:center">
+                            <button id="lineage-expand-btn" class="lineage-expand-btn" disabled><i data-lucide="search"
+                                    style="width:12px;height:12px;vertical-align:middle"></i> 追溯</button>
+                            <button id="lineage-fullscreen-btn" class="lineage-expand-btn"
+                                onclick="toggleLineageFullscreen()"><i data-lucide="maximize-2"
+                                    style="width:12px;height:12px;vertical-align:middle"></i> 全螢幕</button>
+                        </div>
+                    </div>
+                    <div id="lineage-container" class="ln-panel-body">
+                        <div class="ln-empty-state" id="lineage-empty">
+                            <div class="icon"><i data-lucide="git-branch" style="width:36px;height:36px"></i></div>
+                            <div>選擇人物查看法脈關係</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="panel-map" class="ln-panel split-h">
+                    <div class="ln-panel-header">
+                        <h2><i data-lucide="footprints" class="ln-panel-icon"></i> 行跡</h2>
+                        <div style="display:flex;gap:6px;align-items:center">
+                            <button id="map-fullscreen-btn" class="lineage-expand-btn"
+                                onclick="toggleMapFullscreen()"><i data-lucide="maximize-2"
+                                    style="width:12px;height:12px;vertical-align:middle"></i> 全螢幕</button>
+                        </div>
+                    </div>
+                    <div id="map-container" class="ln-panel-body"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 状态栏 -->
+    <div class="lineage-status-bar">
+        <div class="ln-stat"><i data-lucide="circle-user-round" class="ln-status-icon"></i> <span
+                id="ln-stat-persons">0</span> 人物</div>
+        <div class="ln-stat"><i data-lucide="list-tree" class="ln-status-icon"></i> <span id="ln-stat-edges">0</span> 師承
+        </div>
+        <div class="ln-stat"><i data-lucide="map-pin" class="ln-status-icon"></i> <span id="ln-stat-places">0</span> 地點
+        </div>
+        <div class="ln-stat"><i data-lucide="book-open-text" class="ln-status-icon"></i> <span
+                id="ln-stat-scriptures">0</span> 經典</div>
+        <div class="ln-stat" id="ln-status-msg" style="margin-left:auto;"></div>
+    </div>
+
+    <!-- 工具提示 -->
+    <div class="ln-tooltip" id="ln-tooltip"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     区域 ③ — 贝阙（全藏目录浏览）
+     ═══════════════════════════════════════════════════════════ -->
+<section class="content-section" id="catalog-section" x-data="catalogApp()">
+    <div class="section-header">
+        <h2 class="section-title">
+            <div class="section-icon icon-zang" title="藏"></div>
+            貝闕
+            <span class="section-subtitle">正法久住</span>
+        </h2>
+    </div>
+
+    <!-- Tab 切换 + 搜索框 -->
+    <div class="catalog-toolbar">
+        <div class="catalog-tabs">
+            <button class="catalog-tab" :class="activeTab === 'bulei' ? 'active' : ''" @click="switchTab('bulei')"><i
+                    data-lucide="layers"
+                    style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"></i>部類</button>
+            <button class="catalog-tab" :class="activeTab === 'canon' ? 'active' : ''" @click="switchTab('canon')"><i
+                    data-lucide="library"
+                    style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"></i>經藏</button>
+        </div>
+        <div class="catalog-search-box">
+            <span class="catalog-search-icon"><i data-lucide="search" style="width:14px;height:14px"></i></span>
+            <input type="text" class="catalog-search-input" placeholder="在目錄中搜尋經名…" x-model="filterQuery"
+                @input.debounce.200ms="applyFilter()">
+            <button class="catalog-search-clear" x-show="filterQuery.length > 0" x-cloak
+                @click="filterQuery = ''; applyFilter()">✕</button>
+        </div>
+        <span class="catalog-stat" x-show="loaded" x-cloak x-text="statText"></span>
+    </div>
+
+    <!-- 目录树 -->
+    <div class="catalog-tree" x-show="loaded" x-cloak>
+        <template x-if="filteredTree.length === 0 && filterQuery.length > 0">
+            <div class="catalog-empty">未找到相符的經文</div>
+        </template>
+        <template x-for="(node, i) in filteredTree" :key="i">
+            <div class="catalog-branch">
+                <!-- 顶级分类标题 -->
+                <button class="catalog-l1-header" @click="toggleL1(i)" :class="openL1.has(i) ? 'is-open' : ''">
+                    <span class="catalog-toggle" x-text="openL1.has(i) ? '▾' : '▸'"></span>
+                    <span class="catalog-l1-title" x-text="node.title"></span>
+                    <span class="catalog-l1-count" x-text="countLeaves(node) + ' 部'"
+                        x-show="countLeaves(node) > 0"></span>
+                </button>
+                <!-- 子节点（递归） -->
+                <div class="catalog-l1-body" x-show="openL1.has(i)" x-cloak>
+                    <template x-for="(child, j) in node.children" :key="j">
+                        <div>
+                            <!-- 有子节点 = 可折叠目录 -->
+                            <template x-if="child.children && child.children.length > 0">
+                                <div class="catalog-subgroup">
+                                    <button class="catalog-l2-header" @click="toggleSub(i + '-' + j)"
+                                        :class="openSub.has(i + '-' + j) ? 'is-open' : ''">
+                                        <span class="catalog-toggle-sm"
+                                            x-text="openSub.has(i + '-' + j) ? '▾' : '▸'"></span>
+                                        <span x-text="child.title"></span>
+                                        <span class="catalog-l2-count" x-text="countLeaves(child) + ' 部'"
+                                            x-show="countLeaves(child) > 0"></span>
+                                    </button>
+                                    <div class="catalog-l2-body" x-show="openSub.has(i + '-' + j)" x-cloak>
+                                        <template x-for="(leaf, k) in child.children" :key="k">
+                                            <div>
+                                                <!-- 第三层也可能有子节点 -->
+                                                <template
+                                                    x-if="leaf.children && leaf.children.length > 0 && !leaf.sutra_id">
+                                                    <div class="catalog-subgroup">
+                                                        <button class="catalog-l3-header"
+                                                            @click="toggleSub(i + '-' + j + '-' + k)"
+                                                            :class="openSub.has(i + '-' + j + '-' + k) ? 'is-open' : ''">
+                                                            <span class="catalog-toggle-sm"
+                                                                x-text="openSub.has(i + '-' + j + '-' + k) ? '▾' : '▸'"></span>
+                                                            <span x-text="leaf.title"></span>
+                                                            <span class="catalog-l2-count"
+                                                                x-text="countLeaves(leaf) + ' 部'"
+                                                                x-show="countLeaves(leaf) > 0"></span>
+                                                        </button>
+                                                        <div class="catalog-l3-body"
+                                                            x-show="openSub.has(i + '-' + j + '-' + k)" x-cloak>
+                                                            <template x-for="(item, m) in leaf.children" :key="m">
+                                                                <a class="catalog-leaf"
+                                                                    :href="item.sutra_id ? '/read/' + item.sutra_id : '#'"
+                                                                    x-show="item.sutra_id">
+                                                                    <span class="catalog-leaf-id"
+                                                                        x-text="item.sutra_id"></span>
+                                                                    <span class="catalog-leaf-title"
+                                                                        x-text="extractTitle(item.title)"></span>
+                                                                </a>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                                <!-- 叶子经文条目 -->
+                                                <template x-if="leaf.sutra_id">
+                                                    <a class="catalog-leaf" :href="'/read/' + leaf.sutra_id">
+                                                        <span class="catalog-leaf-id" x-text="leaf.sutra_id"></span>
+                                                        <span class="catalog-leaf-title"
+                                                            x-text="extractTitle(leaf.title)"></span>
+                                                    </a>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                            <!-- 叶子节点（直接经文） -->
+                            <template x-if="child.sutra_id && (!child.children || child.children.length === 0)">
+                                <a class="catalog-leaf" :href="'/read/' + child.sutra_id">
+                                    <span class="catalog-leaf-id" x-text="child.sutra_id"></span>
+                                    <span class="catalog-leaf-title" x-text="extractTitle(child.title)"></span>
+                                </a>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <!-- 加载状态 -->
+    <div class="catalog-loading" x-show="!loaded">
+        <span class="catalog-spinner"></span> 載入目錄…
+    </div>
+</section>
+
+{% endblock %}

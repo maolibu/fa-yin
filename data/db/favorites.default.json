@@ -1,0 +1,1097 @@
+[
+  {
+    "type": "module",
+    "id": "mod_mm1iyzbd",
+    "name": "09现前",
+    "subtitle": "克期取证",
+    "color": "rust",
+    "visible": true,
+    "collapsed": false,
+    "children": [
+      {
+        "type": "folder",
+        "id": "fld_chan_yulu",
+        "name": "禅宗语录",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T2008",
+            "title": "六祖大師法寶壇經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1985",
+            "title": "臨濟慧照禪師語錄",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "JB137",
+            "title": "趙州和尚語錄",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_chan_gongan",
+        "name": "公案辑要",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T2003",
+            "title": "碧巌錄",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T2004",
+            "title": "從容庵錄",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T2005",
+            "title": "無門關",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_chan_zhushu",
+        "name": "祖师著述",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T2010",
+            "title": "信心銘 (僧璜)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T2014",
+            "title": "永嘉證道歌 (玄覺)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T2013",
+            "title": "禪宗永嘉集",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T2024",
+            "title": "禪關策進 (蓮池大師)",
+            "juan": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "module",
+    "id": "mod_mm1iyp4h",
+    "name": "08诸宗",
+    "subtitle": "草木同润-随器",
+    "color": "amber",
+    "visible": true,
+    "collapsed": false,
+    "children": [
+      {
+        "type": "folder",
+        "id": "fld_jingtu_zushi",
+        "name": "净土宗",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T1753",
+            "title": "觀無量壽佛經疏 (善導大師)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1819",
+            "title": "無量壽經優婆提舍願生偈註 (曇鸞)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1957",
+            "title": "略論安樂淨土義 (曇鸞)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "X1164",
+            "title": "淨土十要 (蓕益大師)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1970",
+            "title": "龍舒增廣淨土文",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_tiantai_zushi",
+        "name": "天台宗",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T1716",
+            "title": "妙法蓮華經玄義 (智顡)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1718",
+            "title": "妙法蓮華經文句 (智顡)",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_huayan_zushi",
+        "name": "华严宗",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T1880",
+            "title": "華嚴金師子章 (法藏)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1886",
+            "title": "原人論 (宗密)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1867",
+            "title": "華嚴五教止觀 (杜順)",
+            "juan": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "module",
+    "id": "mod_mm1iy4po",
+    "name": "07果德",
+    "subtitle": "一乘圆教-愿景",
+    "color": "rosewood",
+    "visible": true,
+    "collapsed": false,
+    "children": [
+      {
+        "type": "folder",
+        "id": "fld_yuanjiao_jingdian",
+        "name": "华严法华",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T0278",
+            "title": "大方廣佛華嚴經 (六十華嚴)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0279",
+            "title": "大方廣佛華嚴經 (八十華嚴)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0293",
+            "title": "普賢行願品",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0262",
+            "title": "妙法蓮華經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0310",
+            "title": "大寶積經",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_jingtu_sanjing",
+        "name": "净土经典",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T0366",
+            "title": "佛說阿彌陀經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0360",
+            "title": "佛說無量壽經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0365",
+            "title": "佛說觀無量壽佛經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0367",
+            "title": "稱讚淨土佛攝受經 (玄奘譯)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0452",
+            "title": "佛說觀彌勒菩薩上生兜率天經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0454",
+            "title": "佛說彌勒下生成佛經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0456",
+            "title": "佛說彌勒大成佛經",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_niepan_rulai",
+        "name": "涅槃如来藏",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T0374",
+            "title": "大般涅槃經 (北本)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0375",
+            "title": "大般涅槃經 (南本)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0353",
+            "title": "勝鬘師子吼一乘大方便方廣經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0666",
+            "title": "大乘起信論",
+            "juan": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "module",
+    "id": "mod_mm1ixmgc",
+    "name": "06唯识",
+    "subtitle": "转识成智-法相",
+    "color": "bamboo",
+    "visible": true,
+    "collapsed": false,
+    "children": [
+      {
+        "type": "folder",
+        "id": "fld_weishi_jingdian",
+        "name": "所依经典",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T0676",
+            "title": "解深密經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0670",
+            "title": "楞伽阿跋多羅寶經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0681",
+            "title": "大乘密嚴經",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_weishi_lundian",
+        "name": "核心论典",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T1579",
+            "title": "瑜伽師地論 (彌勒菩薩)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1585",
+            "title": "成唯識論 (護法等)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1586",
+            "title": "唯識三十論頌 (世親菩薩)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1590",
+            "title": "唯識二十論 (世親菩薩)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1594",
+            "title": "攝大乘論本 (無著菩薩)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "L1629",
+            "title": "大乘百法明門論",
+            "juan": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "module",
+    "id": "mod_mm1ix1o0",
+    "name": "05中观",
+    "subtitle": "缘起性空-破执",
+    "color": "indigo",
+    "visible": true,
+    "collapsed": false,
+    "children": [
+      {
+        "type": "folder",
+        "id": "fld_bore_jingdian",
+        "name": "般若经典",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T0220a",
+            "title": "大般若波羅蜜多經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0235",
+            "title": "金剛般若波羅蜜經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0251",
+            "title": "般若波羅蜜多心經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0245",
+            "title": "仁王護國般若波羅蜜經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0221",
+            "title": "放光般若經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0232",
+            "title": "文殊師利所說摩訶般若波羅蜜經",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_zhongguan_sanlun",
+        "name": "中观三论",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T1564",
+            "title": "中論 (龍樹菩薩)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1569",
+            "title": "百論 (提婆菩薩)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1568",
+            "title": "十二門論 (龍樹菩薩)",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_bore_shilun",
+        "name": "般若释论",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T1509",
+            "title": "大智度論 (龍樹菩薩)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1578",
+            "title": "大乘掌珍論 (清辯菩薩)",
+            "juan": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "module",
+    "id": "mod_mm1iwprg",
+    "name": "04阿含",
+    "subtitle": "生死解脱-断惑",
+    "color": "cloud",
+    "visible": true,
+    "collapsed": false,
+    "children": [
+      {
+        "type": "folder",
+        "id": "fld_beichuan_ahan",
+        "name": "北传四阿含",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T0001",
+            "title": "長阿含經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0026",
+            "title": "中阿含經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0099",
+            "title": "雜阿含經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0125",
+            "title": "增壹阿含經",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_nanchuan_nikaya",
+        "name": "南传五部",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "N0004",
+            "title": "長部經典 (Dīgha Nikāya)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "N0005",
+            "title": "中部經典 (Majjhima Nikāya)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "N0006",
+            "title": "相應部經典 (Saṃyutta Nikāya)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "N0007",
+            "title": "增支部經典 (Aṅguttara Nikāya)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "N0008",
+            "title": "小部經典 (Khuddaka Nikāya)",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_ahan_lundian",
+        "name": "阿毗达磨",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T1558",
+            "title": "阿毘達磨俱舍論",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1545",
+            "title": "阿毘達磨大毘婆沙論",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1646",
+            "title": "成實論",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1537",
+            "title": "阿毘達磨法蘊足論",
+            "juan": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "module",
+    "id": "mod_mm1iwcjd",
+    "name": "03禅那",
+    "subtitle": "止观双运-技术",
+    "color": "sandalwood",
+    "visible": true,
+    "collapsed": false,
+    "children": [
+      {
+        "type": "folder",
+        "id": "fld_rumen_zhiguan",
+        "name": "入门止观",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T1915",
+            "title": "修習止觀坐禪法要 (小止觀)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1917",
+            "title": "六妙法門",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0602",
+            "title": "佛說大安般守意經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0614",
+            "title": "坐禪三昧經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0613",
+            "title": "禪祕要法經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0616",
+            "title": "禪法要解",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0617",
+            "title": "思惟略要法",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0619",
+            "title": "五門禪經要用法",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_chanjing_yuandian",
+        "name": "禅经原典",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T0618",
+            "title": "達摩多羅禪經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0642",
+            "title": "佛說首楞嚴三昧經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0643",
+            "title": "佛說觀佛三昧海經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0842",
+            "title": "大方廣圓覺修多羅了義經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0621",
+            "title": "佛說佛印三昧經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0630",
+            "title": "佛說成具光明定意經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0639",
+            "title": "月燈三昧經",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_tiantai_zhiguan",
+        "name": "天台止观",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T1911",
+            "title": "摩訶止觀",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1924",
+            "title": "大乘止觀法門",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1914",
+            "title": "止觀大意",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_nianfo_sanmei",
+        "name": "念佛三昧",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T0417",
+            "title": "佛說般舟三昧經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0414",
+            "title": "菩薩念佛三昧經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1967",
+            "title": "念佛三昧寶王論",
+            "juan": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "module",
+    "id": "mod_mm1iw0jq",
+    "name": "02课诵",
+    "subtitle": "日拱一卒-助行",
+    "color": "ochre",
+    "visible": true,
+    "collapsed": false,
+    "children": [
+      {
+        "type": "folder",
+        "id": "fld_kesong_yuanyuan",
+        "name": "经文原典",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T0366",
+            "title": "佛說阿彌陀經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0945",
+            "title": "大佛頂首楞嚴經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0235",
+            "title": "金剛般若波羅蜜經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0251",
+            "title": "般若波羅蜜多心經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1060",
+            "title": "大悲心陀羅尼經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0412",
+            "title": "地藏菩薩本願經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0315a",
+            "title": "佛說普門品經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0450",
+            "title": "藥師琉璃光如來本願功德經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0293",
+            "title": "普賢行願品",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0262",
+            "title": "妙法蓮華經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0360",
+            "title": "佛說無量壽經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0374",
+            "title": "大般涅槃經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0245",
+            "title": "佛說八大人覺經",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_kesong_yigui",
+        "name": "佛事仪轨",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T1909",
+            "title": "慈悲道場懺法 (梁皇寶懺)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1910",
+            "title": "慈悲水懺法",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1320",
+            "title": "瑜伽集要焰口施食儀",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1473",
+            "title": "梵網經菩薩戒本",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "X1492",
+            "title": "禮佛儀式",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "G2267",
+            "title": "釋門歸敬儀擷錄",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1901",
+            "title": "護命放生軌儀法",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "X1497",
+            "title": "法界聖凡水陸勝會修齋儀軌",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "JB259",
+            "title": "怡山禮佛發願文略釋",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "JB260",
+            "title": "大懺悔文略解",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_conglin_qinggui",
+        "name": "丛林清规",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T2025",
+            "title": "敕修百丈清規",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "X1245",
+            "title": "(重雕補註)禪苑清規",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "X1248",
+            "title": "幻住庵清規",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "JB044",
+            "title": "諸經日誦集要",
+            "juan": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "module",
+    "id": "mod_mm1iuq6h",
+    "name": "01净戒",
+    "subtitle": "开遮持犯-铠甲",
+    "color": "bamboo",
+    "visible": true,
+    "collapsed": false,
+    "children": [
+      {
+        "type": "folder",
+        "id": "fld_dacheng_pusa",
+        "name": "大乘在家菩萨戒",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T1484",
+            "title": "梵網經 (十重四十八輕)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1488",
+            "title": "優婆塞戒經 (六重二十八輕)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1485",
+            "title": "菩薩瓔珞本業經 (瑜伽系)",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1500",
+            "title": "菩薩戒本 (彌勒菩薩說)",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_jushi_genben",
+        "name": "居士根本",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "T1476",
+            "title": "佛說優婆塞五戒相經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0089",
+            "title": "八關齋經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0600",
+            "title": "十善業道經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T0017",
+            "title": "善生子經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1486",
+            "title": "受十善戒經",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "T1492",
+            "title": "佛說舍利弗悔過經",
+            "juan": null
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "fld_xiandai_lvxue",
+        "name": "现代律学合编",
+        "collapsed": true,
+        "children": [
+          {
+            "type": "sutra",
+            "id": "G2250",
+            "title": "南山律在家備覽略編",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "G2268",
+            "title": "授三歸依大意",
+            "juan": null
+          },
+          {
+            "type": "sutra",
+            "id": "G2270",
+            "title": "律學要略",
+            "juan": null
+          }
+        ]
+      }
+    ]
+  }
+]

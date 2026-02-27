@@ -1,0 +1,850 @@
+{% extends "base.html" %}
+{% block title %}{{ sutra_title }} — 法印对照{% endblock %}
+{% block body_class %}reader-mode{% endblock %}
+{% block head %}
+<script src="/static/js/lib/opencc-full.js"></script>
+<script src="/static/js/lib/lucide.min.js"></script>
+<style>
+    .gaiji {
+        font-family: "WenJinMincho", "HanaMinB", serif;
+    }
+</style>
+{% endblock %}
+
+{% block body_content %}
+<div x-data="readerApp()">
+
+    <div class="reader-layout" :class="{ 'split-active': splitMode }" id="reader-layout">
+        <div class="reader-main" id="reader-left">
+
+            <div class="reader-sticky-top">
+                <div class="breadcrumb">
+                    <a href="/">首页</a>
+                    {% if canon_name %}
+                    <span class="sep">›</span>
+                    <span class="crumb-canon">{{ canon_name }}</span>
+                    {% endif %}
+                    {% if category %}
+                    <span class="sep">›</span>
+                    <span class="crumb-category">{{ category }}</span>
+                    {% endif %}
+                    <span class="sep">›</span>
+                    <span class="current">{{ sutra_id }} {{ sutra_title }}</span>
+                </div>
+
+                <div class="sutra-header" x-data="{ expanded: false }">
+                    <div class="sutra-header-row">
+                        <div class="sutra-header-left">
+                            <h1 class="sutra-title">{{ sutra_title }}</h1>
+                            <span class="meta-id-badge">{{ sutra_id }}</span>
+                            <button class="detail-toggle" @click="expanded = !expanded"
+                                :class="{ 'is-expanded': expanded }">
+                                <span x-text="expanded ? '收起 ▲' : '详情 ▼'"></span>
+                            </button>
+                        </div>
+                        <div class="sutra-header-right">
+                            <select class="juan-select" x-model="currentJuan" @change="loadJuan()">
+                                {% for j in range(1, total_juan + 1) %}
+                                <option value="{{ j }}">第 {{ j }} 卷</option>
+                                {% endfor %}
+                            </select>
+                            <button class="juan-btn" @click="prevJuan()" :disabled="currentJuan <= 1">←</button>
+                            <span class="juan-indicator" x-text="currentJuan + ' / {{ total_juan }}'"></span>
+                            <button class="juan-btn" @click="nextJuan()"
+                                :disabled="currentJuan >= {{ total_juan }}">→</button>
+                            <!-- 横排：回顶 -->
+                            <button class="juan-btn scroll-home-btn" x-show="writingMode !== 'vertical'"
+                                @click="splitMode ? scrollPanelToTop('left') : window.scrollTo({top:0,behavior:'smooth'})"
+                                title="回到顶部">↑ 回顶</button>
+                            <!-- 竖排：回首 -->
+                            <button class="juan-btn scroll-home-btn" x-show="writingMode === 'vertical'"
+                                @click="scrollPanelToStart('left')" title="回到经文开头">→ 回首</button>
+                        </div>
+                    </div>
+                    <div class="detail-panel" x-show="expanded" x-transition.duration.200ms x-cloak>
+                        <div class="detail-grid">
+                            {% if author %}
+                            <div class="detail-row">
+                                <span class="detail-label">譯者</span>
+                                <span class="detail-value">{{ author }}</span>
+                            </div>
+                            {% endif %}
+                            {% if category %}
+                            <div class="detail-row">
+                                <span class="detail-label">部类</span>
+                                <span class="detail-value">{{ category }}</span>
+                            </div>
+                            {% endif %}
+                            {% if hm.get('canon_name_zh') %}
+                            <div class="detail-row">
+                                <span class="detail-label">所属藏经</span>
+                                <span class="detail-value">{{ hm.canon_name_zh }}{% if hm.get('canon_name_en') %} <span
+                                        class="detail-en">({{ hm.canon_name_en }})</span>{% endif %}</span>
+                            </div>
+                            {% endif %}
+                            {% if hm.get('canon_ref') %}
+                            <div class="detail-row">
+                                <span class="detail-label">册号</span>
+                                <span class="detail-value detail-mono">{{ hm.canon_ref }}</span>
+                            </div>
+                            {% endif %}
+                            {% if hm.get('source') %}
+                            <div class="detail-row">
+                                <span class="detail-label">底本来源</span>
+                                <span class="detail-value">{{ hm.source }}</span>
+                            </div>
+                            {% endif %}
+                            {% if hm.get('witnesses') %}
+                            <div class="detail-row">
+                                <span class="detail-label">校勘版本</span>
+                                <span class="detail-value">{{ hm.witnesses }}</span>
+                            </div>
+                            {% endif %}
+                            {% if hm.get('punctuation') %}
+                            <div class="detail-row">
+                                <span class="detail-label">标点方式</span>
+                                <span class="detail-value">{{ hm.punctuation }}</span>
+                            </div>
+                            {% endif %}
+                            {% if hm.get('languages') %}
+                            <div class="detail-row">
+                                <span class="detail-label">涉及语言</span>
+                                <span class="detail-value">{{ hm.languages }}</span>
+                            </div>
+                            {% endif %}
+                            {% if hm.get('edition') %}
+                            <div class="detail-row">
+                                <span class="detail-label">数位版本</span>
+                                <span class="detail-value">{{ hm.edition }}</span>
+                            </div>
+                            {% endif %}
+                            {% if hm.get('contributors') %}
+                            <div class="detail-row">
+                                <span class="detail-label">数据来源</span>
+                                <span class="detail-value detail-small">{{ hm.contributors }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.reader-sticky-top -->
+
+            <div id="reader-content" class="juan-body">
+                <div class="loading-hint" hx-get="/api/content/{{ sutra_id }}/{{ initial_juan }}" hx-trigger="load"
+                    hx-target="#reader-content">
+                    <div class="loading-spinner"></div>
+                    <span>正在加载经文…</span>
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <!-- 对照右栏 -->
+        <div class="reader-right" id="reader-right" x-show="splitMode" x-cloak>
+            <!-- 右栏头部：与左栏格式一致 [经名][ID][✕]  ···  [← X/Y →][↑回顶/→回首] -->
+            <div class="reader-right-header sutra-header-row">
+                <!-- 左组：标题 + ID + 关闭 -->
+                <div class="sutra-header-left rr-header-left">
+                    <span class="reader-right-title sutra-title" x-text="splitItem ? splitItem.title : ''"></span>
+                    <span class="reader-right-id meta-id-badge" x-text="splitItem ? splitItem.id : ''"></span>
+                    <button class="reader-right-close detail-toggle" @click="closeSplit()" title="关闭对照">✕</button>
+                </div>
+                <!-- 右组：翻卷导航 + 回顶/回首 -->
+                <div class="sutra-header-right rr-header-right" x-show="splitItem">
+                    <button class="juan-btn" @click="prevSplitJuan()" :disabled="splitJuan <= 1">←</button>
+                    <span class="juan-indicator" x-text="splitJuan + ' / ' + splitTotalJuans.length"></span>
+                    <button class="juan-btn" @click="nextSplitJuan()"
+                        :disabled="splitJuan >= splitTotalJuans.length">→</button>
+                    <!-- 横排：回顶 -->
+                    <button class="juan-btn scroll-home-btn" x-show="writingMode !== 'vertical'"
+                        @click="scrollPanelToTop('right')" title="回到顶部">↑ 回顶</button>
+                    <!-- 竖排：回首 -->
+                    <button class="juan-btn scroll-home-btn" x-show="writingMode === 'vertical'"
+                        @click="scrollPanelToStart('right')" title="回到经文开头">→ 回首</button>
+                </div>
+            </div>
+            <div id="reader-right-content" class="juan-body">
+                <div class="loading-hint">
+                    <span>在对照工作台中选择经文，点击 ⧉ 加载到此栏</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <div class="tool-strip">
+        <button class="tool-strip-btn" :class="{ active: activePanel === 'compare' }" @click="togglePanel('compare')"
+            title="對照工作台">
+            <i data-lucide="columns-2" class="tool-icon"></i>
+            <span class="tool-label">對照</span>
+        </button>
+        <button class="tool-strip-btn" :class="{ active: activePanel === 'person' }" @click="togglePanel('person')"
+            title="人物">
+            <i data-lucide="users-round" class="tool-icon"></i>
+            <span class="tool-label">人物</span>
+        </button>
+        <button class="tool-strip-btn" :class="{ active: activePanel === 'notes' }" @click="togglePanel('notes')"
+            title="隨筆">
+            <i data-lucide="message-square-plus" class="tool-icon"></i>
+            <span class="tool-label">隨筆</span>
+        </button>
+        <button class="tool-strip-btn" :class="{ active: activePanel === 'dict' }" @click="togglePanel('dict')"
+            title="詞典">
+            <i data-lucide="book-a" class="tool-icon"></i>
+            <span class="tool-label">詞典</span>
+        </button>
+        <button class="tool-strip-btn" :class="{ active: activePanel === 'ai' }" @click="togglePanel('ai')"
+            title="AI 释义">
+            <i data-lucide="sparkles" class="tool-icon"></i>
+            <span class="tool-label">AI</span>
+        </button>
+        <div class="tool-strip-spacer"></div>
+        <button class="tool-strip-btn" :class="{ active: activePanel === 'settings' }" @click="togglePanel('settings')"
+            title="閱讀設置">
+            <i data-lucide="sliders-horizontal" class="tool-icon"></i>
+            <span class="tool-label">設置</span>
+        </button>
+    </div>
+
+    <div class="overlay-backdrop" x-show="activePanel !== null" x-cloak @click="activePanel = null"
+        x-transition:enter="fade-enter" x-transition:leave="fade-leave"></div>
+    <div class="overlay-panel" :class="{ 'is-open': activePanel !== null }" x-cloak>
+        <div class="overlay-panel-header">
+            <h3 class="overlay-panel-title" x-text="panelTitles[activePanel] || ''"></h3>
+            <button class="overlay-close-btn" @click="activePanel = null"><i data-lucide="x"
+                    style="width:16px;height:16px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i></button>
+        </div>
+        <div class="overlay-panel-body">
+
+            <div x-show="activePanel === 'compare'">
+                <p class="panel-desc">管理对照阅读的经文列表。 <span style="opacity:0.7"><i data-lucide="columns-2"
+                            style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                        分栏 · <i data-lucide="external-link"
+                            style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                        新窗口 · <i data-lucide="x"
+                            style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                        移除</span></p>
+
+                <div class="compare-item current">
+                    <div class="compare-item-header">
+                        <span class="compare-item-icon">◉</span>
+                        <span class="compare-item-title">{{ sutra_title }}</span>
+                        <span class="compare-item-id">{{ sutra_id }}</span>
+                        <span class="compare-item-badge">当前</span>
+                    </div>
+                    <div class="compare-sub-folder" x-data="{ open: false }">
+                        <button class="compare-folder-btn" @click="open = !open">
+                            <i data-lucide="chevron-down"
+                                style="width:12px;height:12px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                            <i data-lucide="folder"
+                                style="width:13px;height:13px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                            注疏
+                            <span class="compare-folder-count"
+                                x-text="'(' + (compareItems[0] && compareItems[0].commentaries ? compareItems[0].commentaries.length : 0) + ')'"></span>
+                        </button>
+                        <div x-show="open" x-transition class="compare-folder-content">
+                            <template
+                                x-if="!compareItems[0] || !compareItems[0].commentaries || compareItems[0].commentaries.length === 0">
+                                <p class="compare-empty-hint">暂无注疏，点击下方添加</p>
+                            </template>
+                            <template x-for="(c, ci) in (compareItems[0] && compareItems[0].commentaries || [])"
+                                :key="ci">
+                                <div class="compare-commentary-item">
+                                    <span x-text="c.title"></span>
+                                    <button class="compare-load-btn" @click="loadInRightPanel(c)" title="分栏对照"><i
+                                            data-lucide="columns-2"
+                                            style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i></button>
+                                    <a :href="'/read/' + c.id" target="_blank" class="compare-open-link"
+                                        title="新窗口打开"><i data-lucide="external-link"
+                                            style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i></a>
+                                    <button class="compare-remove-btn" @click="removeCommentary(0, ci)" title="移除"><i
+                                            data-lucide="x"
+                                            style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i></button>
+                                </div>
+                            </template>
+                            <button class="compare-add-btn" @click="showAddDialog('commentary', 0)">+ 添加注疏</button>
+                        </div>
+                    </div>
+                </div>
+
+                <template x-for="(item, idx) in compareItems.slice(1)" :key="idx + 1">
+                    <div class="compare-item">
+                        <div class="compare-item-header">
+                            <span class="compare-item-icon">○</span>
+                            <span class="compare-item-title" x-text="item.title"></span>
+                            <span class="compare-item-id" x-text="item.id"></span>
+                            <button class="compare-load-btn" @click="loadInRightPanel(item)" title="分栏对照"><i
+                                    data-lucide="columns-2"
+                                    style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i></button>
+                            <a :href="'/read/' + item.id" target="_blank" class="compare-open-link" title="新窗口打开"><i
+                                    data-lucide="external-link"
+                                    style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i></a>
+                            <button class="compare-remove-btn" @click="removeCompareItem(idx + 1)" title="移除"><i
+                                    data-lucide="x"
+                                    style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i></button>
+                        </div>
+                        <div class="compare-sub-folder" x-data="{ open: false }">
+                            <button class="compare-folder-btn" @click="open = !open">
+                                <i data-lucide="chevron-down"
+                                    style="width:12px;height:12px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                                <i data-lucide="folder"
+                                    style="width:13px;height:13px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                                注疏
+                                <span class="compare-folder-count"
+                                    x-text="'(' + (item.commentaries ? item.commentaries.length : 0) + ')'"></span>
+                            </button>
+                            <div x-show="open" x-transition class="compare-folder-content">
+                                <template x-if="!item.commentaries || item.commentaries.length === 0">
+                                    <p class="compare-empty-hint">暂无注疏</p>
+                                </template>
+                                <template x-for="(c, ci) in (item.commentaries || [])" :key="ci">
+                                    <div class="compare-commentary-item">
+                                        <span x-text="c.title"></span>
+                                        <button class="compare-load-btn" @click="loadInRightPanel(c)" title="分栏对照"><i
+                                                data-lucide="columns-2"
+                                                style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i></button>
+                                        <a :href="'/read/' + c.id" target="_blank" class="compare-open-link"
+                                            title="新窗口打开"><i data-lucide="external-link"
+                                                style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i></a>
+                                        <button class="compare-remove-btn" @click="removeCommentary(idx + 1, ci)"
+                                            title="移除"><i data-lucide="x"
+                                                style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i></button>
+                                    </div>
+                                </template>
+                                <button class="compare-add-btn" @click="showAddDialog('commentary', idx + 1)">+
+                                    添加注疏</button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <div class="panel-divider"></div>
+
+                <button class="compare-add-btn primary" @click="showAddDialog('sutra', -1)">+ 添加经文</button>
+
+                <div x-show="addDialogOpen" x-transition class="compare-add-dialog">
+                    <input type="text" x-model="addSearchQuery" @input.debounce.300ms="searchSutras()"
+                        class="compare-search-input" placeholder="输入经号或经名搜索…" x-ref="addSearchInput">
+                    <div class="compare-search-results">
+                        <template x-for="(result, ri) in addSearchResults" :key="ri">
+                            <button class="compare-search-result-btn" @click="addFromSearch(result)">
+                                <span class="result-id" x-text="result.id"></span>
+                                <span class="result-title" x-text="result.title"></span>
+                            </button>
+                        </template>
+                        <p x-show="addSearchQuery && addSearchResults.length === 0" class="compare-empty-hint">
+                            未找到匹配的经文
+                        </p>
+                    </div>
+                </div>
+
+                <div class="panel-section" x-show="splitMode">
+                    <button class="panel-action-btn danger" @click="closeSplit()"><i data-lucide="x"
+                            style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                        关闭分栏</button>
+                </div>
+            </div>
+
+            <div x-show="activePanel === 'person'">
+                <!-- 左右栏标签页（仅分栏时显示） -->
+                <div class="ai-mode-tabs" x-show="splitMode" style="margin-bottom: 0.75rem;">
+                    <button class="ai-mode-tab" :class="{ active: personTab === 'left' }" @click="setPersonTab('left')">
+                        <i data-lucide="panel-right"
+                            style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                        <span x-text="sutraTitle.length > 8 ? sutraTitle.substring(0,8) + '…' : sutraTitle"></span>
+                    </button>
+                    <button class="ai-mode-tab" :class="{ active: personTab === 'right' }"
+                        @click="setPersonTab('right')">
+                        <i data-lucide="panel-left"
+                            style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                        <span
+                            x-text="splitItem ? (splitItem.title.length > 8 ? splitItem.title.substring(0,8) + '…' : splitItem.title) : '右栏'"></span>
+                    </button>
+                </div>
+
+                <!-- 加载状态 -->
+                <div x-show="(personTab === 'left' ? personsLoading : rightPersonsLoading)"
+                    class="parallel-placeholder">
+                    <span class="placeholder-icon"><i data-lucide="loader"
+                            style="width:28px;height:28px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i></span>
+                    <p>正在加载人物数据…</p>
+                </div>
+
+                <!-- 无数据 -->
+                <div x-show="!(personTab === 'left' ? personsLoading : rightPersonsLoading) && (personTab === 'left' ? personsAuthored : rightPersonsAuthored).length === 0 && (personTab === 'left' ? personsMentioned : rightPersonsMentioned).length === 0 && (personTab === 'left' ? personsTextFound : rightPersonsTextFound).length === 0"
+                    class="parallel-placeholder">
+                    <span class="placeholder-icon"><i data-lucide="user-x"
+                            style="width:28px;height:28px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i></span>
+                    <p>暂无关联人物</p>
+                    <p class="placeholder-hint">此经尚未收录人物关联数据</p>
+                </div>
+
+                <!-- 译者/作者 -->
+                <div x-show="(personTab === 'left' ? personsAuthored : rightPersonsAuthored).length > 0">
+                    <div class="person-section-title"><i data-lucide="book-open"
+                            style="width:13px;height:13px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                        译者 / 作者 <span class="person-source-tag person-source-authority">权威数据</span></div>
+                    <template x-for="p in (personTab === 'left' ? personsAuthored : rightPersonsAuthored)"
+                        :key="p.person_id">
+                        <div class="person-card">
+                            <div class="person-card-main">
+                                <span class="person-card-name" x-text="p.name"></span>
+                                <span class="person-card-dynasty" x-text="p.dynasty" x-show="p.dynasty"></span>
+                            </div>
+                            <div class="person-card-meta" x-show="p.sect">
+                                <span x-text="p.sect"></span>
+                            </div>
+                            <div class="person-card-meta" x-show="p.birth_year || p.death_year">
+                                <span x-text="(p.birth_year || '?') + ' — ' + (p.death_year || '?')"></span>
+                            </div>
+                            <a class="person-card-link" :href="'/#person=' + p.person_id" target="_blank"><i
+                                    data-lucide="external-link"
+                                    style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                                查看祖师</a>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- 经中提及 -->
+                <div x-show="(personTab === 'left' ? personsMentioned : rightPersonsMentioned).length > 0">
+                    <div class="person-section-title"><i data-lucide="scroll"
+                            style="width:13px;height:13px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                        经中提及 <span class="person-source-tag person-source-authority">权威数据</span></div>
+                    <template x-for="p in (personTab === 'left' ? personsMentioned : rightPersonsMentioned)"
+                        :key="p.person_id">
+                        <div class="person-card person-card-mentioned">
+                            <div class="person-card-main">
+                                <span class="person-card-name" x-text="p.name"></span>
+                                <span class="person-card-dynasty" x-text="p.dynasty" x-show="p.dynasty"></span>
+                            </div>
+                            <div class="person-card-meta" x-show="p.sect">
+                                <span x-text="p.sect"></span>
+                            </div>
+                            <a class="person-card-link" :href="'/#person=' + p.person_id" target="_blank"><i
+                                    data-lucide="external-link"
+                                    style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                                查看祖师</a>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- 正文识别 -->
+                <div x-show="(personTab === 'left' ? personsTextFound : rightPersonsTextFound).length > 0">
+                    <div class="person-section-title"><i data-lucide="scan-text"
+                            style="width:13px;height:13px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                        正文识别 <span class="person-source-tag person-source-scan">自动匹配</span></div>
+                    <p class="person-scan-disclaimer">以下人物由系统自动扫描经文正文匹配，可能存在误识别，仅供参考。</p>
+                    <template x-for="p in (personTab === 'left' ? personsTextFound : rightPersonsTextFound)"
+                        :key="p.person_id">
+                        <div class="person-card person-card-textfound">
+                            <div class="person-card-main">
+                                <span class="person-card-name" x-text="p.name"></span>
+                                <span class="person-card-count" x-text="'×' + p.count"></span>
+                                <span class="person-card-dynasty" x-text="p.dynasty" x-show="p.dynasty"></span>
+                            </div>
+                            <div class="person-card-meta" x-show="p.sect">
+                                <span x-text="p.sect"></span>
+                            </div>
+                            <a class="person-card-link" :href="'/#person=' + p.person_id" target="_blank"><i
+                                    data-lucide="external-link"
+                                    style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                                查看祖师</a>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- 数据来源说明 -->
+                <div x-show="!(personTab === 'left' ? personsLoading : rightPersonsLoading) && ((personTab === 'left' ? personsAuthored : rightPersonsAuthored).length > 0 || (personTab === 'left' ? personsMentioned : rightPersonsMentioned).length > 0 || (personTab === 'left' ? personsTextFound : rightPersonsTextFound).length > 0)"
+                    class="person-data-source-note">
+                    <span class="person-source-tag person-source-authority">权威数据</span> 来自 DILA 佛学权威资料库
+                    <template x-if="(personTab === 'left' ? personsTextFound : rightPersonsTextFound).length > 0">
+                        <span> · <span class="person-source-tag person-source-scan">自动匹配</span> 基于人名数据库扫描正文</span>
+                    </template>
+                </div>
+            </div>
+
+            <div x-show="activePanel === 'notes'">
+                <div class="notes-input-area">
+                    <div class="notes-quote-box" x-text="noteQuote"></div>
+                    <button class="notes-quote-clear" x-show="noteQuote" @click="noteQuote = ''"><i data-lucide="x"
+                            style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                        清除引用</button>
+                    <textarea class="notes-textarea" x-model="noteContent" placeholder="写下你的感悟…"></textarea>
+                    <button class="notes-save-btn" @click="saveNote()" :disabled="!noteContent.trim()"><i
+                            data-lucide="save"
+                            style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                        保存笔记</button>
+                    <div class="notes-save-status" x-text="noteSaveStatus"></div>
+                </div>
+
+                <div class="panel-divider"></div>
+
+                <div class="notes-list-title" x-text="'今日笔记 (' + notesList.length + ')'"></div>
+                <div class="notes-list">
+                    <template x-if="notesList.length === 0">
+                        <div class="notes-empty">
+                            <div class="notes-empty-icon"><i data-lucide="notebook-pen"
+                                    style="width:32px;height:32px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                            </div>
+                            <p>还没有笔记，开始记录吧</p>
+                        </div>
+                    </template>
+                    <template x-for="(note, ni) in notesList" :key="ni">
+                        <div class="note-card">
+                            <div class="note-card-time" x-text="note.time"></div>
+                            <div class="note-card-quote" x-show="note.quote" x-text="note.quote"></div>
+                            <div class="note-card-content" x-text="note.content"></div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <div x-show="activePanel === 'dict'">
+                <!-- 搜索框 -->
+                <div class="dict-search-area">
+                    <input type="text" class="dict-search-input" x-model="dictQuery"
+                        @input="clearTimeout(_dictDebounceTimer); _dictDebounceTimer = setTimeout(function(){ $data.lookupDict() }, 400)"
+                        @keydown.enter="clearTimeout(_dictDebounceTimer); lookupDict()" placeholder="输入词条查询…"
+                        x-ref="dictInput">
+                    <button class="dict-search-btn" @click="lookupDict()" :disabled="!dictQuery.trim()"><i
+                            data-lucide="search"
+                            style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i></button>
+                </div>
+                <p class="dict-hint">在经文中选中文字，自动填入查询</p>
+
+                <!-- 加载 -->
+                <div x-show="dictLoading" class="parallel-placeholder">
+                    <span class="placeholder-icon"><i data-lucide="loader"
+                            style="width:28px;height:28px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i></span>
+                    <p>查询中…</p>
+                </div>
+
+                <!-- 无结果 -->
+                <div x-show="!dictLoading && dictQuery && dictResults.length === 0 && dictSearched"
+                    class="parallel-placeholder">
+                    <span class="placeholder-icon"><i data-lucide="book-x"
+                            style="width:28px;height:28px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i></span>
+                    <p>未找到「<span x-text="dictQuery"></span>」</p>
+                    <p class="placeholder-hint">试试更换词条，或使用繁体/简体</p>
+                </div>
+
+                <!-- 初始提示 -->
+                <div x-show="!dictLoading && !dictSearched" class="parallel-placeholder">
+                    <span class="placeholder-icon"><i data-lucide="book-open"
+                            style="width:28px;height:28px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i></span>
+                    <p>划词查词典</p>
+                    <p class="placeholder-hint">选中经文中的词汇，自动查询 6 部精选词典</p>
+                </div>
+
+                <!-- 结果列表 -->
+                <div x-show="!dictLoading && dictResults.length > 0" class="dict-results">
+                    <div class="dict-result-count" x-text="'共 ' + dictResults.length + ' 条结果'"></div>
+                    <template x-for="(r, ri) in dictResults" :key="r.dict_id + '::' + r.term + '::' + ri">
+                        <div class="dict-result-card" x-data="{ expanded: ri < 3 }">
+                            <div class="dict-result-header" @click="expanded = !expanded">
+                                <span class="dict-result-toggle" x-text="expanded ? '▼' : '▶'"></span>
+                                <span class="dict-result-name" x-text="r.dict_name"></span>
+                                <span class="dict-result-term" x-text="r.term"></span>
+                            </div>
+                            <div class="dict-result-body" x-show="expanded" x-transition>
+                                <div class="dict-definition" x-text="r.definition"></div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- 数据来源 -->
+                <div x-show="dictResults.length > 0" class="dict-source-note">
+                    数据来自 DILA/DDBC 及古籍公有领域，共 6 部精选词典
+                </div>
+            </div>
+
+            <div x-show="activePanel === 'ai'">
+                <!-- 模式标签页 -->
+                <div class="ai-mode-tabs">
+                    <button class="ai-mode-tab" :class="{ active: aiMode === 'translate' }"
+                        @click="setAiMode('translate')">
+                        <i data-lucide="languages"
+                            style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                        白话翻译
+                    </button>
+                    <button class="ai-mode-tab" :class="{ active: aiMode === 'explain' }" @click="setAiMode('explain')">
+                        <i data-lucide="book-open-check"
+                            style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                        名相释义
+                    </button>
+                    <button class="ai-mode-tab" :class="{ active: aiMode === 'ask' }" @click="setAiMode('ask')">
+                        <i data-lucide="message-circle-question"
+                            style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                        自由问答
+                    </button>
+                </div>
+
+                <!-- 选中文本预览 -->
+                <div class="ai-selected-text" x-show="aiSelectedText">
+                    <div class="ai-selected-label">选中的经文</div>
+                    <div class="ai-selected-content"
+                        x-text="aiSelectedText.substring(0, 200) + (aiSelectedText.length > 200 ? '…' : '')"></div>
+                </div>
+                <div class="ai-selected-text ai-empty" x-show="!aiSelectedText">
+                    <i data-lucide="text-cursor-input"
+                        style="width:16px;height:16px;stroke:currentColor;stroke-width:1.75;vertical-align:-3px;flex-shrink:0"></i>
+                    选中经文后翻译或释义，也可直接切换「自由问答」提问
+                </div>
+
+                <!-- 自由问答输入框 -->
+                <div class="ai-question-area" x-show="aiMode === 'ask'">
+                    <textarea class="ai-question-input" x-model="aiQuestion" placeholder="输入你的问题…（如：这段经文的核心教义是什么？）"
+                        rows="4"></textarea>
+                </div>
+
+                <!-- 发送按钮 -->
+                <div class="ai-action-row">
+                    <button class="ai-send-btn" :class="{ 'ai-sent': aiResult && !aiLoading }" @click="askAI()"
+                        :disabled="aiLoading">
+                        <template x-if="!aiLoading && !aiResult">
+                            <span><i data-lucide="send"
+                                    style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                                发送</span>
+                        </template>
+                        <template x-if="aiLoading">
+                            <span>生成中…</span>
+                        </template>
+                        <template x-if="aiResult && !aiLoading">
+                            <span><i data-lucide="check"
+                                    style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                                重新发送</span>
+                        </template>
+                    </button>
+                    <button class="ai-stop-btn" x-show="aiLoading" @click="stopAI()">
+                        <i data-lucide="square"
+                            style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                        停止
+                    </button>
+                </div>
+
+                <!-- 错误提示 -->
+                <div class="ai-error" x-show="aiError" x-text="aiError"></div>
+
+                <!-- 结果区 -->
+                <div class="ai-result-area" x-show="aiResult || aiLoading">
+                    <div class="ai-result-label">
+                        <i data-lucide="sparkles"
+                            style="width:13px;height:13px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                        <span
+                            x-text="aiMode === 'translate' ? '白话翻译' : (aiMode === 'explain' ? '名相释义' : '问答回复')"></span>
+                    </div>
+                    <div class="ai-result-content" x-text="aiResult"></div>
+                    <div class="ai-result-typing" x-show="aiLoading"></div>
+                </div>
+
+                <!-- 初始提示 -->
+                <div x-show="!aiResult && !aiLoading && !aiError" class="parallel-placeholder"
+                    style="margin-top: 1rem;">
+                    <span class="placeholder-icon"><i data-lucide="sparkles"
+                            style="width:28px;height:28px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i></span>
+                    <p>AI 释义</p>
+                    <p class="placeholder-hint">选中经文 → 选择模式 → 点击发送</p>
+                </div>
+
+                <!-- 提供商标注 -->
+                <div class="ai-provider-note" x-show="aiResult">
+                    <span x-text="'由 ' + aiProvider + ' 提供，仅供参考'"></span>
+                </div>
+            </div>
+
+            <div x-show="activePanel === 'settings'">
+                <!-- 明暗主题 -->
+                <div class="settings-section">
+                    <div class="settings-label">主题</div>
+                    <div class="settings-btn-group">
+                        <button class="settings-btn" :class="{ active: themeMode === 'dark' }"
+                            @click="setTheme('dark')"><i data-lucide="moon"
+                                style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                            夜间</button>
+                        <button class="settings-btn" :class="{ active: themeMode === 'light' }"
+                            @click="setTheme('light')"><i data-lucide="sun"
+                                style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                            日间</button>
+                    </div>
+                </div>
+
+                <div class="panel-divider"></div>
+
+                <!-- 字体风格 -->
+                <div class="settings-section">
+                    <div class="settings-label">字体风格</div>
+                    <div class="settings-btn-group">
+                        <button class="settings-btn" :class="{ active: fontStyle === 'songti' }"
+                            @click="setFontStyle('songti')" title="笔画锐利，规范清晰">现代规范</button>
+                        <button class="settings-btn" :class="{ active: fontStyle === 'jigmo' }"
+                            @click="setFontStyle('jigmo')" title="铁画银钩，疏朗骨感">疏朗明朝</button>
+                        <button class="settings-btn" :class="{ active: fontStyle === 'oldsong' }"
+                            @click="setFontStyle('oldsong')" title="纸墨温润，书卷雅韵">复古墨晕</button>
+                    </div>
+                </div>
+
+                <div class="panel-divider"></div>
+
+                <!-- 简繁转换 -->
+                <div class="settings-section">
+                    <div class="settings-label">简繁转换</div>
+                    <div class="settings-btn-group">
+                        <button class="settings-btn" :class="{ active: textVariant === 'original' }"
+                            @click="setTextVariant('original')">原文</button>
+                        <button class="settings-btn" :class="{ active: textVariant === 'simplified' }"
+                            @click="setTextVariant('simplified')">简体</button>
+                    </div>
+                </div>
+
+                <div class="panel-divider"></div>
+
+                <!-- 排版方向 -->
+                <div class="settings-section">
+                    <div class="settings-label">排版方向</div>
+                    <div class="settings-btn-group">
+                        <button class="settings-btn" :class="{ active: writingMode === 'horizontal' }"
+                            @click="setWritingMode('horizontal')"><i data-lucide="align-left"
+                                style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                            横排</button>
+                        <button class="settings-btn" :class="{ active: writingMode === 'vertical' }"
+                            @click="setWritingMode('vertical')"><i data-lucide="align-start-vertical"
+                                style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                            竖排</button>
+                    </div>
+                </div>
+
+                <div class="panel-divider"></div>
+
+                <!-- 字号 -->
+                <div class="settings-section">
+                    <div class="settings-label">字号 <span class="settings-value" x-text="fontSize + 'px'"></span>
+                    </div>
+                    <div class="settings-slider-row">
+                        <span class="settings-slider-label">小</span>
+                        <input type="range" class="settings-slider" min="16" max="32" step="1" x-model="fontSize"
+                            @input="applySettings()" @change="_saveSettings()">
+                        <span class="settings-slider-label">大</span>
+                    </div>
+                </div>
+
+                <!-- 行距 -->
+                <div class="settings-section">
+                    <div class="settings-label">行距 <span class="settings-value" x-text="lineHeight"></span></div>
+                    <div class="settings-slider-row">
+                        <span class="settings-slider-label">紧</span>
+                        <input type="range" class="settings-slider" min="1.4" max="3.0" step="0.1" x-model="lineHeight"
+                            @input="applySettings()" @change="_saveSettings()">
+                        <span class="settings-slider-label">松</span>
+                    </div>
+                </div>
+
+                <div class="panel-divider"></div>
+
+                <!-- AI 提供商 -->
+                <div class="settings-section">
+                    <div class="settings-label">AI 提供商</div>
+                    <select class="ai-provider-select" x-model="aiProvider" @change="saveAiSettings()">
+                        <template x-for="p in aiProviders" :key="p.id">
+                            <option :value="p.id"
+                                x-text="p.name + (p.no_key ? ' (免费)' : '') + (p.has_server_key ? ' (已配置)' : '')">
+                            </option>
+                        </template>
+                    </select>
+                </div>
+
+                <!-- API Key -->
+                <div class="settings-section"
+                    x-show="aiProviders.filter(function(p){ return p.id === aiProvider && !p.no_key && !p.has_server_key; }).length > 0">
+                    <div class="settings-label">API Key
+                        <span class="settings-hint">仅存本地，不上传服务器</span>
+                    </div>
+                    <div class="ai-key-input-row">
+                        <input type="password" class="ai-key-input" x-model="aiApiKey" @change="saveAiSettings()"
+                            placeholder="sk-...">
+                    </div>
+                </div>
+
+                <!-- 自定义提供商配置 -->
+                <div class="settings-section" x-show="aiProvider === 'custom'">
+                    <div class="settings-label">API 地址</div>
+                    <input type="text" class="ai-key-input" style="width:100%" x-model="aiCustomUrl"
+                        @change="saveAiSettings()" placeholder="https://api.example.com/v1">
+                </div>
+                <div class="settings-section" x-show="aiProvider === 'custom'">
+                    <div class="settings-label">模型名称</div>
+                    <input type="text" class="ai-key-input" style="width:100%" x-model="aiCustomModel"
+                        @change="saveAiSettings()" placeholder="gpt-4o-mini">
+                </div>
+
+                <div class="panel-divider"></div>
+
+                <!-- 重置 -->
+                <div class="settings-section">
+                    <button class="panel-action-btn" @click="resetSettings()"><i data-lucide="rotate-ccw"
+                            style="width:14px;height:14px;stroke:currentColor;stroke-width:1.75;vertical-align:-2px;flex-shrink:0"></i>
+                        恢复默认</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- 阅读进度条 -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- 回到顶部按钮 -->
+<button class="back-to-top" id="back-to-top" title="回到顶部">↑</button>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Jinja2 → JS 桥接：服务端变量传给前端
+    window.READER_CONFIG = {
+        sutraId: '{{ sutra_id }}',
+        sutraTitle: '{{ sutra_title }}',
+        initialJuan: {{ initial_juan }},
+    totalJuan: {{ total_juan }}
+    };
+</script>
+<script src="/static/js/reader.js"></script>
+<script>
+    // 初始化 Lucide 图标（在所有脚本加载后执行）
+    document.addEventListener('DOMContentLoaded', function () {
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    });
+</script>
+<script>
+    // 阅读进度条 + 回到顶部
+    (function () {
+        const progress = document.getElementById('reading-progress');
+        const btn = document.getElementById('back-to-top');
+        if (!progress || !btn) return;
+
+        let ticking = false;
+        window.addEventListener('scroll', function () {
+            if (!ticking) {
+                requestAnimationFrame(function () {
+                    const scrollTop = window.scrollY;
+                    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+                    progress.style.width = pct + '%';
+                    btn.classList.toggle('visible', scrollTop > 400);
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        btn.addEventListener('click', function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    })();
+</script>
+{% endblock %}

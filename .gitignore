@@ -1,0 +1,41 @@
+# ─── Python ───────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+dist/
+build/
+.venv/
+venv/
+
+# ─── 环境配置 ──────────────────────────────────────
+.env
+
+# ─── CBETA 原始数据（用户自行下载） ────────────────
+data/raw/cbeta/
+
+# ─── ETL 生成的数据库（启动时自动构建） ─────────────
+data/db/*.db
+
+# ─── 用户个人数据 ──────────────────────────────────
+data/user_data/
+
+# ─── Obsidian Vault（启动时自动生成） ──────────────
+obsidian_vault/*.md
+obsidian_vault/**/*.md
+
+# ─── 从 tar.gz 解压生成的目录（不入仓库） ──────────
+# 字体文件已直接提交到 src/static/fonts/，无需解压
+data/tiles/
+tools/dict_converter/13dicts/
+tools/dict_converter/28dicts/
+tools/dict_converter/萌典.json
+
+# ─── 编辑器 ───────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db

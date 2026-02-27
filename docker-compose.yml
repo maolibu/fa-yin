@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  fa-yin:
+    build: .
+    # 如果已有打包好的镜像，可以使用 image 替代 build
+    # image: 你的镜像名称/fa-yin:latest
+    container_name: fa-yin
+    restart: unless-stopped
+    ports:
+      - "8400:8400" # 宿主机端口:容器内端口。8400可根据需要修改左侧部分。
+    volumes:
+      # ⚠️ 注意：左侧路径(冒号前面)请根据你 NAS 或 VPS 的实际路径修改为您存放 CBETA XML 数据的绝对路径
+      - /path/to/your/cbeta:/app/data/raw/cbeta
+      # 下面两行用于持久化您的数据库/字典以及用户笔记收藏，请勿随意修改
+      - ./data/db:/app/data/db
+      - ./data/user_data:/app/data/user_data
+    environment:
+      - TZ=Asia/Shanghai
+      - DEV_PORT=8400 # 内部端口，一般无需改动
+      # - AI_API_KEY=your_key_here # 若使用在线大模型释义可在此配置，无需则留空

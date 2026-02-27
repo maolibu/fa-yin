@@ -1,0 +1,4527 @@
+{
+  "T1569": {
+    "title": "百論",
+    "commentaries": [
+      {
+        "id": "T1827",
+        "title": "百論疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1564": {
+    "title": "中論",
+    "commentaries": [
+      {
+        "id": "T1824",
+        "title": "中觀論疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0365": {
+    "title": "佛說觀無量壽佛經",
+    "commentaries": [
+      {
+        "id": "T1753",
+        "title": "觀無量壽佛經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1754",
+        "title": "觀無量壽佛經義疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1749",
+        "title": "觀無量壽經義疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1752",
+        "title": "觀無量壽經義疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2760",
+        "title": "無量壽觀經義記",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "X0405",
+        "title": "釋觀無量壽佛經記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0406",
+        "title": "觀無量壽經疏妙宗鈔科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0407",
+        "title": "觀無量壽佛經疏妙宗鈔",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0408",
+        "title": "觀無量壽佛經融心解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0410",
+        "title": "觀無量壽經扶新論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0411",
+        "title": "觀無量壽經義疏正觀記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0412",
+        "title": "觀無量壽佛經圖頌",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0413",
+        "title": "觀無量壽經直指疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0414",
+        "title": "觀無量壽佛經約論",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0366": {
+    "title": "佛說阿彌陀經",
+    "commentaries": [
+      {
+        "id": "T1758",
+        "title": "阿彌陀經通贊疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1762",
+        "title": "阿彌陀經要解",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1761",
+        "title": "阿彌陀經義疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1757",
+        "title": "阿彌陀經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1756",
+        "title": "阿彌陀經義述",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1755",
+        "title": "阿彌陀經義記",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1760",
+        "title": "阿彌陀經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1759",
+        "title": "阿彌陀經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "X0006",
+        "title": "阿彌陀經異本",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0420",
+        "title": "阿彌陀經義疏聞持記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0421",
+        "title": "阿彌陀經句解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0422",
+        "title": "阿彌陀經略解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0423",
+        "title": "阿彌陀經略解圓中鈔",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0424",
+        "title": "阿彌陀經疏鈔",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0425",
+        "title": "阿彌陀經疏鈔事義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0426",
+        "title": "阿彌陀經疏鈔問辯",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0427",
+        "title": "阿彌陀經疏鈔演義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0428",
+        "title": "阿彌陀經疏鈔擷",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0429",
+        "title": "阿彌陀經已決",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0430",
+        "title": "阿彌陀經要解便蒙鈔",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0431",
+        "title": "阿彌陀經略註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0432",
+        "title": "阿彌陀經註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0433",
+        "title": "阿彌陀經約論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0434",
+        "title": "阿彌陀經直解正行",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0435",
+        "title": "阿彌陀經摘要易解",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0360": {
+    "title": "佛說無量壽經",
+    "commentaries": [
+      {
+        "id": "T1747",
+        "title": "兩卷無量壽經宗要",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1748",
+        "title": "無量壽經連義述文贊",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1746",
+        "title": "無量壽經義疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1745",
+        "title": "無量壽經義疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2759",
+        "title": "無量壽經義記卷下",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0375": {
+    "title": "大般涅槃經",
+    "commentaries": [
+      {
+        "id": "T1763",
+        "title": "大般涅槃經集解",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2765",
+        "title": "涅槃經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2764A",
+        "title": "涅槃經義記",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1768",
+        "title": "涅槃經遊意",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1769",
+        "title": "涅槃宗要",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1765",
+        "title": "大般涅槃經玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1766",
+        "title": "涅槃玄義發源機要",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1767",
+        "title": "大般涅槃經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0656",
+        "title": "涅槃經玄義文句",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0657",
+        "title": "涅槃經治定疏科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0658",
+        "title": "涅槃經會疏條箇",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0659",
+        "title": "涅槃經會疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0660",
+        "title": "涅槃經疏私記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0661",
+        "title": "涅槃經疏私記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0662",
+        "title": "涅槃經疏三德指歸",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0663",
+        "title": "科南本涅槃經",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0664",
+        "title": "涅槃經會疏解",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0353": {
+    "title": "勝鬘師子吼一乘大方便方廣經",
+    "commentaries": [
+      {
+        "id": "T1744",
+        "title": "勝鬘寶窟",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2763",
+        "title": "挾注勝鬘經",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2761",
+        "title": "勝鬘經記",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2762",
+        "title": "勝鬘經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "X0351",
+        "title": "勝鬘經義記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0352",
+        "title": "勝鬘經述記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0353",
+        "title": "勝鬘經疏義私鈔",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0374": {
+    "title": "大般涅槃經",
+    "commentaries": [
+      {
+        "id": "T1764",
+        "title": "大般涅槃經義記",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1428": {
+    "title": "四分律",
+    "commentaries": [
+      {
+        "id": "T1434",
+        "title": "四分比丘尼羯磨法",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1433",
+        "title": "羯磨",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1431",
+        "title": "四分比丘尼戒本",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1429",
+        "title": "四分律比丘戒本",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1430",
+        "title": "四分僧戒本",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1432",
+        "title": "曇無德律部雜羯磨",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1421": {
+    "title": "彌沙塞部和醯五分律",
+    "commentaries": [
+      {
+        "id": "T1422",
+        "title": "Unknown Title",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1423",
+        "title": "五分比丘尼戒本",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1424",
+        "title": "彌沙塞羯磨本",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1425": {
+    "title": "摩訶僧祇律",
+    "commentaries": [
+      {
+        "id": "T1427",
+        "title": "摩訶僧祇比丘尼戒本",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1426",
+        "title": "摩訶僧祇律大比丘戒本",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0901": {
+    "title": "陀羅尼集經",
+    "commentaries": [
+      {
+        "id": "T1071",
+        "title": "十一面神呪心經",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1073",
+        "title": "何耶揭唎婆像法",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1074",
+        "title": "何耶揭唎婆觀世音菩薩受法壇",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1070",
+        "title": "佛說十一面觀世音神呪經",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1072A",
+        "title": "聖賀野紇哩縛大威怒王立成大神驗供養念誦儀軌法品",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1092": {
+    "title": "不空羂索神變真言經",
+    "commentaries": [
+      {
+        "id": "T1096",
+        "title": "不空羂索陀羅尼經",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1097",
+        "title": "不空羂索陀羅尼自在王呪經",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1043": {
+    "title": "請觀世音菩薩消伏毒害陀羅尼呪經",
+    "commentaries": [
+      {
+        "id": "T1044",
+        "title": "佛說六字呪王經",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1045",
+        "title": "Unknown Title",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1191": {
+    "title": "大方廣菩薩藏文殊師利根本儀軌經",
+    "commentaries": [
+      {
+        "id": "T1181",
+        "title": "大方廣菩薩藏經中文殊師利根本一字陀羅尼經",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1182",
+        "title": "曼殊室利菩薩呪藏中一字呪王經",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1154": {
+    "title": "佛說隨求即得大自在陀羅尼神呪經",
+    "commentaries": [
+      {
+        "id": "T1153",
+        "title": "普遍光明清淨熾盛如意寶印心無能勝大明王大隨求陀羅尼經",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1134": {
+    "title": "Unknown Title",
+    "commentaries": [
+      {
+        "id": "T1133",
+        "title": "金剛壽命陀羅尼念誦法",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1591": {
+    "title": "成唯識寶生論",
+    "commentaries": [
+      {
+        "id": "T1590",
+        "title": "唯識二十論",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1588",
+        "title": "唯識論",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1589",
+        "title": "大乘唯識論",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1834",
+        "title": "唯識二十論述記",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1585": {
+    "title": "成唯識論",
+    "commentaries": [
+      {
+        "id": "T1586",
+        "title": "唯識三十論頌",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1587",
+        "title": "轉識論",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1830",
+        "title": "成唯識論述記",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1831",
+        "title": "成唯識論掌中樞要",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1618",
+        "title": "顯識論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2804",
+        "title": "唯識三十論要釋",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1602": {
+    "title": "顯揚聖教論",
+    "commentaries": [
+      {
+        "id": "T1603",
+        "title": "顯揚聖教論頌",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1601": {
+    "title": "辯中邊論頌",
+    "commentaries": [
+      {
+        "id": "T1599",
+        "title": "中邊分別論",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1600",
+        "title": "辯中邊論",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1616",
+        "title": "十八空論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1835",
+        "title": "辯中邊論述記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0797",
+        "title": "中邊分別論疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1624": {
+    "title": "觀所緣緣論",
+    "commentaries": [
+      {
+        "id": "T1625",
+        "title": "觀所緣論釋",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0278": {
+    "title": "大方廣佛華嚴經",
+    "commentaries": [
+      {
+        "id": "T1734",
+        "title": "花嚴經文義綱目",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1733",
+        "title": "華嚴經探玄記",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1731",
+        "title": "華嚴遊意",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1732",
+        "title": "大方廣佛華嚴經搜玄分齊通智方軌",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2756",
+        "title": "華嚴經義記卷第一",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2753",
+        "title": "華嚴經章",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2754",
+        "title": "華嚴略疏卷第三",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2757",
+        "title": "華嚴經疏卷第三",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1590": {
+    "title": "唯識二十論",
+    "commentaries": [
+      {
+        "id": "T1834",
+        "title": "唯識二十論述記",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1830": {
+    "title": "成唯識論述記",
+    "commentaries": [
+      {
+        "id": "T1833",
+        "title": "成唯識論演祕",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1579": {
+    "title": "瑜伽師地論",
+    "commentaries": [
+      {
+        "id": "T1829",
+        "title": "瑜伽師地論略纂",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2801",
+        "title": "瑜伽師地論分門記",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2802",
+        "title": "瑜伽論手記",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1580",
+        "title": "瑜伽師地論釋",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1584",
+        "title": "決定藏論",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1828",
+        "title": "瑜伽論記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2803",
+        "title": "地持義記卷第四",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0704",
+        "title": "地持論義記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0794",
+        "title": "瑜伽論劫章頌",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "A1561",
+        "title": "瑜伽師地論義演(第33卷-第40卷)",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0223": {
+    "title": "摩訶般若波羅蜜經",
+    "commentaries": [
+      {
+        "id": "T1509",
+        "title": "大智度論",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1696",
+        "title": "大品經遊意",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1697",
+        "title": "大慧度經宗要",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1518": {
+    "title": "佛母般若波羅蜜多圓集要義論",
+    "commentaries": [
+      {
+        "id": "T1517",
+        "title": "佛母般若波羅蜜多圓集要義釋論",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1858": {
+    "title": "肇論",
+    "commentaries": [
+      {
+        "id": "T1859",
+        "title": "肇論疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1860",
+        "title": "肇論新疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "X0866",
+        "title": "肇論疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0868",
+        "title": "肇論疏科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0869",
+        "title": "夾科肇論序注",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0870",
+        "title": "注肇論疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0872",
+        "title": "肇論新疏游刃",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0873",
+        "title": "肇論略註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0878",
+        "title": "物不遷正量證",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0879",
+        "title": "物不遷正量論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0880",
+        "title": "物不遷論辯解",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "1887A": {
+    "title": "Unknown Title",
+    "commentaries": [
+      {
+        "id": "T1887B",
+        "title": "法界圖記叢髓錄",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1920": {
+    "title": "觀心論",
+    "commentaries": [
+      {
+        "id": "T1921",
+        "title": "觀心論疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1927": {
+    "title": "十不二門",
+    "commentaries": [
+      {
+        "id": "T1928",
+        "title": "十不二門指要鈔",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0905": {
+    "title": "三種悉地破地獄轉業障出三界祕密陀羅尼法",
+    "commentaries": [
+      {
+        "id": "T0907",
+        "title": "佛頂尊勝心破地獄轉業障出三界祕密陀羅尼",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0848": {
+    "title": "大毘盧遮那成佛神變加持經",
+    "commentaries": [
+      {
+        "id": "T1796",
+        "title": "大毘盧遮那成佛經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1797",
+        "title": "大毘盧遮那經供養次第法疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0945": {
+    "title": "大佛頂如來密因修證了義諸菩薩萬行首楞嚴經",
+    "commentaries": [
+      {
+        "id": "T1799",
+        "title": "首楞嚴義疏注經",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0867": {
+    "title": "金剛峰樓閣一切瑜伽瑜祇經",
+    "commentaries": [
+      {
+        "id": "T1798",
+        "title": "金剛頂經大瑜伽祕密心地法門義訣",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0665": {
+    "title": "金光明最勝王經",
+    "commentaries": [
+      {
+        "id": "T1788",
+        "title": "金光明最勝王經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1783",
+        "title": "金光明經玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1784",
+        "title": "金光明經玄義拾遺記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1785",
+        "title": "金光明經文句",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1786",
+        "title": "金光明經文句記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1787",
+        "title": "金光明經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0355",
+        "title": "金光明經玄義科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0356",
+        "title": "金光明經玄義拾遺記會本",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0357",
+        "title": "金光明經文句科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0358",
+        "title": "金光明經文句文句記會本",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0359",
+        "title": "金光明經玄義順正記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0360",
+        "title": "金光明經文句新記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0361",
+        "title": "金光明經照解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0362",
+        "title": "金光明經科註",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1071": {
+    "title": "十一面神呪心經",
+    "commentaries": [
+      {
+        "id": "T1802",
+        "title": "十一面神呪心經義疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0672": {
+    "title": "大乘入楞伽經",
+    "commentaries": [
+      {
+        "id": "T1791",
+        "title": "注大乘入楞伽經",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1790",
+        "title": "入楞伽心玄義",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1789",
+        "title": "楞伽阿跋多羅寶經註解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2779",
+        "title": "佛說楞伽經禪門悉談章",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0321",
+        "title": "楞伽經註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0322",
+        "title": "楞伽經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0323",
+        "title": "楞伽經通義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0324",
+        "title": "楞伽經集註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0325",
+        "title": "楞伽經纂",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "C1821",
+        "title": "楞伽經纂",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0326",
+        "title": "觀楞伽經記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0327",
+        "title": "楞伽補遺",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0328",
+        "title": "楞伽經玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0329",
+        "title": "楞伽經義疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0330",
+        "title": "楞伽經宗通",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0331",
+        "title": "楞伽經合轍",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0332",
+        "title": "楞伽經參訂疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0333",
+        "title": "楞伽經精解評林",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0334",
+        "title": "楞伽經心印",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0685": {
+    "title": "佛說盂蘭盆經",
+    "commentaries": [
+      {
+        "id": "T1792",
+        "title": "佛說盂蘭盆經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2781",
+        "title": "盂蘭盆經讚述",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "X0372",
+        "title": "盂蘭盆經疏新記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0373",
+        "title": "盂蘭盆經疏會古通今記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0374",
+        "title": "盂蘭盆經疏孝衡鈔科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0375",
+        "title": "盂蘭盆經疏孝衡鈔",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0376",
+        "title": "盂蘭盆經疏鈔餘義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0377",
+        "title": "盂蘭盆經新疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0378",
+        "title": "盂蘭盆經疏折中疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0379",
+        "title": "盂蘭盆經略疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X1500",
+        "title": "蘭盆獻供儀",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0670": {
+    "title": "楞伽阿跋多羅寶經",
+    "commentaries": [
+      {
+        "id": "T1789",
+        "title": "楞伽阿跋多羅寶經註解",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1790",
+        "title": "入楞伽心玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1791",
+        "title": "注大乘入楞伽經",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2779",
+        "title": "佛說楞伽經禪門悉談章",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0321",
+        "title": "楞伽經註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0322",
+        "title": "楞伽經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0323",
+        "title": "楞伽經通義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0324",
+        "title": "楞伽經集註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0325",
+        "title": "楞伽經纂",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "C1821",
+        "title": "楞伽經纂",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0326",
+        "title": "觀楞伽經記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0327",
+        "title": "楞伽補遺",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0328",
+        "title": "楞伽經玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0329",
+        "title": "楞伽經義疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0330",
+        "title": "楞伽經宗通",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0331",
+        "title": "楞伽經合轍",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0332",
+        "title": "楞伽經參訂疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0333",
+        "title": "楞伽經精解評林",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0334",
+        "title": "楞伽經心印",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0967": {
+    "title": "佛頂尊勝陀羅尼經",
+    "commentaries": [
+      {
+        "id": "T1803",
+        "title": "佛頂尊勝陀羅尼經教跡義記",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0663": {
+    "title": "金光明經",
+    "commentaries": [
+      {
+        "id": "T1787",
+        "title": "金光明經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1783",
+        "title": "金光明經玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1784",
+        "title": "金光明經玄義拾遺記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1785",
+        "title": "金光明經文句",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1786",
+        "title": "金光明經文句記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1788",
+        "title": "金光明最勝王經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0355",
+        "title": "金光明經玄義科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0356",
+        "title": "金光明經玄義拾遺記會本",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0357",
+        "title": "金光明經文句科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0358",
+        "title": "金光明經文句文句記會本",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0359",
+        "title": "金光明經玄義順正記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0360",
+        "title": "金光明經文句新記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0361",
+        "title": "金光明經照解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0362",
+        "title": "金光明經科註",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0701": {
+    "title": "佛說溫室洗浴眾僧經",
+    "commentaries": [
+      {
+        "id": "T1793",
+        "title": "溫室經義記",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2780",
+        "title": "溫室經疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0842": {
+    "title": "大方廣圓覺修多羅了義經",
+    "commentaries": [
+      {
+        "id": "T1795",
+        "title": "大方廣圓覺修多羅了義經略疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "F0546",
+        "title": "大方廣圓覺修多羅了義經（選錄「附文：金剛禮一本」）",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0243",
+        "title": "圓覺經大疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0244",
+        "title": "圓覺經大疏鈔科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0245",
+        "title": "圓覺經大疏釋義鈔",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0246",
+        "title": "圓覺經略疏科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0248",
+        "title": "圓覺經略疏鈔",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0249",
+        "title": "圓覺經鈔辨疑誤",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0250",
+        "title": "圓覺經疏鈔隨文要解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0251",
+        "title": "御註圓覺經",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0252",
+        "title": "圓覺經類解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0253",
+        "title": "圓覺經夾頌集解講義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0254",
+        "title": "圓覺經心鏡",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0255",
+        "title": "圓覺經序注",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0256",
+        "title": "圓覺經略疏序注",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0257",
+        "title": "圓覺經集註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0258",
+        "title": "圓覺經直解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0259",
+        "title": "圓覺經近釋",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0260",
+        "title": "圓覺經要解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0261",
+        "title": "圓覺經精解評林",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0262",
+        "title": "圓覺經句釋正白",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0263",
+        "title": "圓覺經析義疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0784": {
+    "title": "四十二章經",
+    "commentaries": [
+      {
+        "id": "T1794",
+        "title": "註四十二章經",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "X0669",
+        "title": "四十二章經註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0670",
+        "title": "四十二章經解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0671",
+        "title": "四十二章經疏鈔",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0675",
+        "title": "佛祖三經指南",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1558": {
+    "title": "阿毘達磨俱舍論",
+    "commentaries": [
+      {
+        "id": "T1822",
+        "title": "俱舍論疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1821",
+        "title": "俱舍論記",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0001": {
+    "title": "長阿含經",
+    "commentaries": [
+      {
+        "id": "T0052",
+        "title": "大生義經",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0026": {
+    "title": "中阿含經",
+    "commentaries": [
+      {
+        "id": "T0014",
+        "title": "人本欲生經",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1313": {
+    "title": "佛說救拔焰口餓鬼陀羅尼經",
+    "commentaries": [
+      {
+        "id": "T1314",
+        "title": "佛說救面然餓鬼陀羅尼神呪經",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0273": {
+    "title": "金剛三昧經",
+    "commentaries": [
+      {
+        "id": "T1730",
+        "title": "金剛三昧經論",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "X0651",
+        "title": "金剛三昧經注解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0652",
+        "title": "金剛三昧經通宗記",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0262": {
+    "title": "妙法蓮華經",
+    "commentaries": [
+      {
+        "id": "T1721",
+        "title": "法華義疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1725",
+        "title": "法華宗要",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1720",
+        "title": "法華玄論",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1722",
+        "title": "法華遊意",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1715",
+        "title": "法華經義記",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1716",
+        "title": "妙法蓮華經玄義",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2751",
+        "title": "法華經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2749",
+        "title": "法華經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2750",
+        "title": "法華經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2752",
+        "title": "法華問答",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0245": {
+    "title": "佛說仁王般若波羅蜜經",
+    "commentaries": [
+      {
+        "id": "T1707",
+        "title": "仁王般若經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1708",
+        "title": "仁王經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1705",
+        "title": "仁王護國般若經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2745",
+        "title": "仁王經疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0235": {
+    "title": "金剛般若波羅蜜經",
+    "commentaries": [
+      {
+        "id": "T1700",
+        "title": "金剛般若經贊述",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1698",
+        "title": "金剛般若經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1701",
+        "title": "金剛般若經疏論纂要",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1703",
+        "title": "金剛般若波羅蜜經註解",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1699",
+        "title": "金剛般若疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2733",
+        "title": "御注金剛般若波羅蜜經宣演",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2740",
+        "title": "金剛般若義記",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2739",
+        "title": "金剛般若經挾註",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2741",
+        "title": "金剛般若經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2737",
+        "title": "金剛經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2738",
+        "title": "金剛經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2735",
+        "title": "金剛般若經旨贊",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2732",
+        "title": "梁朝傅大士頌金剛經",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2736",
+        "title": "金剛般若經依天親菩薩論贊略釋秦本義記卷上",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0251": {
+    "title": "般若波羅蜜多心經",
+    "commentaries": [
+      {
+        "id": "T1712",
+        "title": "般若波羅蜜多心經略疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1714",
+        "title": "般若波羅蜜多心經註解",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1710",
+        "title": "般若波羅蜜多心經幽贊",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1711",
+        "title": "般若波羅蜜多心經贊",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2746",
+        "title": "般若波羅蜜多心經還源述",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2747",
+        "title": "挾註波羅蜜多心經",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0603": {
+    "title": "陰持入經",
+    "commentaries": [
+      {
+        "id": "T1694",
+        "title": "陰持入經註",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0246": {
+    "title": "仁王護國般若波羅蜜多經",
+    "commentaries": [
+      {
+        "id": "T1709",
+        "title": "仁王護國般若波羅蜜多經疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0236": {
+    "title": "Unknown Title",
+    "commentaries": [
+      {
+        "id": "T1704",
+        "title": "金剛般若波羅蜜經略疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0220": {
+    "title": "大般若波羅蜜多經(第401卷-第600卷)",
+    "commentaries": [
+      {
+        "id": "T1695",
+        "title": "大般若波羅蜜多經般若理趣分述讚",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T0229",
+        "title": "佛說佛母寶德藏般若波羅蜜經",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0014": {
+    "title": "人本欲生經",
+    "commentaries": [
+      {
+        "id": "T1693",
+        "title": "人本欲生經註",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1571": {
+    "title": "大乘廣百論釋論",
+    "commentaries": [
+      {
+        "id": "T2800",
+        "title": "廣百論疏卷第一",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1864": {
+    "title": "大乘入道次第",
+    "commentaries": [
+      {
+        "id": "T2823",
+        "title": "大乘入道次第開決",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T2777": {
+    "title": "淨名經集解關中疏",
+    "commentaries": [
+      {
+        "id": "T2778",
+        "title": "淨名經關中釋抄",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2775",
+        "title": "維摩疏釋前小序抄",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1522": {
+    "title": "十地經論",
+    "commentaries": [
+      {
+        "id": "T2799",
+        "title": "十地論義疏卷第一．第三",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2758",
+        "title": "十地義記卷第一",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "X0753",
+        "title": "十地經論義記",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0475": {
+    "title": "維摩詰所說經",
+    "commentaries": [
+      {
+        "id": "T2771",
+        "title": "維摩經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2768",
+        "title": "維摩義記",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2774",
+        "title": "維摩經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2773",
+        "title": "維摩經抄",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2770",
+        "title": "維摩經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2777",
+        "title": "淨名經集解關中疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1776",
+        "title": "維摩義記",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1775",
+        "title": "注維摩詰經",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1777",
+        "title": "維摩經玄疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1778",
+        "title": "維摩經略疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1779",
+        "title": "維摩經略疏垂裕記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1780",
+        "title": "淨名玄論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1781",
+        "title": "維摩經義疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1782",
+        "title": "說無垢稱經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2769",
+        "title": "維摩經義記卷第四",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2772",
+        "title": "維摩經疏卷第三．第六",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2775",
+        "title": "維摩疏釋前小序抄",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2776",
+        "title": "釋肇序",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2778",
+        "title": "淨名經關中釋抄",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2824",
+        "title": "天台分門圖",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0338",
+        "title": "維摩經文疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0340",
+        "title": "維摩經疏記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0343",
+        "title": "維摩經略疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0345",
+        "title": "維摩經疏記鈔",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0347",
+        "title": "維摩經評註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0348",
+        "title": "維摩經無我疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0349",
+        "title": "維摩經疏科",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1654": {
+    "title": "因緣心論頌因緣心論釋",
+    "commentaries": [
+      {
+        "id": "T2816",
+        "title": "因緣心釋論開決記",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T2733": {
+    "title": "御注金剛般若波羅蜜經宣演",
+    "commentaries": [
+      {
+        "id": "T2734",
+        "title": "金剛暎卷上",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T2782": {
+    "title": "大乘稻芉經隨聽疏",
+    "commentaries": [
+      {
+        "id": "T2783",
+        "title": "大乘稻芉經隨聽疏決",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1484": {
+    "title": "梵網經",
+    "commentaries": [
+      {
+        "id": "T2797",
+        "title": "梵網經述記卷第一",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1811",
+        "title": "菩薩戒義疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1815",
+        "title": "梵網經古迹記",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1813",
+        "title": "梵網經菩薩戒本疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1812",
+        "title": "天台菩薩戒疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1814",
+        "title": "菩薩戒本疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T2810": {
+    "title": "大乘百法明門論開宗義記",
+    "commentaries": [
+      {
+        "id": "T2812",
+        "title": "大乘百法明門論開宗義決",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2811",
+        "title": "大乘百法明門論開宗義記序釋",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1775": {
+    "title": "注維摩詰經",
+    "commentaries": [
+      {
+        "id": "T2776",
+        "title": "釋肇序",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T2901": {
+    "title": "法句經",
+    "commentaries": [
+      {
+        "id": "T2902",
+        "title": "法句經疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1667": {
+    "title": "大乘起信論",
+    "commentaries": [
+      {
+        "id": "T2815",
+        "title": "起信論註",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T2813",
+        "title": "大乘起信論略述",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1850",
+        "title": "大乘起信論裂網疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0449": {
+    "title": "佛說藥師如來本願經",
+    "commentaries": [
+      {
+        "id": "T2767",
+        "title": "藥師經疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1485": {
+    "title": "菩薩瓔珞本業經",
+    "commentaries": [
+      {
+        "id": "T2798",
+        "title": "本業瓔珞經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "X0705",
+        "title": "瓔珞本業經疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1331": {
+    "title": "佛說灌頂經",
+    "commentaries": [
+      {
+        "id": "T2766",
+        "title": "藥師經疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0712": {
+    "title": "佛說大乘稻芉經",
+    "commentaries": [
+      {
+        "id": "T2782",
+        "title": "大乘稻芉經隨聽疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1535": {
+    "title": "大乘四法經釋",
+    "commentaries": [
+      {
+        "id": "T2784",
+        "title": "大乘四法經釋抄",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0279": {
+    "title": "大方廣佛華嚴經",
+    "commentaries": [
+      {
+        "id": "T2755",
+        "title": "華嚴經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1739",
+        "title": "新華嚴經論",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1743",
+        "title": "皇帝降誕日於麟德殿講大方廣佛華嚴經玄義一部",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1741",
+        "title": "略釋新華嚴經修行次第決疑論",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1738",
+        "title": "新譯華嚴經七處九會頌釋章",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1740",
+        "title": "大方廣佛華嚴經中卷卷大意略敘",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1742",
+        "title": "大方廣佛華嚴經願行觀門骨目",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1737",
+        "title": "大華嚴經略策",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0592": {
+    "title": "天請問經",
+    "commentaries": [
+      {
+        "id": "T2786",
+        "title": "天請問經疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1614": {
+    "title": "大乘百法明門論",
+    "commentaries": [
+      {
+        "id": "T2810",
+        "title": "大乘百法明門論開宗義記",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1836",
+        "title": "大乘百法明門論解",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1837",
+        "title": "大乘百法明門論疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0452": {
+    "title": "佛說觀彌勒菩薩上生兜率天經",
+    "commentaries": [
+      {
+        "id": "T1772",
+        "title": "觀彌勒上生兜率天經贊",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1771",
+        "title": "彌勒經遊意",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1773",
+        "title": "彌勒上生經宗要",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0476": {
+    "title": "說無垢稱經",
+    "commentaries": [
+      {
+        "id": "T1782",
+        "title": "說無垢稱經疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1775",
+        "title": "注維摩詰經",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1776",
+        "title": "維摩義記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1777",
+        "title": "維摩經玄疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1778",
+        "title": "維摩經略疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1779",
+        "title": "維摩經略疏垂裕記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1780",
+        "title": "淨名玄論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1781",
+        "title": "維摩經義疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2768",
+        "title": "維摩義記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2769",
+        "title": "維摩經義記卷第四",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2770",
+        "title": "維摩經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2771",
+        "title": "維摩經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2772",
+        "title": "維摩經疏卷第三．第六",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2773",
+        "title": "維摩經抄",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2774",
+        "title": "維摩經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2775",
+        "title": "維摩疏釋前小序抄",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2776",
+        "title": "釋肇序",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2777",
+        "title": "淨名經集解關中疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2778",
+        "title": "淨名經關中釋抄",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2824",
+        "title": "天台分門圖",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0338",
+        "title": "維摩經文疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0340",
+        "title": "維摩經疏記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0343",
+        "title": "維摩經略疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0345",
+        "title": "維摩經疏記鈔",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0347",
+        "title": "維摩經評註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0348",
+        "title": "維摩經無我疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0349",
+        "title": "維摩經疏科",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0450": {
+    "title": "藥師琉璃光如來本願功德經",
+    "commentaries": [
+      {
+        "id": "T1770",
+        "title": "本願藥師經古迹",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1600": {
+    "title": "辯中邊論",
+    "commentaries": [
+      {
+        "id": "T1835",
+        "title": "辯中邊論述記",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1616",
+        "title": "十八空論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0797",
+        "title": "中邊分別論疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1630": {
+    "title": "因明入正理論",
+    "commentaries": [
+      {
+        "id": "T1840",
+        "title": "因明入正理論疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1842",
+        "title": "因明入正理論義纂要",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1841",
+        "title": "因明義斷",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1666": {
+    "title": "大乘起信論",
+    "commentaries": [
+      {
+        "id": "T1849",
+        "title": "大乘起信論內義略探記",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1844",
+        "title": "起信論疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "T1843",
+        "title": "大乘起信論義疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1628": {
+    "title": "因明正理門論本",
+    "commentaries": [
+      {
+        "id": "T1839",
+        "title": "理門論述記",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1626": {
+    "title": "大乘法界無差別論",
+    "commentaries": [
+      {
+        "id": "T1838",
+        "title": "大乘法界無差別論疏",
+        "match_type": "xml_cf_tag"
+      },
+      {
+        "id": "X0786",
+        "title": "大乘法界無差別論疏領要鈔科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0787",
+        "title": "大乘法界無差別論疏領要鈔",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1519": {
+    "title": "妙法蓮華經憂波提舍",
+    "commentaries": [
+      {
+        "id": "T1818",
+        "title": "法華論疏",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T1511": {
+    "title": "金剛般若波羅蜜經論",
+    "commentaries": [
+      {
+        "id": "T1816",
+        "title": "金剛般若論會釋",
+        "match_type": "xml_cf_tag"
+      }
+    ]
+  },
+  "T0159": {
+    "title": "大乘本生心地觀經",
+    "commentaries": [
+      {
+        "id": "X0365",
+        "title": "大乘本生心地觀經淺註懸示",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0366",
+        "title": "大乘本生心地觀經淺註科文",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0367",
+        "title": "大乘本生心地觀經淺註(第4卷-第8卷)",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1509": {
+    "title": "大智度論",
+    "commentaries": [
+      {
+        "id": "X0791",
+        "title": "大智度論疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0277": {
+    "title": "佛說觀普賢菩薩行法經",
+    "commentaries": [
+      {
+        "id": "X0649",
+        "title": "普賢觀經義疏科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0650",
+        "title": "普賢觀經義疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "F0016": {
+    "title": "大王觀世音經",
+    "commentaries": [
+      {
+        "id": "X0648",
+        "title": "高王觀音經註釋",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1524": {
+    "title": "無量壽經優波提舍",
+    "commentaries": [
+      {
+        "id": "T1819",
+        "title": "無量壽經優婆提舍願生偈註",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1523": {
+    "title": "大寶積經論",
+    "commentaries": [
+      {
+        "id": "T1525",
+        "title": "彌勒菩薩所問經論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0264",
+        "title": "大寶積經述",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0389": {
+    "title": "佛垂般涅槃略說教誡經",
+    "commentaries": [
+      {
+        "id": "T1529",
+        "title": "遺教經論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1820",
+        "title": "佛遺教經論疏節要",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "P1590",
+        "title": "佛遺教經論疏節要",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0665",
+        "title": "遺教經補註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0666",
+        "title": "遺教經解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0845",
+        "title": "遺教經論住法記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0846",
+        "title": "遺教經論記",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0412": {
+    "title": "地藏菩薩本願經",
+    "commentaries": [
+      {
+        "id": "X0382",
+        "title": "地藏本願經科文",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0383",
+        "title": "地藏本願經綸貫",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0384",
+        "title": "地藏本願經科註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X1486",
+        "title": "讚禮地藏菩薩懺願儀",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X1487",
+        "title": "慈悲地藏菩薩懺法",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0474": {
+    "title": "佛說維摩詰經",
+    "commentaries": [
+      {
+        "id": "T1775",
+        "title": "注維摩詰經",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1776",
+        "title": "維摩義記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1777",
+        "title": "維摩經玄疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1778",
+        "title": "維摩經略疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1779",
+        "title": "維摩經略疏垂裕記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1780",
+        "title": "淨名玄論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1781",
+        "title": "維摩經義疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1782",
+        "title": "說無垢稱經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2768",
+        "title": "維摩義記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2769",
+        "title": "維摩經義記卷第四",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2770",
+        "title": "維摩經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2771",
+        "title": "維摩經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2772",
+        "title": "維摩經疏卷第三．第六",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2773",
+        "title": "維摩經抄",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2774",
+        "title": "維摩經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2775",
+        "title": "維摩疏釋前小序抄",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2776",
+        "title": "釋肇序",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2777",
+        "title": "淨名經集解關中疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2778",
+        "title": "淨名經關中釋抄",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2824",
+        "title": "天台分門圖",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0338",
+        "title": "維摩經文疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0340",
+        "title": "維摩經疏記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0343",
+        "title": "維摩經略疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0345",
+        "title": "維摩經疏記鈔",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0347",
+        "title": "維摩經評註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0348",
+        "title": "維摩經無我疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0349",
+        "title": "維摩經疏科",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0586": {
+    "title": "思益梵天所問經",
+    "commentaries": [
+      {
+        "id": "X0364",
+        "title": "思益梵天所問經簡註",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0664": {
+    "title": "合部金光明經",
+    "commentaries": [
+      {
+        "id": "T1783",
+        "title": "金光明經玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1784",
+        "title": "金光明經玄義拾遺記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1785",
+        "title": "金光明經文句",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1786",
+        "title": "金光明經文句記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1787",
+        "title": "金光明經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1788",
+        "title": "金光明最勝王經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0355",
+        "title": "金光明經玄義科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0356",
+        "title": "金光明經玄義拾遺記會本",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0357",
+        "title": "金光明經文句科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0358",
+        "title": "金光明經文句文句記會本",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0359",
+        "title": "金光明經玄義順正記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0360",
+        "title": "金光明經文句新記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0361",
+        "title": "金光明經照解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0362",
+        "title": "金光明經科註",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0671": {
+    "title": "入楞伽經",
+    "commentaries": [
+      {
+        "id": "T1789",
+        "title": "楞伽阿跋多羅寶經註解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1790",
+        "title": "入楞伽心玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1791",
+        "title": "注大乘入楞伽經",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2779",
+        "title": "佛說楞伽經禪門悉談章",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0321",
+        "title": "楞伽經註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0322",
+        "title": "楞伽經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0323",
+        "title": "楞伽經通義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0324",
+        "title": "楞伽經集註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0325",
+        "title": "楞伽經纂",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "C1821",
+        "title": "楞伽經纂",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0326",
+        "title": "觀楞伽經記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0327",
+        "title": "楞伽補遺",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0328",
+        "title": "楞伽經玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0329",
+        "title": "楞伽經義疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0330",
+        "title": "楞伽經宗通",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0331",
+        "title": "楞伽經合轍",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0332",
+        "title": "楞伽經參訂疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0333",
+        "title": "楞伽經精解評林",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0334",
+        "title": "楞伽經心印",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0673": {
+    "title": "大乘同性經",
+    "commentaries": [
+      {
+        "id": "T1789",
+        "title": "楞伽阿跋多羅寶經註解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1790",
+        "title": "入楞伽心玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1791",
+        "title": "注大乘入楞伽經",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2779",
+        "title": "佛說楞伽經禪門悉談章",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0321",
+        "title": "楞伽經註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0322",
+        "title": "楞伽經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0323",
+        "title": "楞伽經通義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0324",
+        "title": "楞伽經集註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0325",
+        "title": "楞伽經纂",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "C1821",
+        "title": "楞伽經纂",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0326",
+        "title": "觀楞伽經記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0327",
+        "title": "楞伽補遺",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0328",
+        "title": "楞伽經玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0329",
+        "title": "楞伽經義疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0330",
+        "title": "楞伽經宗通",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0331",
+        "title": "楞伽經合轍",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0332",
+        "title": "楞伽經參訂疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0333",
+        "title": "楞伽經精解評林",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0334",
+        "title": "楞伽經心印",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0674": {
+    "title": "證契大乘經",
+    "commentaries": [
+      {
+        "id": "T1789",
+        "title": "楞伽阿跋多羅寶經註解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1790",
+        "title": "入楞伽心玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1791",
+        "title": "注大乘入楞伽經",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2779",
+        "title": "佛說楞伽經禪門悉談章",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0321",
+        "title": "楞伽經註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0322",
+        "title": "楞伽經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0323",
+        "title": "楞伽經通義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0324",
+        "title": "楞伽經集註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0325",
+        "title": "楞伽經纂",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "C1821",
+        "title": "楞伽經纂",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0326",
+        "title": "觀楞伽經記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0327",
+        "title": "楞伽補遺",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0328",
+        "title": "楞伽經玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0329",
+        "title": "楞伽經義疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0330",
+        "title": "楞伽經宗通",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0331",
+        "title": "楞伽經合轍",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0332",
+        "title": "楞伽經參訂疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0333",
+        "title": "楞伽經精解評林",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0334",
+        "title": "楞伽經心印",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "X0008": {
+    "title": "楞伽阿跋多羅寶經會譯",
+    "commentaries": [
+      {
+        "id": "T1789",
+        "title": "楞伽阿跋多羅寶經註解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1790",
+        "title": "入楞伽心玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1791",
+        "title": "注大乘入楞伽經",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2779",
+        "title": "佛說楞伽經禪門悉談章",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0321",
+        "title": "楞伽經註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0322",
+        "title": "楞伽經疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0323",
+        "title": "楞伽經通義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0324",
+        "title": "楞伽經集註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0325",
+        "title": "楞伽經纂",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "C1821",
+        "title": "楞伽經纂",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0326",
+        "title": "觀楞伽經記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0327",
+        "title": "楞伽補遺",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0328",
+        "title": "楞伽經玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0329",
+        "title": "楞伽經義疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0330",
+        "title": "楞伽經宗通",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0331",
+        "title": "楞伽經合轍",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0332",
+        "title": "楞伽經參訂疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0333",
+        "title": "楞伽經精解評林",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0334",
+        "title": "楞伽經心印",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0676": {
+    "title": "解深密經",
+    "commentaries": [
+      {
+        "id": "X0369",
+        "title": "解深密經疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0681": {
+    "title": "大乘密嚴經",
+    "commentaries": [
+      {
+        "id": "X0368",
+        "title": "大乘密嚴經疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0682": {
+    "title": "大乘密嚴經",
+    "commentaries": [
+      {
+        "id": "X0368",
+        "title": "大乘密嚴經疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0779": {
+    "title": "佛說八大人覺經",
+    "commentaries": [
+      {
+        "id": "X0672",
+        "title": "八大人覺經略解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0673",
+        "title": "八大人覺經疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0839": {
+    "title": "占察善惡業報經",
+    "commentaries": [
+      {
+        "id": "X0370",
+        "title": "占察善惡業報經玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0371",
+        "title": "占察善惡業報經義疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0840": {
+    "title": "稱讚大乘功德經",
+    "commentaries": [
+      {
+        "id": "X0370",
+        "title": "占察善惡業報經玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0371",
+        "title": "占察善惡業報經義疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0841": {
+    "title": "說妙法決定業障經",
+    "commentaries": [
+      {
+        "id": "X0370",
+        "title": "占察善惡業報經玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0371",
+        "title": "占察善惡業報經義疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "X1485": {
+    "title": "占察善惡業報經行法",
+    "commentaries": [
+      {
+        "id": "X0370",
+        "title": "占察善惡業報經玄義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0371",
+        "title": "占察善惡業報經義疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "X0001": {
+    "title": "圓覺經佚文",
+    "commentaries": [
+      {
+        "id": "F0546",
+        "title": "大方廣圓覺修多羅了義經（選錄「附文：金剛禮一本」）",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1795",
+        "title": "大方廣圓覺修多羅了義經略疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0243",
+        "title": "圓覺經大疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0244",
+        "title": "圓覺經大疏鈔科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0245",
+        "title": "圓覺經大疏釋義鈔",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0246",
+        "title": "圓覺經略疏科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0248",
+        "title": "圓覺經略疏鈔",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0249",
+        "title": "圓覺經鈔辨疑誤",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0250",
+        "title": "圓覺經疏鈔隨文要解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0251",
+        "title": "御註圓覺經",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0252",
+        "title": "圓覺經類解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0253",
+        "title": "圓覺經夾頌集解講義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0254",
+        "title": "圓覺經心鏡",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0255",
+        "title": "圓覺經序注",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0256",
+        "title": "圓覺經略疏序注",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0257",
+        "title": "圓覺經集註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0258",
+        "title": "圓覺經直解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0259",
+        "title": "圓覺經近釋",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0260",
+        "title": "圓覺經要解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0261",
+        "title": "圓覺經精解評林",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0262",
+        "title": "圓覺經句釋正白",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0263",
+        "title": "圓覺經析義疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1565": {
+    "title": "順中論",
+    "commentaries": [
+      {
+        "id": "T1824",
+        "title": "中觀論疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1566": {
+    "title": "般若燈論釋",
+    "commentaries": [
+      {
+        "id": "T1824",
+        "title": "中觀論疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1567": {
+    "title": "大乘中觀釋論(第1卷-第9卷)",
+    "commentaries": [
+      {
+        "id": "T1824",
+        "title": "中觀論疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "K1482": {
+    "title": "大乘中觀釋論(第10卷-第18卷)",
+    "commentaries": [
+      {
+        "id": "T1824",
+        "title": "中觀論疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1568": {
+    "title": "十二門論",
+    "commentaries": [
+      {
+        "id": "T1825",
+        "title": "十二門論疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1826",
+        "title": "十二門論宗致義記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "G2559",
+        "title": "十二門論講話",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1573": {
+    "title": "壹輸盧迦論",
+    "commentaries": [
+      {
+        "id": "X0788",
+        "title": "掌珍論疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1574": {
+    "title": "大乘破有論",
+    "commentaries": [
+      {
+        "id": "X0788",
+        "title": "掌珍論疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1575": {
+    "title": "六十頌如理論",
+    "commentaries": [
+      {
+        "id": "X0788",
+        "title": "掌珍論疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1576": {
+    "title": "大乘二十頌論",
+    "commentaries": [
+      {
+        "id": "X0788",
+        "title": "掌珍論疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1577": {
+    "title": "大丈夫論",
+    "commentaries": [
+      {
+        "id": "X0788",
+        "title": "掌珍論疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1578": {
+    "title": "大乘掌珍論",
+    "commentaries": [
+      {
+        "id": "X0788",
+        "title": "掌珍論疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1857": {
+    "title": "寶藏論",
+    "commentaries": [
+      {
+        "id": "X0866",
+        "title": "肇論疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0868",
+        "title": "肇論疏科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0869",
+        "title": "夾科肇論序注",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0870",
+        "title": "注肇論疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0872",
+        "title": "肇論新疏游刃",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0873",
+        "title": "肇論略註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0878",
+        "title": "物不遷正量證",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0879",
+        "title": "物不遷正量論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0880",
+        "title": "物不遷論辯解",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1859": {
+    "title": "肇論疏",
+    "commentaries": [
+      {
+        "id": "X0866",
+        "title": "肇論疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0868",
+        "title": "肇論疏科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0869",
+        "title": "夾科肇論序注",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0870",
+        "title": "注肇論疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0872",
+        "title": "肇論新疏游刃",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0873",
+        "title": "肇論略註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0878",
+        "title": "物不遷正量證",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0879",
+        "title": "物不遷正量論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0880",
+        "title": "物不遷論辯解",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1860": {
+    "title": "肇論新疏",
+    "commentaries": [
+      {
+        "id": "X0866",
+        "title": "肇論疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0868",
+        "title": "肇論疏科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0869",
+        "title": "夾科肇論序注",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0870",
+        "title": "注肇論疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0872",
+        "title": "肇論新疏游刃",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0873",
+        "title": "肇論略註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0878",
+        "title": "物不遷正量證",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0879",
+        "title": "物不遷正量論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0880",
+        "title": "物不遷論辯解",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1580": {
+    "title": "瑜伽師地論釋",
+    "commentaries": [
+      {
+        "id": "T1828",
+        "title": "瑜伽論記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1829",
+        "title": "瑜伽師地論略纂",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2801",
+        "title": "瑜伽師地論分門記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2802",
+        "title": "瑜伽論手記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2803",
+        "title": "地持義記卷第四",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0704",
+        "title": "地持論義記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0794",
+        "title": "瑜伽論劫章頌",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "A1561",
+        "title": "瑜伽師地論義演(第33卷-第40卷)",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1581": {
+    "title": "菩薩地持經",
+    "commentaries": [
+      {
+        "id": "T1828",
+        "title": "瑜伽論記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1829",
+        "title": "瑜伽師地論略纂",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2801",
+        "title": "瑜伽師地論分門記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2802",
+        "title": "瑜伽論手記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2803",
+        "title": "地持義記卷第四",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0704",
+        "title": "地持論義記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0794",
+        "title": "瑜伽論劫章頌",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "A1561",
+        "title": "瑜伽師地論義演(第33卷-第40卷)",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1582": {
+    "title": "菩薩善戒經",
+    "commentaries": [
+      {
+        "id": "T1828",
+        "title": "瑜伽論記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1829",
+        "title": "瑜伽師地論略纂",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2801",
+        "title": "瑜伽師地論分門記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2802",
+        "title": "瑜伽論手記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2803",
+        "title": "地持義記卷第四",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0704",
+        "title": "地持論義記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0794",
+        "title": "瑜伽論劫章頌",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "A1561",
+        "title": "瑜伽師地論義演(第33卷-第40卷)",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1583": {
+    "title": "菩薩善戒經",
+    "commentaries": [
+      {
+        "id": "T1828",
+        "title": "瑜伽論記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1829",
+        "title": "瑜伽師地論略纂",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2801",
+        "title": "瑜伽師地論分門記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2802",
+        "title": "瑜伽論手記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2803",
+        "title": "地持義記卷第四",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0704",
+        "title": "地持論義記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0794",
+        "title": "瑜伽論劫章頌",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "A1561",
+        "title": "瑜伽師地論義演(第33卷-第40卷)",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1584": {
+    "title": "決定藏論",
+    "commentaries": [
+      {
+        "id": "T1828",
+        "title": "瑜伽論記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1829",
+        "title": "瑜伽師地論略纂",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2801",
+        "title": "瑜伽師地論分門記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2802",
+        "title": "瑜伽論手記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2803",
+        "title": "地持義記卷第四",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0704",
+        "title": "地持論義記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0794",
+        "title": "瑜伽論劫章頌",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "A1561",
+        "title": "瑜伽師地論義演(第33卷-第40卷)",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1586": {
+    "title": "唯識三十論頌",
+    "commentaries": [
+      {
+        "id": "T1618",
+        "title": "顯識論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2804",
+        "title": "唯識三十論要釋",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1587": {
+    "title": "轉識論",
+    "commentaries": [
+      {
+        "id": "T1618",
+        "title": "顯識論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2804",
+        "title": "唯識三十論要釋",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1588": {
+    "title": "唯識論",
+    "commentaries": [
+      {
+        "id": "T1834",
+        "title": "唯識二十論述記",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1589": {
+    "title": "大乘唯識論",
+    "commentaries": [
+      {
+        "id": "T1834",
+        "title": "唯識二十論述記",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1592": {
+    "title": "攝大乘論",
+    "commentaries": [
+      {
+        "id": "T2805",
+        "title": "攝大乘講疏卷第五．第七",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2806",
+        "title": "攝大乘論抄",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2807",
+        "title": "攝大乘論章卷第一",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2808",
+        "title": "攝論章卷第一",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2809",
+        "title": "攝大乘義章卷第四",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1593": {
+    "title": "攝大乘論",
+    "commentaries": [
+      {
+        "id": "T2805",
+        "title": "攝大乘講疏卷第五．第七",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2806",
+        "title": "攝大乘論抄",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2807",
+        "title": "攝大乘論章卷第一",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2808",
+        "title": "攝論章卷第一",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2809",
+        "title": "攝大乘義章卷第四",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1594": {
+    "title": "攝大乘論本",
+    "commentaries": [
+      {
+        "id": "T2805",
+        "title": "攝大乘講疏卷第五．第七",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2806",
+        "title": "攝大乘論抄",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2807",
+        "title": "攝大乘論章卷第一",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2808",
+        "title": "攝論章卷第一",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2809",
+        "title": "攝大乘義章卷第四",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1595": {
+    "title": "攝大乘論釋",
+    "commentaries": [
+      {
+        "id": "T2805",
+        "title": "攝大乘講疏卷第五．第七",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2806",
+        "title": "攝大乘論抄",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2807",
+        "title": "攝大乘論章卷第一",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2808",
+        "title": "攝論章卷第一",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2809",
+        "title": "攝大乘義章卷第四",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1596": {
+    "title": "攝大乘論釋論",
+    "commentaries": [
+      {
+        "id": "T2805",
+        "title": "攝大乘講疏卷第五．第七",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2806",
+        "title": "攝大乘論抄",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2807",
+        "title": "攝大乘論章卷第一",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2808",
+        "title": "攝論章卷第一",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2809",
+        "title": "攝大乘義章卷第四",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1597": {
+    "title": "攝大乘論釋",
+    "commentaries": [
+      {
+        "id": "T2805",
+        "title": "攝大乘講疏卷第五．第七",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2806",
+        "title": "攝大乘論抄",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2807",
+        "title": "攝大乘論章卷第一",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2808",
+        "title": "攝論章卷第一",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2809",
+        "title": "攝大乘義章卷第四",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1598": {
+    "title": "攝大乘論釋",
+    "commentaries": [
+      {
+        "id": "T2805",
+        "title": "攝大乘講疏卷第五．第七",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2806",
+        "title": "攝大乘論抄",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2807",
+        "title": "攝大乘論章卷第一",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2808",
+        "title": "攝論章卷第一",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T2809",
+        "title": "攝大乘義章卷第四",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1599": {
+    "title": "中邊分別論",
+    "commentaries": [
+      {
+        "id": "T1616",
+        "title": "十八空論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1835",
+        "title": "辯中邊論述記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0797",
+        "title": "中邊分別論疏",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1605": {
+    "title": "大乘阿毘達磨集論",
+    "commentaries": [
+      {
+        "id": "X0796",
+        "title": "雜集論述記",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1606": {
+    "title": "大乘阿毘達磨雜集論",
+    "commentaries": [
+      {
+        "id": "X0796",
+        "title": "雜集論述記",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1627": {
+    "title": "大乘法界無差別論",
+    "commentaries": [
+      {
+        "id": "T1838",
+        "title": "大乘法界無差別論疏",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0786",
+        "title": "大乘法界無差別論疏領要鈔科",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0787",
+        "title": "大乘法界無差別論疏領要鈔",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T1619": {
+    "title": "無相思塵論",
+    "commentaries": [
+      {
+        "id": "T1624",
+        "title": "觀所緣緣論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "T1625",
+        "title": "觀所緣論釋",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0830",
+        "title": "觀所緣緣論會釋",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0831",
+        "title": "觀所緣緣論直解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0832",
+        "title": "觀所緣緣論釋記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0833",
+        "title": "觀所緣緣論釋直解",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T0367": {
+    "title": "稱讚淨土佛攝受經",
+    "commentaries": [
+      {
+        "id": "X0006",
+        "title": "阿彌陀經異本",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0420",
+        "title": "阿彌陀經義疏聞持記",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0421",
+        "title": "阿彌陀經句解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0422",
+        "title": "阿彌陀經略解",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0423",
+        "title": "阿彌陀經略解圓中鈔",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0424",
+        "title": "阿彌陀經疏鈔",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0425",
+        "title": "阿彌陀經疏鈔事義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0426",
+        "title": "阿彌陀經疏鈔問辯",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0427",
+        "title": "阿彌陀經疏鈔演義",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0428",
+        "title": "阿彌陀經疏鈔擷",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0429",
+        "title": "阿彌陀經已決",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0430",
+        "title": "阿彌陀經要解便蒙鈔",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0431",
+        "title": "阿彌陀經略註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0432",
+        "title": "阿彌陀經註",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0433",
+        "title": "阿彌陀經約論",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0434",
+        "title": "阿彌陀經直解正行",
+        "match_type": "folder_hierarchy"
+      },
+      {
+        "id": "X0435",
+        "title": "阿彌陀經摘要易解",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  },
+  "T2031": {
+    "title": "異部宗輪論",
+    "commentaries": [
+      {
+        "id": "X0844",
+        "title": "異部宗輪論疏述記",
+        "match_type": "folder_hierarchy"
+      }
+    ]
+  }
+}
