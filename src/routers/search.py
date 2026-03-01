@@ -50,7 +50,7 @@ async def search_sutras(
     统一搜索：先标题匹配再全文匹配。
     lang 参数控制返回结果的繁简，跟随用户阅读设置。
     """
-    if config.cbeta_search_available:
+    if config.CBETA_SEARCH_DB.exists():
         return _unified_search(q, lang)
 
     return _memory_search(request, q)

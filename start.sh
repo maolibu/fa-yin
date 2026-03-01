@@ -4,6 +4,9 @@
 
 set -e
 
+# 右键运行时出错暂停，让用户能看到错误信息
+trap 'echo ""; echo "  ❌ 脚本出错，按回车键退出..."; read' ERR
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR"
 
@@ -84,14 +87,28 @@ PYTHON_VER=$("$PYTHON_CMD" -c "import sys; print(f'{sys.version_info.major}.{sys
 echo "  ✅ Python $PYTHON_VER ($PYTHON_CMD)"
 
 # ─── Step 2: 创建虚拟环境 ───────────────────────────────────
-if [ ! -d "$VENV_DIR" ]; then
+if [ ! -f "$VENV_DIR/bin/activate" ]; then
+    # 如果 .venv 目录存在但不完整（缺 activate），先清除
+    [ -d "$VENV_DIR" ] && rm -rf "$VENV_DIR"
     echo "  ⏳ 创建虚拟环境..."
-    # Ubuntu 可能缺 python3-venv，尝试自动安装
-    if ! "$PYTHON_CMD" -m venv "$VENV_DIR" 2>/dev/null; then
+    VENV_CREATED=false
+    # 第 1 次尝试：标准方式创建 venv
+    if "$PYTHON_CMD" -m venv "$VENV_DIR" 2>/dev/null && [ -f "$VENV_DIR/bin/activate" ]; then
+        VENV_CREATED=true
+    else
+        # 第 2 次尝试：不带 pip 创建（兼容 conda/miniforge 的 Python）
+        [ -d "$VENV_DIR" ] && rm -rf "$VENV_DIR"
+        if "$PYTHON_CMD" -m venv --without-pip "$VENV_DIR" 2>/dev/null && [ -f "$VENV_DIR/bin/activate" ]; then
+            VENV_CREATED=true
+        fi
+    fi
+    # 第 3 次尝试：Ubuntu 可能缺 python3-venv 包，用 apt 安装
+    if [ "$VENV_CREATED" = false ]; then
         if command -v apt &>/dev/null; then
             PY_SHORT=$($PYTHON_CMD -c "import sys; print(f'python3.{sys.version_info.minor}')")
             echo "  ⏳ 安装 ${PY_SHORT}-venv..."
             sudo apt install -y "${PY_SHORT}-venv"
+            [ -d "$VENV_DIR" ] && rm -rf "$VENV_DIR"
             "$PYTHON_CMD" -m venv "$VENV_DIR"
         else
             echo "  ❌ 无法创建虚拟环境，请安装 python3-venv"
@@ -105,6 +122,13 @@ fi
 source "$VENV_DIR/bin/activate"
 
 # ─── Step 3: 安装依赖 ───────────────────────────────────────
+# 如果 pip 不可用（--without-pip 创建的 venv），先安装 pip
+if ! "$VENV_DIR/bin/python" -m pip --version &>/dev/null; then
+    echo "  ⏳ 安装 pip..."
+    "$VENV_DIR/bin/python" -m ensurepip --default-pip 2>/dev/null || \
+        curl -sS https://bootstrap.pypa.io/get-pip.py | "$VENV_DIR/bin/python"
+fi
+
 if [ ! -f "$VENV_DIR/.deps_installed" ] || [ "$REQ_FILE" -nt "$VENV_DIR/.deps_installed" ]; then
     echo "  ⏳ 安装依赖包..."
     pip install --quiet --upgrade pip
