@@ -109,28 +109,32 @@ async def migrate_user_data():
             log.warning(f"删除旧版笔记目录失败: {e}")
 
 
-# ─── 初始化核心模块 ───────────────────────────────────────────
+# ─── 初始化核心模块（在 startup 事件中执行，确保数据就绪） ────
 app.state.nav = None
 app.state.parser = None
 
-if config.cbeta_available:
-    try:
-        from core.cbeta_nav import CBETANav
-        from core.cbeta_parser import CBETAParser
+@app.on_event("startup")
+async def init_core_modules():
+    """启动时初始化 CBETA 核心模块（实时检查数据是否存在）"""
+    cbeta_ready = config.CBETA_BASE.exists() and (config.CBETA_BASE / "XML").exists()
+    if cbeta_ready:
+        try:
+            from core.cbeta_nav import CBETANav
+            from core.cbeta_parser import CBETAParser
 
-        nav = CBETANav(str(config.CBETA_BASE))
-        parser = CBETAParser(
-            cbeta_dir=str(config.CBETA_BASE),
-            gaiji_path=str(config.GAIJI_PATH),
-            nav=nav,
-        )
-        app.state.nav = nav
-        app.state.parser = parser
-        log.info(f"CBETANav + CBETAParser 初始化成功，共 {len(nav.catalog)} 部经文")
-    except Exception as e:
-        log.error(f"核心模块初始化失败: {e}")
-else:
-    log.warning(f"CBETA 数据未找到 ({config.CBETA_BASE})，搜索和阅读功能不可用")
+            nav_instance = CBETANav(str(config.CBETA_BASE))
+            parser_instance = CBETAParser(
+                cbeta_dir=str(config.CBETA_BASE),
+                gaiji_path=str(config.GAIJI_PATH),
+                nav=nav_instance,
+            )
+            app.state.nav = nav_instance
+            app.state.parser = parser_instance
+            log.info(f"CBETANav + CBETAParser 初始化成功，共 {len(nav_instance.catalog)} 部经文")
+        except Exception as e:
+            log.error(f"核心模块初始化失败: {e}")
+    else:
+        log.warning(f"CBETA 数据未找到 ({config.CBETA_BASE})，搜索和阅读功能不可用")
 
 
 # ─── 页面路由 ─────────────────────────────────────────────────
@@ -146,7 +150,7 @@ async def index(request: Request):
     
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "cbeta_available": config.cbeta_available,
+        "cbeta_available": nav is not None,
         "catalog_count": len(nav.catalog) if nav else 0,
         "daily_verse": daily_verse,
         "daily_index": daily_index,
