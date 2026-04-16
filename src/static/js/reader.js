@@ -6,7 +6,11 @@
  */
 
 function readerApp() {
-    var C = window.READER_CONFIG;
+    var C = window.READER_CONFIG || {};
+    if (!C.sutraId) {
+        console.error('[reader] READER_CONFIG 未正确注入，阅读器无法初始化');
+        return { initError: true };
+    }
 
     // 读取对照列表
     var savedItems = [];
@@ -137,6 +141,16 @@ function readerApp() {
             document.addEventListener('htmx:afterSettle', function (e) {
                 if (self.writingMode === 'vertical') {
                     self._scrollVerticalToStart();
+                    if (self.splitMode) {
+                        self._equalizeVerticalHeaders();
+                    }
+                }
+            });
+            window.addEventListener('resize', function () {
+                if (self.writingMode !== 'vertical') return;
+                self._scrollVerticalToStart();
+                if (self.splitMode) {
+                    self._equalizeVerticalHeaders();
                 }
             });
             // 监听选中文本 → 自动填入笔记引用 + 詞典查询 + AI 选中文本
@@ -238,45 +252,55 @@ function readerApp() {
                 setTimeout(function () { self._equalizeVerticalHeaders(); }, 100);
             } else {
                 layout.classList.remove('writing-vertical');
-                // 切回横排时清除右栏头部的固定高度
+                // 切回横排时清除竖排对齐留下的最小高度
+                var lh = document.querySelector('.reader-sticky-top');
                 var rh = document.querySelector('.reader-right-header');
+                if (lh) lh.style.minHeight = '';
                 if (rh) rh.style.minHeight = '';
             }
         },
 
         _scrollVerticalToStart: function () {
-            // 将某个元素的横向滚动条推到最右边（经文开头）
-            function scrollToRight(el) {
+            // Blink 在 vertical-rl 下对 scrollLeft 的语义并不稳定；
+            // 直接写入一个足够大的正值，能稳定落到“经文开头”的最右端。
+            function scrollToStart(el) {
                 if (!el || el.scrollWidth <= el.clientWidth) return;
-                el.scrollLeft = el.scrollWidth - el.clientWidth;
+                el.scrollLeft = el.scrollWidth;
             }
             var self = this;
             function doScroll() {
-                var layout = document.getElementById('reader-layout');
-                if (!layout) return;
                 if (self.splitMode) {
                     // 分栏+竖排： juan-body 是横向滚动容器
-                    scrollToRight(document.getElementById('reader-content'));
-                    scrollToRight(document.getElementById('reader-right-content'));
+                    scrollToStart(document.getElementById('reader-content'));
+                    scrollToStart(document.getElementById('reader-right-content'));
                 } else {
-                    // 单栏模式： reader-layout 作为滚动容器
-                    scrollToRight(layout);
+                    scrollToStart(document.getElementById('reader-content'));
                 }
             }
             setTimeout(doScroll, 50);
+            setTimeout(doScroll, 200);
             // 兜底重试：应对字体加载或 HTMX 内容延迟
             setTimeout(doScroll, 500);
         },
 
-        // 竖排分栏：同步左右栏头部高度，以左栏为准
+        // 竖排分栏：同步左右栏头部高度，避免底部边框错位
         _equalizeVerticalHeaders: function () {
             var left = document.querySelector('.reader-sticky-top');
             var right = document.querySelector('.reader-right-header');
             if (!left || !right) return;
+            if (!this.splitMode || this.writingMode !== 'vertical') {
+                left.style.minHeight = '';
+                right.style.minHeight = '';
+                return;
+            }
             // 先重置，再读取自然高度
+            left.style.minHeight = '';
             right.style.minHeight = '';
             var leftH = left.offsetHeight;
-            right.style.minHeight = leftH + 'px';
+            var rightH = right.offsetHeight;
+            var targetH = Math.max(leftH, rightH);
+            left.style.minHeight = targetH + 'px';
+            right.style.minHeight = targetH + 'px';
         },
 
         // 分栏时：将指定栏滚动到垂直顶部（横排阅读用）
@@ -833,6 +857,18 @@ function readerApp() {
 
         // 防抖定时器
         _syncTimer: null,
+        _syncFailCount: 0,
+
+        _onSyncFail: function (label) {
+            this._syncFailCount++;
+            console.warn('[reader] ' + label + ' 同步失败');
+            // 仅首次失败时提示用户，避免频繁打扰
+            if (this._syncFailCount === 1) {
+                this.noteSaveStatus = '⚠ 设置同步失败，将在本地保留';
+                var self = this;
+                setTimeout(function () { self.noteSaveStatus = ''; }, 3000);
+            }
+        },
 
         _syncSettingsToServer: function () {
             // 防抖：300ms 内多次调用只执行最后一次
@@ -853,7 +889,7 @@ function readerApp() {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
-                }).catch(function () { });
+                }).catch(function () { self._onSyncFail('阅读设置'); });
             }, 300);
         },
 
@@ -872,7 +908,7 @@ function readerApp() {
                         method: 'PATCH',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ compare: existingCompare })
-                    }).catch(function () { });
+                    }).catch(function () { self._onSyncFail('对照配置'); });
                 })
                 .catch(function () {
                     // 无法读取已有数据，直接写入当前经文的
@@ -880,7 +916,7 @@ function readerApp() {
                         method: 'PATCH',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ compare: compareData })
-                    }).catch(function () { });
+                    }).catch(function () { self._onSyncFail('对照配置'); });
                 });
         },
 
@@ -897,7 +933,7 @@ function readerApp() {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
-            }).catch(function () { });
+            }).catch(function () { self._onSyncFail('AI 设置'); });
         },
 
         // ═══ 自动加载注疏映射 ═══
@@ -931,7 +967,7 @@ function readerApp() {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
-            }).catch(function () { });
+            }).catch(function () { self._onSyncFail('注疏配置'); });
         },
 
         // ═══ 笔记功能 ═══
@@ -1025,7 +1061,12 @@ function readerApp() {
     function showPopup(target, noteIdx, noteText) {
         var p = ensurePopup();
         clearTimeout(hideTimer);
-        p.innerHTML = '<span class="popup-num">[' + noteIdx + ']</span> ' + noteText;
+        p.textContent = '';
+        var numSpan = document.createElement('span');
+        numSpan.className = 'popup-num';
+        numSpan.textContent = '[' + noteIdx + ']';
+        p.appendChild(numSpan);
+        p.appendChild(document.createTextNode(' ' + noteText));
         p.classList.add('visible');
         var rect = target.getBoundingClientRect();
         var top = rect.top - p.offsetHeight - 8;
@@ -1107,14 +1148,6 @@ function readerApp() {
     document.addEventListener('htmx:afterSettle', function (e) {
         if (e.detail.target && e.detail.target.id === 'reader-content') {
             bindNoteEvents(e.detail.target);
-            // 竖排模式下，新内容加载后重置滚动到经文开头（最右侧）
-            var layout = document.getElementById('reader-layout');
-            if (layout && layout.classList.contains('writing-vertical')) {
-                setTimeout(function () {
-                    var juanBody = document.querySelector('.juan-body');
-                    if (juanBody) juanBody.scrollLeft = 0;
-                }, 100);
-            }
         }
     });
 

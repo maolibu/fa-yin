@@ -3,7 +3,6 @@
 提供用户数据（收藏、笔记、设置、偏好）的导出与管理功能。
 """
 import json
-import shutil
 import zipfile
 import tempfile
 import os
@@ -17,6 +16,10 @@ router = APIRouter(prefix="/api/user_data", tags=["user_data"])
 
 # 用户偏好文件路径
 PREFERENCES_PATH = config.USER_DATA_DIR / "preferences.json"
+
+
+def _error(message: str, status_code: int = 400):
+    return JSONResponse({"ok": False, "error": message}, status_code=status_code)
 
 
 def remove_file(path: str):
@@ -45,6 +48,13 @@ def _write_preferences(data: dict):
     )
 
 
+async def _read_json_body(request: Request):
+    try:
+        return await request.json()
+    except Exception:
+        return None
+
+
 # ============================================================
 # 用户偏好 API
 # ============================================================
@@ -64,14 +74,17 @@ async def save_preferences(request: Request):
     保存用户偏好（全量覆盖）。
     前端发送完整的 preferences 对象。
     """
-    body = await request.json()
+    body = await _read_json_body(request)
     # 基本校验：只接受 dict 类型，限制大小（防滥用）
     if not isinstance(body, dict):
-        return JSONResponse({"ok": False, "error": "无效的数据格式"}, status_code=400)
+        return _error("无效的数据格式")
     raw = json.dumps(body, ensure_ascii=False)
     if len(raw) > 1_000_000:  # 1MB 上限
-        return JSONResponse({"ok": False, "error": "数据过大"}, status_code=400)
-    _write_preferences(body)
+        return _error("数据过大")
+    try:
+        _write_preferences(body)
+    except OSError as exc:
+        return _error(f"写入偏好失败：{exc}", status_code=500)
     return {"ok": True}
 
 
@@ -82,15 +95,18 @@ async def patch_preferences(request: Request):
     只更新传入的顶层 key，不影响其他 key。
     适合单独保存某一类设置，如只更新 compare 数据。
     """
-    body = await request.json()
+    body = await _read_json_body(request)
     if not isinstance(body, dict):
-        return JSONResponse({"ok": False, "error": "无效的数据格式"}, status_code=400)
+        return _error("无效的数据格式")
     current = _read_preferences()
     current.update(body)
     raw = json.dumps(current, ensure_ascii=False)
     if len(raw) > 1_000_000:
-        return JSONResponse({"ok": False, "error": "数据过大"}, status_code=400)
-    _write_preferences(current)
+        return _error("数据过大")
+    try:
+        _write_preferences(current)
+    except OSError as exc:
+        return _error(f"写入偏好失败：{exc}", status_code=500)
     return {"ok": True}
 
 
@@ -118,7 +134,7 @@ async def export_user_data(background_tasks: BackgroundTasks):
                     arcname = file_path.relative_to(config.USER_DATA_DIR)
                     zipf.write(file_path, arcname)
 
-        filename = f"fjlsc_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.zip"
+        filename = f"fa_yin_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.zip"
 
         background_tasks.add_task(remove_file, temp_zip_path)
 
@@ -128,6 +144,6 @@ async def export_user_data(background_tasks: BackgroundTasks):
             media_type="application/zip",
         )
 
-    except Exception as e:
+    except Exception as exc:
         remove_file(temp_zip_path)
-        raise
+        return _error(f"导出用户数据失败：{exc}", status_code=500)

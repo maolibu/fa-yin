@@ -821,29 +821,61 @@
     });
 </script>
 <script>
-    // 阅读进度条 + 回到顶部
+    // 阅读进度条 + 回到顶部（兼容横排窗口滚动与竖排容器滚动）
     (function () {
         const progress = document.getElementById('reading-progress');
         const btn = document.getElementById('back-to-top');
         if (!progress || !btn) return;
 
+        function isVertical() {
+            var layout = document.querySelector('.reader-layout');
+            return layout && layout.classList.contains('writing-vertical');
+        }
+
+        function updateProgress() {
+            if (isVertical()) {
+                // 竖排模式：滚动发生在 reader-content 容器内（水平方向，RTL）
+                var el = document.getElementById('reader-content');
+                if (!el) return;
+                var scrollable = el.scrollWidth - el.clientWidth;
+                // 竖排 RTL：scrollLeft 从最右(起点)递减到 0(终点)
+                var scrolled = scrollable > 0 ? (scrollable - el.scrollLeft) : 0;
+                var pct = scrollable > 0 ? (scrolled / scrollable) * 100 : 0;
+                progress.style.width = pct + '%';
+                btn.classList.toggle('visible', scrolled > 200);
+            } else {
+                // 横排模式：窗口滚动
+                var scrollTop = window.scrollY;
+                var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+                progress.style.width = pct + '%';
+                btn.classList.toggle('visible', scrollTop > 400);
+            }
+        }
+
         let ticking = false;
-        window.addEventListener('scroll', function () {
+        function onScroll() {
             if (!ticking) {
                 requestAnimationFrame(function () {
-                    const scrollTop = window.scrollY;
-                    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-                    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-                    progress.style.width = pct + '%';
-                    btn.classList.toggle('visible', scrollTop > 400);
+                    updateProgress();
                     ticking = false;
                 });
                 ticking = true;
             }
-        });
+        }
+
+        window.addEventListener('scroll', onScroll);
+        // 竖排容器滚动监听（MutationObserver 兜底：容器可能被 HTMX 替换）
+        var contentEl = document.getElementById('reader-content');
+        if (contentEl) contentEl.addEventListener('scroll', onScroll);
 
         btn.addEventListener('click', function () {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (isVertical()) {
+                var el = document.getElementById('reader-content');
+                if (el) el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         });
     })();
 </script>

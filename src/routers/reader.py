@@ -9,6 +9,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 import logging
 import sqlite3
 import config
+from core.runtime_status import check_lineage_db
 
 log = logging.getLogger(__name__)
 
@@ -30,12 +31,24 @@ async def read_sutra(request: Request, sutra_id: str, juan: int = Query(1, ge=1)
     title = nav.get_sutra_title(sutra_id)
     info = nav.get_sutra_info(sutra_id) or {}
 
+    # 经号不在目录中，返回 404
+    if total_juan == 0 and not info:
+        return templates.TemplateResponse("404.html", {
+            "request": request,
+            "message": f"未找到经文：{sutra_id}",
+        }, status_code=404)
+
     # 经藏名称（如 "大正新修大藏經"）
     canon_code = info.get("canon", "") or ""
     canon_name = nav.canon_names.get(canon_code, canon_code)
 
     # 从 XML teiHeader 提取详细元数据
-    hm = parser.parse_header(sutra_id)
+    hm = {}
+    if parser is not None:
+        try:
+            hm = parser.parse_header(sutra_id) or {}
+        except Exception as exc:
+            log.warning(f"读取经文头信息失败，已回退到目录元数据: {sutra_id}: {exc}")
 
     # 初始卷号校验
     initial_juan = min(juan, total_juan) if total_juan > 0 else 1
@@ -64,10 +77,17 @@ async def get_content(request: Request, sutra_id: str, scroll: int):
     try:
         content = parser.parse_scroll(sutra_id, scroll)
         return HTMLResponse(content)
-    except FileNotFoundError as e:
-        return HTMLResponse(f"<div class='error'>未找到: {str(e)}</div>")
+    except FileNotFoundError:
+        return HTMLResponse(
+            f"<div class='error'>未找到经文 {sutra_id} 卷{scroll} 的数据文件</div>",
+            status_code=404,
+        )
     except Exception as e:
-        return HTMLResponse(f"<div class='error'>解析错误: {str(e)}</div>")
+        log.error(f"解析经文失败 {sutra_id}/{scroll}: {e}")
+        return HTMLResponse(
+            "<div class='error'>经文解析出错，请稍后再试</div>",
+            status_code=500,
+        )
 
 
 @router.get("/api/search_sutra")
@@ -110,14 +130,30 @@ async def search_sutra(request: Request, q: str = Query("", min_length=1)):
 @router.get("/api/persons/{sutra_id}")
 async def get_sutra_persons(request: Request, sutra_id: str):
     """获取与经文关联的人物：authority 数据 + 正文扫描"""
-    import re, json
+    import re
+
+    lineage_status = check_lineage_db()
+    if not lineage_status["ok"]:
+        return JSONResponse({
+            "available": False,
+            "error": lineage_status["message"],
+            "authored": [],
+            "mentioned": [],
+            "text_found": [],
+        }, status_code=503)
 
     db_path = config.LINEAGE_DB
     try:
         conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
         conn.row_factory = sqlite3.Row
-    except Exception:
-        return JSONResponse({"authored": [], "mentioned": [], "text_found": []})
+    except sqlite3.Error as exc:
+        return JSONResponse({
+            "available": False,
+            "error": str(exc),
+            "authored": [],
+            "mentioned": [],
+            "text_found": [],
+        }, status_code=503)
 
     try:
         # ── 1. 从 person_scriptures 获取权威数据 ──

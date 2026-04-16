@@ -15,6 +15,13 @@ try:
 except ImportError:
     pass
 
+# ─── 应用版本与标识 ───────────────────────────────────────────
+APP_NAME = "法印对照"
+APP_SUBTITLE = "整合阅读平台"
+APP_TITLE = f"{APP_NAME} · {APP_SUBTITLE}"
+APP_VERSION = os.getenv("APP_VERSION", "1.1.0")
+APP_VERSION_DISPLAY = f"v{APP_VERSION}"
+
 # ─── 项目根目录（launcher.py 所在位置） ─────────────────────
 # src/config.py → 上一级就是项目根
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -173,16 +180,23 @@ AI_DEFAULT_PROVIDER = os.getenv("AI_DEFAULT_PROVIDER", "deepseek")
 # ─── 路径摘要（调试用） ──────────────────────────────────────
 def print_config():
     """打印当前路径配置，用于调试"""
+    from core.runtime_status import check_search_db, check_dict_db, check_lineage_db
+
+    search_status = check_search_db(CBETA_SEARCH_DB)
+    dict_status = check_dict_db(DICTS_DB)
+    lineage_status = check_lineage_db(LINEAGE_DB)
+
     print("=" * 50)
-    print("法印对照 · 路径配置")
+    print(f"{APP_TITLE}  {APP_VERSION_DISPLAY}")
     print("=" * 50)
     print(f"  项目根目录:    {PROJECT_ROOT}")
     print(f"  源代码目录:    {SRC_DIR}")
     print(f"  CBETA 数据:    {CBETA_BASE}  {'✓' if cbeta_available else '✗'}")
     print(f"  组字数据:      {GAIJI_PATH}  {'✓' if GAIJI_PATH.exists() else '✗'}")
     print(f"  数据库目录:    {DB_DIR}")
-    print(f"  搜索数据库:    {CBETA_SEARCH_DB}  {'✓' if cbeta_search_available else '✗'}")
-    print(f"  字典数据库:    {DICTS_DB}  {'✓' if DICTS_DB.exists() else '✗'}")
+    print(f"  搜索数据库:    {CBETA_SEARCH_DB}  {'✓' if search_status['ok'] else '✗'}")
+    print(f"  字典数据库:    {DICTS_DB}  {'✓' if dict_status['ok'] else '✗'}")
+    print(f"  法脉数据库:    {LINEAGE_DB}  {'✓' if lineage_status['ok'] else '✗'}")
     print(f"  用户数据:      {USER_DATA_DIR}")
     print(f"  服务地址:      http://{DEV_HOST}:{DEV_PORT}")
     print("=" * 50)

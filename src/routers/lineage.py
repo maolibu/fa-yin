@@ -13,16 +13,24 @@ from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import JSONResponse
 
 import config
+from core.runtime_status import check_lineage_db
 
 router = APIRouter(prefix="/api/lineage", tags=["祖师法脉"])
 
 # ─── 数据库连接 ────────────────────────────────────────────────
 def get_db():
     """获取 lineage.db 只读连接"""
+    status = check_lineage_db()
+    if not status["ok"]:
+        raise HTTPException(status_code=503, detail=f"法脉数据库不可用：{status['message']}")
+
     db_path = config.LINEAGE_DB
-    conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
-    conn.row_factory = sqlite3.Row
-    return conn
+    try:
+        conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+        conn.row_factory = sqlite3.Row
+        return conn
+    except sqlite3.Error as exc:
+        raise HTTPException(status_code=503, detail=f"法脉数据库打开失败：{exc}") from exc
 
 
 # ─── 朝代配置（编年表用） ──────────────────────────────────────
@@ -611,4 +619,3 @@ async def get_stats():
         }
     finally:
         db.close()
-

@@ -121,6 +121,15 @@ python launcher.py --no-browser   # 不自动打开浏览器
 python launcher.py --skip-build   # 跳过数据库构建
 ```
 
+### 运行状态与降级策略
+
+- **必需组件**：`data/raw/cbeta/XML/` 经文数据。缺失时阅读与经目录功能不可用，启动脚本会先引导下载。
+- **可选组件**：`cbeta_search.db`、`dicts.db`、`lineage.db`。若文件损坏、schema 不符或暂时缺失，服务仍可启动，但会降级为：
+- 全文搜索降级为经名/经号检索
+- 内置词典降级为仅用户词典可用
+- 人物 / 法脉 / 地图接口返回 `503`
+- 可通过 `http://localhost:8400/api/health` 查看当前运行时健康状态；若你改了端口，请将 `8400` 替换为实际端口。
+
 ### 方式三：Docker 部署
 
 ```bash

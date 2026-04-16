@@ -14,6 +14,7 @@ from typing import Optional
 from fastapi import APIRouter, Query
 
 from config import DATA_DIR, PROJECT_ROOT
+from core.runtime_status import check_dict_db
 from core.user_dicts import UserDictManager
 
 log = logging.getLogger(__name__)
@@ -22,6 +23,9 @@ router = APIRouter(prefix="/api/dict", tags=["dict"])
 
 # 内置词典数据库路径
 DICT_DB = DATA_DIR / "dicts.db"
+
+# 启动时校验 schema，避免每次请求都尝试连接损坏的数据库
+_builtin_ok: bool = check_dict_db(DICT_DB)["ok"] if DICT_DB.exists() else False
 
 # 用户词典目录
 USER_DICT_DIR = PROJECT_ROOT / "data" / "dicts" / "user"
@@ -53,33 +57,38 @@ async def lookup(q: str = Query(..., min_length=1, max_length=30)):
     """
     results = []
     seen = set()
+    builtin_available = False
 
     # 1. 查询内置词典 (SQLite)
-    if DICT_DB.exists():
-        conn = _get_conn()
+    if _builtin_ok:
         try:
-            rows = conn.execute("""
-                SELECT e.term, e.definition, d.dict_id, d.name as dict_name, d.char_type
-                FROM entries e
-                JOIN dictionaries d ON e.dict_id = d.dict_id
-                WHERE e.term_tc = ? OR e.term_sc = ? OR e.term = ?
-                ORDER BY d.entry_count DESC
-            """, (q, q, q)).fetchall()
+            conn = _get_conn()
+            try:
+                rows = conn.execute("""
+                    SELECT e.term, e.definition, d.dict_id, d.name as dict_name, d.char_type
+                    FROM entries e
+                    JOIN dictionaries d ON e.dict_id = d.dict_id
+                    WHERE e.term_tc = ? OR e.term_sc = ? OR e.term = ?
+                    ORDER BY d.entry_count DESC
+                """, (q, q, q)).fetchall()
+                builtin_available = True
 
-            for r in rows:
-                key = (r["dict_id"], r["term"])
-                if key in seen:
-                    continue
-                seen.add(key)
-                results.append({
-                    "dict_id": r["dict_id"],
-                    "dict_name": r["dict_name"],
-                    "char_type": r["char_type"],
-                    "term": r["term"],
-                    "definition": r["definition"],
-                })
-        finally:
-            conn.close()
+                for r in rows:
+                    key = (r["dict_id"], r["term"])
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    results.append({
+                        "dict_id": r["dict_id"],
+                        "dict_name": r["dict_name"],
+                        "char_type": r["char_type"],
+                        "term": r["term"],
+                        "definition": r["definition"],
+                    })
+            finally:
+                conn.close()
+        except sqlite3.Error as exc:
+            log.warning(f"内置词典数据库不可用，已降级到用户词典: {exc}")
 
     # 2. 查询用户词典 (MDX/JSON/CSV)
     mgr = _get_user_mgr()
@@ -94,6 +103,7 @@ async def lookup(q: str = Query(..., min_length=1, max_length=30)):
         "query": q,
         "count": len(results),
         "results": results,
+        "builtin_available": builtin_available,
     }
 
 
@@ -103,16 +113,19 @@ async def list_dicts():
     results = []
 
     # 内置词典
-    if DICT_DB.exists():
-        conn = _get_conn()
+    if _builtin_ok:
         try:
-            rows = conn.execute("""
-                SELECT dict_id, name, source, entry_count, char_type
-                FROM dictionaries ORDER BY entry_count DESC
-            """).fetchall()
-            results.extend([dict(r) for r in rows])
-        finally:
-            conn.close()
+            conn = _get_conn()
+            try:
+                rows = conn.execute("""
+                    SELECT dict_id, name, source, entry_count, char_type
+                    FROM dictionaries ORDER BY entry_count DESC
+                """).fetchall()
+                results.extend([dict(r) for r in rows])
+            finally:
+                conn.close()
+        except sqlite3.Error as exc:
+            log.warning(f"读取内置词典列表失败，已降级到用户词典: {exc}")
 
     # 用户词典
     mgr = _get_user_mgr()

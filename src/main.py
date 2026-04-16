@@ -12,9 +12,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uvicorn
 import shutil
-import os
 
 import config
+from core.runtime_status import collect_runtime_health
 from routers import search, favorites, reader, nav, lineage
 
 # ─── 日志 ─────────────────────────────────────────────────────
@@ -25,7 +25,7 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 # ─── 应用 ─────────────────────────────────────────────────────
-app = FastAPI(title="法印对照 · 整合阅读平台", version="0.1.0")
+app = FastAPI(title=config.APP_TITLE, version=config.APP_VERSION)
 
 # 静态文件和模板
 app.mount("/static", StaticFiles(directory=str(config.STATIC_DIR)), name="static")
@@ -40,9 +40,13 @@ if config.TILES_DIR.exists():
     log.info(f"  离线地图瓦片: {config.TILES_DIR} ✓")
 
 templates = Jinja2Templates(directory=str(config.TEMPLATES_DIR))
+templates.env.globals["app_name"] = config.APP_NAME
+templates.env.globals["app_version"] = config.APP_VERSION
+templates.env.globals["app_version_display"] = config.APP_VERSION_DISPLAY
 
 # 将 templates 存储到 app.state，供路由模块访问
 app.state.templates = templates
+app.state.runtime_health = collect_runtime_health()
 
 # ─── 注册路由 ─────────────────────────────────────────────────
 app.include_router(search.router)
@@ -132,9 +136,18 @@ async def init_core_modules():
             app.state.parser = parser_instance
             log.info(f"CBETANav + CBETAParser 初始化成功，共 {len(nav_instance.catalog)} 部经文")
         except Exception as e:
-            log.error(f"核心模块初始化失败: {e}")
+            log.exception("核心模块初始化失败")
     else:
         log.warning(f"CBETA 数据未找到 ({config.CBETA_BASE})，搜索和阅读功能不可用")
+
+
+@app.on_event("startup")
+async def refresh_runtime_health():
+    """启动后刷新运行时健康状态"""
+    app.state.runtime_health = collect_runtime_health(
+        nav=app.state.nav,
+        parser=app.state.parser,
+    )
 
 
 # ─── 页面路由 ─────────────────────────────────────────────────
@@ -155,6 +168,16 @@ async def index(request: Request):
         "daily_verse": daily_verse,
         "daily_index": daily_index,
     })
+
+
+@app.get("/api/health")
+async def api_health():
+    """返回运行时健康状态，供自检与部署排障使用"""
+    app.state.runtime_health = collect_runtime_health(
+        nav=app.state.nav,
+        parser=app.state.parser,
+    )
+    return app.state.runtime_health
 
 
 # ─── 入口 ─────────────────────────────────────────────────────

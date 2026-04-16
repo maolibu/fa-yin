@@ -5,11 +5,14 @@
 """
 
 import logging
+import re
 import sqlite3
+from html import escape as html_escape
 from fastapi import APIRouter, Request, Query
 from fastapi.responses import JSONResponse
 
 import config
+from core.runtime_status import check_search_db, collect_runtime_health
 
 log = logging.getLogger(__name__)
 
@@ -31,6 +34,16 @@ except ImportError:
         return text
 
 
+def _sanitize_snippet(raw: str) -> str:
+    """转义 snippet 中的 HTML，仅保留 <mark></mark> 高亮标签。"""
+    # 先暂存 <mark>/<\mark> 为占位符，转义其余内容，再还原
+    placeholder_open = "\x00MARK_OPEN\x00"
+    placeholder_close = "\x00MARK_CLOSE\x00"
+    text = raw.replace("<mark>", placeholder_open).replace("</mark>", placeholder_close)
+    text = html_escape(text)
+    return text.replace(placeholder_open, "<mark>").replace(placeholder_close, "</mark>")
+
+
 def _get_search_db():
     """获取搜索数据库只读连接"""
     conn = sqlite3.connect(
@@ -50,8 +63,22 @@ async def search_sutras(
     统一搜索：先标题匹配再全文匹配。
     lang 参数控制返回结果的繁简，跟随用户阅读设置。
     """
-    if config.CBETA_SEARCH_DB.exists():
-        return _unified_search(q, lang)
+    health = getattr(request.app.state, "runtime_health", None)
+    if health is None:
+        health = collect_runtime_health(
+            nav=getattr(request.app.state, "nav", None),
+            parser=getattr(request.app.state, "parser", None),
+        )
+        request.app.state.runtime_health = health
+
+    search_status = health["components"].get("search_db") or check_search_db()
+    if search_status["ok"]:
+        try:
+            return _unified_search(q, lang)
+        except sqlite3.Error as exc:
+            log.warning(f"搜索数据库查询失败，已降级到内存搜索: {exc}")
+        except Exception as exc:
+            log.warning(f"搜索数据库异常，已降级到内存搜索: {exc}")
 
     return _memory_search(request, q)
 
@@ -108,9 +135,10 @@ def _unified_search(q: str, lang: str = "tc"):
                 """, (fts_query,)).fetchall()
 
                 for r in ft_rows:
-                    # snippet 来自简体列
+                    # snippet 来自简体列，转义后仅保留 <mark> 高亮
                     raw_snippet = r["snippet"] or ""
                     display_snippet = raw_snippet if use_sc else to_tc(raw_snippet)
+                    display_snippet = _sanitize_snippet(display_snippet)
                     results.append({
                         "sutra_id": r["sutra_id"],
                         "title": r["title_sc"] if use_sc else r["title"] or "",

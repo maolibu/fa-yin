@@ -25,12 +25,16 @@ import webbrowser
 import subprocess
 import threading
 import unicodedata
+from datetime import datetime
 from pathlib import Path
 
 # ─── 确保 src/ 在 Python 搜索路径中 ─────────────────────────
 PROJECT_ROOT = Path(__file__).resolve().parent
 SRC_DIR = PROJECT_ROOT / "src"
 sys.path.insert(0, str(SRC_DIR))
+
+import config
+from core.runtime_status import check_dict_db, check_lineage_db, check_search_db
 
 
 # ============================================================
@@ -80,7 +84,7 @@ def print_banner():
     print()
     print(f"  ╔{'═' * W}╗")
     box_center("法 印 对 照 · 阅 读 平 台", W)
-    box_center("Fa-Yin Reading Platform  v1.0", W)
+    box_center(f"Fa-Yin Reading Platform  {config.APP_VERSION_DISPLAY}", W)
     print(f"  ╚{'═' * W}╝")
     print()
 
@@ -227,15 +231,40 @@ def guide_download(cbeta_base):
 # Step 3: 数据库构建
 # ============================================================
 
+def quarantine_sqlite_artifacts(db_path, label):
+    """隔离可疑的 SQLite 主文件及其 wal/shm，避免重建时继续踩坏库。"""
+    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    moved = []
+    for suffix in ("", "-wal", "-shm"):
+        candidate = Path(str(db_path) + suffix)
+        if not candidate.exists():
+            continue
+        backup = candidate.with_name(f"{candidate.name}.invalid-{stamp}")
+        try:
+            candidate.rename(backup)
+            moved.append(backup)
+        except OSError as exc:
+            print(f"  ⚠️  无法隔离 {label} 文件 {candidate.name}: {exc}")
+    if moved:
+        print(f"      已隔离 {label}:")
+        for item in moved:
+            print(f"        - {item.name}")
+
+
 def build_database(config):
     """检查并构建搜索数据库"""
     search_db = config.CBETA_SEARCH_DB
+    status = check_search_db(search_db)
 
-    if search_db.exists() and search_db.stat().st_size > 1024:
-        print_step(3, "数据库构建", "✅ 搜索数据库已存在")
+    if status["ok"]:
+        print_step(3, "搜索数据库", "✅ 已通过 schema 校验")
         return True
 
-    print_step(3, "数据库构建", "⏳ 搜索数据库不存在，开始构建...")
+    if status["reason"] == "missing":
+        print_step(3, "搜索数据库", "⏳ 数据库不存在，开始构建...")
+    else:
+        print_step(3, "搜索数据库", f"⚠️ {status['message']}，准备重建...")
+        quarantine_sqlite_artifacts(search_db, "搜索数据库")
     print("      （首次构建约需 5-15 分钟，取决于机器性能）")
     print()
 
@@ -255,16 +284,86 @@ def build_database(config):
             check=True,
         )
         if result.returncode == 0:
-            print()
-            print("      ✅ 搜索数据库构建完成！")
-            return True
+            final_status = check_search_db(search_db)
+            if final_status["ok"]:
+                print()
+                print("      ✅ 搜索数据库构建完成并通过校验！")
+                return True
+            print(f"  ⚠️  搜索数据库构建后仍不可用: {final_status['message']}")
+            if final_status["detail"]:
+                print(f"      {final_status['detail']}")
+            print("      将以标题检索降级模式继续启动。")
+            return False
     except subprocess.CalledProcessError as e:
         print(f"  ❌ 数据库构建失败: {e}")
+        print("      将以标题检索降级模式继续启动。")
         return False
     except KeyboardInterrupt:
         print("\n  ⚠️  构建已中断。下次启动时会重新尝试。")
         return False
 
+    return False
+
+
+def build_dict_database(config):
+    """检查并构建词典数据库"""
+    dict_db = config.DICTS_DB
+    status = check_dict_db(dict_db)
+
+    if status["ok"]:
+        print_step(3, "词典数据库", "✅ 已通过 schema 校验")
+        return True
+
+    if status["reason"] == "missing":
+        print_step(3, "词典数据库", "⏳ 数据库不存在，开始构建...")
+    else:
+        print_step(3, "词典数据库", f"⚠️ {status['message']}，准备重建...")
+        quarantine_sqlite_artifacts(dict_db, "词典数据库")
+
+    dict_script = PROJECT_ROOT / "tools" / "dict_converter" / "build_dict_db.py"
+    if not dict_script.exists():
+        print(f"  ⚠️  词典构建脚本未找到: {dict_script}")
+        print("      将以用户词典降级模式继续启动。")
+        return False
+
+    try:
+        result = subprocess.run(
+            [sys.executable, str(dict_script)],
+            cwd=str(dict_script.parent),
+            check=True,
+        )
+        if result.returncode == 0:
+            final_status = check_dict_db(dict_db)
+            if final_status["ok"]:
+                print("      ✅ 词典数据库构建完成并通过校验！")
+                return True
+            print(f"  ⚠️  词典数据库构建后仍不可用: {final_status['message']}")
+            if final_status["detail"]:
+                print(f"      {final_status['detail']}")
+            print("      将以用户词典降级模式继续启动。")
+            return False
+    except subprocess.CalledProcessError as e:
+        print(f"  ⚠️  词典数据库构建失败: {e}")
+        print("      将以用户词典降级模式继续启动。")
+        return False
+    except KeyboardInterrupt:
+        print("\n  ⚠️  构建已中断。")
+        return False
+
+    return False
+
+
+def report_lineage_database():
+    """报告法脉数据库状态（可选依赖，不阻断启动）"""
+    status = check_lineage_db(config.LINEAGE_DB)
+    if status["ok"]:
+        print_step(3, "法脉数据库", "✅ 已通过 schema 校验")
+        return True
+
+    print_step(3, "法脉数据库", f"⚠️ {status['message']}")
+    if status["detail"]:
+        print(f"      {status['detail']}")
+    print("      人物、法脉、地图相关接口将返回 503，其他功能不受影响。")
     return False
 
 
@@ -346,6 +445,7 @@ def print_tips(host, port):
     print(f"  ├{'─' * W}┤")
     box_left("  ⌨️  快捷操作:", W)
     box_left("    Ctrl+C  停止服务", W)
+    box_left(f"    健康检查: {url}/api/health", W)
     print(f"  ├{'─' * W}┤")
     box_left("  🔗 项目主页:", W)
     box_left("    https://github.com/maolibu/fa-yin", W)
@@ -438,8 +538,6 @@ def main():
     # 横幅
     print_banner()
 
-    # 加载配置
-    import config
     host = args.host or config.DEV_HOST
     port = args.port or config.DEV_PORT
 
@@ -477,30 +575,26 @@ def main():
     if not args.skip_build:
         build_database(config)
     else:
-        print_step(3, "数据库构建", "⏸️  已跳过（--skip-build）")
+        search_status = check_search_db(config.CBETA_SEARCH_DB)
+        if search_status["ok"]:
+            print_step(3, "搜索数据库", "⏸️  已跳过构建（当前数据库可用）")
+        else:
+            print_step(3, "搜索数据库", f"⚠️ 已跳过构建，当前不可用：{search_status['message']}")
+            print("      将以标题检索降级模式继续启动。")
 
     # Step 3b: 词典数据库构建
-    dicts_db = config.DICTS_DB
-    if dicts_db.exists() and dicts_db.stat().st_size > 1024:
-        print_step(3, "词典数据库", "✅ 已存在")
+    if not args.skip_build:
+        build_dict_database(config)
     else:
-        print_step(3, "词典数据库", "⏳ 词典数据库不存在，开始构建...")
-        dict_script = PROJECT_ROOT / "tools" / "dict_converter" / "build_dict_db.py"
-        if dict_script.exists():
-            try:
-                result = subprocess.run(
-                    [sys.executable, str(dict_script)],
-                    cwd=str(dict_script.parent),
-                    check=True,
-                )
-                if result.returncode == 0:
-                    print("      ✅ 词典数据库构建完成！")
-            except subprocess.CalledProcessError as e:
-                print(f"  ⚠️  词典数据库构建失败: {e}")
-            except KeyboardInterrupt:
-                print("\n  ⚠️  构建已中断。")
+        dict_status = check_dict_db(config.DICTS_DB)
+        if dict_status["ok"]:
+            print_step(3, "词典数据库", "⏸️  已跳过构建（当前数据库可用）")
         else:
-            print(f"  ⚠️  词典构建脚本未找到: {dict_script}")
+            print_step(3, "词典数据库", f"⚠️ 已跳过构建，当前不可用：{dict_status['message']}")
+            print("      将以用户词典降级模式继续启动。")
+
+    # Step 3c: 法脉数据库状态
+    report_lineage_database()
 
     # Step 4: Obsidian Vault 生成
     if not args.skip_obsidian:

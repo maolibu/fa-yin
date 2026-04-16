@@ -5763,6 +5763,7 @@ html.theme-light .section-icon {
     overflow: hidden;
     width: 100%;
     min-width: unset;
+    min-height: 0;
     height: 100%;
     padding-top: 0;
 }
@@ -5771,6 +5772,7 @@ html.theme-light .section-icon {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    min-height: 0;
     height: 100%;
     padding-right: 2px;
     /* 防止 juan-body 右边框被裁切 */
@@ -5783,8 +5785,9 @@ html.theme-light .section-icon {
 }
 
 .reader-layout.writing-vertical.split-active .juan-body {
-    /* 统一固定高度 → 底部边框对齐（不依赖 flex: 1，避免头部高度差导致错位） */
-    height: calc(100vh - 180px);
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;

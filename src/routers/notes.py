@@ -76,8 +76,14 @@ async def save_note(sutra_id: str, body: NoteBody, request: Request):
     now = datetime.now()
     filepath = _today_file()
 
-    # 获取经文标题（从查询字符串传入，回退到 sutra_id）
-    sutra_title = request.query_params.get("title", sutra_id)
+    # 优先从运行中的导航索引获取真实经名，前端漏传 title 时也能正确保存。
+    sutra_title = request.query_params.get("title", "").strip()
+    if not sutra_title:
+        nav = getattr(request.app.state, "nav", None)
+        if nav is not None:
+            sutra_title = nav.get_sutra_title(sutra_id) or ""
+    if not sutra_title:
+        sutra_title = sutra_id
 
     # 构造 Markdown 条目
     entry_lines = [
