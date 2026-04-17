@@ -223,6 +223,26 @@
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
 }
 
+/* 暗色主題 — 全局滾動條（細金調，沿用閱讀頁直排樣式） */
+body:not(.theme-light) ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+body:not(.theme-light) ::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 3px;
+}
+
+body:not(.theme-light) ::-webkit-scrollbar-thumb {
+    background: var(--gold-subtle);
+    border-radius: 3px;
+}
+
+body:not(.theme-light) ::-webkit-scrollbar-thumb:hover {
+    background: var(--gold-dim);
+}
+
 /* 淺色主題 — 滾動條 */
 .theme-light ::-webkit-scrollbar-track {
     background: var(--bg-secondary);
@@ -2402,6 +2422,14 @@ a:hover {
     overflow: hidden auto;
     padding: 0;
     position: relative;
+}
+
+/* 暗色模式：法脈面板整體下沉到頁面底色，減少亮度反差 */
+body:not(.theme-light) .ln-panel,
+body:not(.theme-light) .ln-panel-body,
+body:not(.theme-light) .chronicle-scroll,
+body:not(.theme-light) #panel-timeline {
+    background: var(--bg-primary);
 }
 
 /* 分割面板 */
@@ -5972,21 +6000,3 @@ html.theme-light .section-icon {
     writing-mode: horizontal-tb;
 }
 
-/* 豎排時的滾動條樣式 */
-.reader-layout.writing-vertical .juan-body::-webkit-scrollbar {
-    height: 6px;
-}
-
-.reader-layout.writing-vertical .juan-body::-webkit-scrollbar-track {
-    background: var(--bg-secondary);
-    border-radius: 3px;
-}
-
-.reader-layout.writing-vertical .juan-body::-webkit-scrollbar-thumb {
-    background: var(--gold-subtle);
-    border-radius: 3px;
-}
-
-.reader-layout.writing-vertical .juan-body::-webkit-scrollbar-thumb:hover {
-    background: var(--gold-dim);
-}

@@ -2,8 +2,8 @@
   {
     "type": "module",
     "id": "mod_mm1iyzbd",
-    "name": "09现前",
-    "subtitle": "克期取证",
+    "name": "09現前",
+    "subtitle": "剋期取證",
     "color": "rust",
     "visible": true,
     "collapsed": false,
@@ -11,7 +11,7 @@
       {
         "type": "folder",
         "id": "fld_chan_yulu",
-        "name": "禅宗语录",
+        "name": "禪宗語錄",
         "collapsed": true,
         "children": [
           {
@@ -37,7 +37,7 @@
       {
         "type": "folder",
         "id": "fld_chan_gongan",
-        "name": "公案辑要",
+        "name": "公案輯要",
         "collapsed": true,
         "children": [
           {
@@ -63,7 +63,7 @@
       {
         "type": "folder",
         "id": "fld_chan_zhushu",
-        "name": "祖师著述",
+        "name": "祖師著述",
         "collapsed": true,
         "children": [
           {
@@ -97,8 +97,8 @@
   {
     "type": "module",
     "id": "mod_mm1iyp4h",
-    "name": "08诸宗",
-    "subtitle": "草木同润-随器",
+    "name": "08諸宗",
+    "subtitle": "草木同潤-隨器",
     "color": "amber",
     "visible": true,
     "collapsed": false,
@@ -106,7 +106,7 @@
       {
         "type": "folder",
         "id": "fld_jingtu_zushi",
-        "name": "净土宗",
+        "name": "淨土宗",
         "collapsed": true,
         "children": [
           {
@@ -164,7 +164,7 @@
       {
         "type": "folder",
         "id": "fld_huayan_zushi",
-        "name": "华严宗",
+        "name": "華嚴宗",
         "collapsed": true,
         "children": [
           {
@@ -193,7 +193,7 @@
     "type": "module",
     "id": "mod_mm1iy4po",
     "name": "07果德",
-    "subtitle": "一乘圆教-愿景",
+    "subtitle": "一乘圓教-願景",
     "color": "rosewood",
     "visible": true,
     "collapsed": false,
@@ -201,7 +201,7 @@
       {
         "type": "folder",
         "id": "fld_yuanjiao_jingdian",
-        "name": "华严法华",
+        "name": "華嚴法華",
         "collapsed": true,
         "children": [
           {
@@ -239,7 +239,7 @@
       {
         "type": "folder",
         "id": "fld_jingtu_sanjing",
-        "name": "净土经典",
+        "name": "淨土經典",
         "collapsed": true,
         "children": [
           {
@@ -289,7 +289,7 @@
       {
         "type": "folder",
         "id": "fld_niepan_rulai",
-        "name": "涅槃如来藏",
+        "name": "涅槃如來藏",
         "collapsed": true,
         "children": [
           {
@@ -323,8 +323,8 @@
   {
     "type": "module",
     "id": "mod_mm1ixmgc",
-    "name": "06唯识",
-    "subtitle": "转识成智-法相",
+    "name": "06唯識",
+    "subtitle": "轉識成智-法相",
     "color": "bamboo",
     "visible": true,
     "collapsed": false,
@@ -332,7 +332,7 @@
       {
         "type": "folder",
         "id": "fld_weishi_jingdian",
-        "name": "所依经典",
+        "name": "所依經典",
         "collapsed": true,
         "children": [
           {
@@ -358,7 +358,7 @@
       {
         "type": "folder",
         "id": "fld_weishi_lundian",
-        "name": "核心论典",
+        "name": "核心論典",
         "collapsed": true,
         "children": [
           {
@@ -404,8 +404,8 @@
   {
     "type": "module",
     "id": "mod_mm1ix1o0",
-    "name": "05中观",
-    "subtitle": "缘起性空-破执",
+    "name": "05中觀",
+    "subtitle": "緣起性空-破執",
     "color": "indigo",
     "visible": true,
     "collapsed": false,
@@ -413,7 +413,7 @@
       {
         "type": "folder",
         "id": "fld_bore_jingdian",
-        "name": "般若经典",
+        "name": "般若經典",
         "collapsed": true,
         "children": [
           {
@@ -457,7 +457,7 @@
       {
         "type": "folder",
         "id": "fld_zhongguan_sanlun",
-        "name": "中观三论",
+        "name": "中觀三論",
         "collapsed": true,
         "children": [
           {
@@ -483,7 +483,7 @@
       {
         "type": "folder",
         "id": "fld_bore_shilun",
-        "name": "般若释论",
+        "name": "般若釋論",
         "collapsed": true,
         "children": [
           {
@@ -506,7 +506,7 @@
     "type": "module",
     "id": "mod_mm1iwprg",
     "name": "04阿含",
-    "subtitle": "生死解脱-断惑",
+    "subtitle": "生死解脫-斷惑",
     "color": "cloud",
     "visible": true,
     "collapsed": false,
@@ -514,7 +514,7 @@
       {
         "type": "folder",
         "id": "fld_beichuan_ahan",
-        "name": "北传四阿含",
+        "name": "北傳四阿含",
         "collapsed": true,
         "children": [
           {
@@ -546,7 +546,7 @@
       {
         "type": "folder",
         "id": "fld_nanchuan_nikaya",
-        "name": "南传五部",
+        "name": "南傳五部",
         "collapsed": true,
         "children": [
           {
@@ -584,7 +584,7 @@
       {
         "type": "folder",
         "id": "fld_ahan_lundian",
-        "name": "阿毗达磨",
+        "name": "阿毗達磨",
         "collapsed": true,
         "children": [
           {
@@ -618,8 +618,8 @@
   {
     "type": "module",
     "id": "mod_mm1iwcjd",
-    "name": "03禅那",
-    "subtitle": "止观双运-技术",
+    "name": "03禪那",
+    "subtitle": "止觀雙運-技術",
     "color": "sandalwood",
     "visible": true,
     "collapsed": false,
@@ -627,7 +627,7 @@
       {
         "type": "folder",
         "id": "fld_rumen_zhiguan",
-        "name": "入门止观",
+        "name": "入門止觀",
         "collapsed": true,
         "children": [
           {
@@ -657,7 +657,7 @@
           {
             "type": "sutra",
             "id": "T0613",
-            "title": "禪祕要法經",
+            "title": "禪秘要法經",
             "juan": null
           },
           {
@@ -683,7 +683,7 @@
       {
         "type": "folder",
         "id": "fld_chanjing_yuandian",
-        "name": "禅经原典",
+        "name": "禪經原典",
         "collapsed": true,
         "children": [
           {
@@ -733,7 +733,7 @@
       {
         "type": "folder",
         "id": "fld_tiantai_zhiguan",
-        "name": "天台止观",
+        "name": "天台止觀",
         "collapsed": true,
         "children": [
           {
@@ -759,7 +759,7 @@
       {
         "type": "folder",
         "id": "fld_nianfo_sanmei",
-        "name": "念佛三昧",
+        "name": "唸佛三昧",
         "collapsed": true,
         "children": [
           {
@@ -771,13 +771,13 @@
           {
             "type": "sutra",
             "id": "T0414",
-            "title": "菩薩念佛三昧經",
+            "title": "菩薩唸佛三昧經",
             "juan": null
           },
           {
             "type": "sutra",
             "id": "T1967",
-            "title": "念佛三昧寶王論",
+            "title": "唸佛三昧寶王論",
             "juan": null
           }
         ]
@@ -787,7 +787,7 @@
   {
     "type": "module",
     "id": "mod_mm1iw0jq",
-    "name": "02课诵",
+    "name": "02課誦",
     "subtitle": "日拱一卒-助行",
     "color": "ochre",
     "visible": true,
@@ -796,7 +796,7 @@
       {
         "type": "folder",
         "id": "fld_kesong_yuanyuan",
-        "name": "经文原典",
+        "name": "經文原典",
         "collapsed": true,
         "children": [
           {
@@ -882,7 +882,7 @@
       {
         "type": "folder",
         "id": "fld_kesong_yigui",
-        "name": "佛事仪轨",
+        "name": "佛事儀軌",
         "collapsed": true,
         "children": [
           {
@@ -950,7 +950,7 @@
       {
         "type": "folder",
         "id": "fld_conglin_qinggui",
-        "name": "丛林清规",
+        "name": "叢林清規",
         "collapsed": true,
         "children": [
           {
@@ -984,8 +984,8 @@
   {
     "type": "module",
     "id": "mod_mm1iuq6h",
-    "name": "01净戒",
-    "subtitle": "开遮持犯-铠甲",
+    "name": "01淨戒",
+    "subtitle": "開遮持犯-鎧甲",
     "color": "bamboo",
     "visible": true,
     "collapsed": false,
@@ -993,7 +993,7 @@
       {
         "type": "folder",
         "id": "fld_dacheng_pusa",
-        "name": "大乘在家菩萨戒",
+        "name": "大乘在家菩薩戒",
         "collapsed": true,
         "children": [
           {
@@ -1069,7 +1069,7 @@
       {
         "type": "folder",
         "id": "fld_xiandai_lvxue",
-        "name": "现代律学合编",
+        "name": "現代律學合編",
         "collapsed": true,
         "children": [
           {
