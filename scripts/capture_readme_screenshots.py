@@ -175,27 +175,39 @@ SCROLL_LINEAGE_JS = r"""
 })()
 """
 
-NORMALIZE_READER_JS = r"""
-(() => {
+# 阅读器所有 setup 都先跑这一段，避免服务端偏好覆盖主题、避免任何 sync 写回
+def _reader_prelude(theme: str) -> str:
+    return f"""
   const root = document.querySelector('[x-data]');
   if (!root || !window.Alpine) return false;
   const app = Alpine.$data(root);
-  // 关闭一切 sync，避免污染服务器
-  app._syncSettingsToServer = function () {};
-  app._syncCompareToServer = function () {};
-  app._syncAiToServer = function () {};
-  app._syncCommentaryToServer = function () {};
+  app._syncSettingsToServer = function () {{}};
+  app._syncCompareToServer = function () {{}};
+  app._syncAiToServer = function () {{}};
+  app._syncCommentaryToServer = function () {{}};
+  // 关键：禁用从服务端拉取偏好，否则会用 user_data/preferences.json 覆盖主题
+  app._loadServerPreferences = function () {{ return Promise.resolve(); }};
+  app.themeMode = '{theme}';
+  app.setTheme('{theme}');
+"""
+
+
+def normalize_reader_js(theme: str) -> str:
+    return f"""
+(() => {{
+{_reader_prelude(theme)}
   app.activePanel = null;
   if (app.splitMode) app.closeSplit();
   app.setWritingMode('horizontal');
   return true;
-})()
+}})()
 """
 
-OPEN_SPLIT_JS = f"""
+
+def open_split_js(theme: str) -> str:
+    return f"""
 (() => {{
-  const root = document.querySelector('[x-data]');
-  const app = Alpine.$data(root);
+{_reader_prelude(theme)}
   app.activePanel = null;
   app.setWritingMode('horizontal');
   app.loadInRightPanel({{ id: '{SUTRA_RIGHT}', title: '金剛般若經疏' }});
@@ -203,27 +215,29 @@ OPEN_SPLIT_JS = f"""
 }})()
 """
 
-OPEN_DICT_JS = r"""
-(() => {
-  const root = document.querySelector('[x-data]');
-  const app = Alpine.$data(root);
+
+def open_dict_js(theme: str) -> str:
+    return f"""
+(() => {{
+{_reader_prelude(theme)}
   if (app.splitMode) app.closeSplit();
   app.activePanel = 'dict';
   app.dictQuery = '般若';
   app.lookupDict();
   return true;
-})()
+}})()
 """
 
-OPEN_VERTICAL_JS = r"""
-(() => {
-  const root = document.querySelector('[x-data]');
-  const app = Alpine.$data(root);
+
+def open_vertical_js(theme: str) -> str:
+    return f"""
+(() => {{
+{_reader_prelude(theme)}
   app.activePanel = null;
   if (app.splitMode) app.closeSplit();
   app.setWritingMode('vertical');
   return true;
-})()
+}})()
 """
 
 
@@ -315,16 +329,18 @@ async def capture_theme(
     await goto_with_theme(client, base_url, f"/read/{SUTRA_LEFT}", theme)
     await stabilize_page(client, "document.readyState === 'complete'")
     await stabilize_page(client, READER_READY_JS)
-    await client.evaluate(NORMALIZE_READER_JS)
+    # 等 _loadServerPreferences 的 fetch 充分完成（即使会覆盖也无所谓，下一步 normalize 会强制覆回）
+    await asyncio.sleep(0.8)
+    await client.evaluate(normalize_reader_js(theme))
     await stabilize_page(client, READER_READY_JS)
-    await asyncio.sleep(0.5)
+    await asyncio.sleep(0.4)
 
     # 03 单栏横排
     results.append(await capture(
         client, out,
         name=f"{prefix}3",
         width=DEFAULT_VIEWPORT[0], height=DEFAULT_VIEWPORT[1],
-        setup_js=NORMALIZE_READER_JS,
+        setup_js=normalize_reader_js(theme),
         ready_js=READER_READY_JS,
     ))
 
@@ -333,7 +349,7 @@ async def capture_theme(
         client, out,
         name=f"{prefix}4",
         width=SPLIT_VIEWPORT[0], height=SPLIT_VIEWPORT[1],
-        setup_js=OPEN_SPLIT_JS,
+        setup_js=open_split_js(theme),
         ready_js=SPLIT_READY_JS,
         settle=1.2,
     ))
@@ -343,7 +359,7 @@ async def capture_theme(
         client, out,
         name=f"{prefix}5",
         width=DEFAULT_VIEWPORT[0], height=DEFAULT_VIEWPORT[1],
-        setup_js=OPEN_DICT_JS,
+        setup_js=open_dict_js(theme),
         ready_js=DICT_READY_JS,
         settle=1.0,
     ))
@@ -353,7 +369,7 @@ async def capture_theme(
         client, out,
         name=f"{prefix}6",
         width=DEFAULT_VIEWPORT[0], height=DEFAULT_VIEWPORT[1],
-        setup_js=OPEN_VERTICAL_JS,
+        setup_js=open_vertical_js(theme),
         ready_js=VERTICAL_READY_JS,
         settle=0.8,
     ))

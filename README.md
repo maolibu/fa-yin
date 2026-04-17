@@ -25,7 +25,7 @@ CBETA 的原始数据是 XML，官方客户端有 Windows 版和 macOS 版，但
 <table>
   <tr>
     <td><img src="docs/screenshots/01.png" alt="首页：每日偈颂与九宫书架（暗金）" width="400"/></td>
-    <td><img src="docs/screenshots/12.png" alt="传承谱系：人物·法脉·行迹（纸卷）" width="400"/></td>
+    <td><img src="docs/screenshots/02.png" alt="传承谱系：人物·法脉·行迹（暗金）" width="400"/></td>
   </tr>
   <tr>
     <td><img src="docs/screenshots/13.png" alt="经文阅读器（横排，纸卷）" width="400"/></td>
