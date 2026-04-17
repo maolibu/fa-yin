@@ -24,16 +24,16 @@ CBETA 的原始数据是 XML，官方客户端有 Windows 版和 macOS 版，但
 
 <table>
   <tr>
-    <td><img src="docs/screenshots/01.png" alt="首页：每日偈颂与九宫书架" width="400"/></td>
-    <td><img src="docs/screenshots/02.png" alt="传承谱系：人物·法脉·行迹" width="400"/></td>
+    <td><img src="docs/screenshots/01.png" alt="首页：每日偈颂与九宫书架（暗金）" width="400"/></td>
+    <td><img src="docs/screenshots/12.png" alt="传承谱系：人物·法脉·行迹（纸卷）" width="400"/></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/03.png" alt="经文阅读器（横排）" width="400"/></td>
-    <td><img src="docs/screenshots/06.png" alt="经文阅读器（竖排）" width="400"/></td>
+    <td><img src="docs/screenshots/13.png" alt="经文阅读器（横排，纸卷）" width="400"/></td>
+    <td><img src="docs/screenshots/06.png" alt="经文阅读器（竖排，暗金）" width="400"/></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/04.png" alt="经疏对照：分栏对读" width="400"/></td>
-    <td><img src="docs/screenshots/05.png" alt="划词词典：多部辞书联查" width="400"/></td>
+    <td><img src="docs/screenshots/14.png" alt="经疏对照：分栏对读（纸卷）" width="400"/></td>
+    <td><img src="docs/screenshots/15.png" alt="划词词典：多部辞书联查（纸卷）" width="400"/></td>
   </tr>
 </table>
 
@@ -225,13 +225,13 @@ fa-yin/
 
 ---
 
-> **🌿 附言：关于二次开发与署名**
+> **附言：关于二次开发与署名**
 > 
 > 感谢大家对“法印对照”（fa-yin）的关注与使用。开源本项目，初衷是希望以技术广结善缘，方便大众阅藏修心。
 >
 > 近期发现有个别站点违反署名义务。理解每位使用者传播佛法的发心，但也恳请在二次开发或搭建网站时，尊重以下几点共识：
 >
-> 1. **保留出处与署名**：请在网站页脚或"关于"页面保留本项目的 [GitHub 链接](https://github.com/maolibu/fa-yin) 及原作者署名。删除或替换原作者信息的行为与开源精神相悖，亦有违佛教"不偷盗"的基本戒律。
+> 1. **保留出处与署名**：请在网站页脚或"关于"页面保留本项目的 [GitHub 链接](https://github.com/maolibu/fa-yin) 及原作者署名。删除或替换原作者信息的行为与开源精神相悖。
 > 2. **网络服务须开源**：依 AGPL-3.0 协议，若将修改后的代码作为网络服务（如公共网站）提供给他人使用，请务必同时公开您的完整源代码，以遵循协议要求。
 >
-> 个人本地部署可随意自用，无需告知。但若旨在弘法利生、惠及大众，还请遵守上述约定，共同维护开源世界的清净与法度。因果不虚，善缘常在。
+> 个人本地部署可随意自用，无需告知。但若旨在弘法利生、惠及大众，还请遵守上述约定，共同维护开源世界的清净与法度。
