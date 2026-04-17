@@ -1,18 +1,18 @@
 /**
- * 经文阅读器 — Alpine.js 组件
+ * 經文閱讀器 — Alpine.js 組件
  *
- * 依赖 window.READER_CONFIG（由 Jinja2 模板注入）：
+ * 依賴 window.READER_CONFIG（由 Jinja2 模板注入）：
  *   { sutraId, sutraTitle, initialJuan, totalJuan }
  */
 
 function readerApp() {
     var C = window.READER_CONFIG || {};
     if (!C.sutraId) {
-        console.error('[reader] READER_CONFIG 未正确注入，阅读器无法初始化');
+        console.error('[reader] READER_CONFIG 未正確注入，閱讀器無法初始化');
         return { initError: true };
     }
 
-    // 读取对照列表
+    // 讀取對照列表
     var savedItems = [];
     try {
         var saved = localStorage.getItem('compare_' + C.sutraId);
@@ -27,7 +27,7 @@ function readerApp() {
         );
     }
 
-    // 读取保存的设置
+    // 讀取保存的設置
     var savedFontSize = localStorage.getItem('reader_fontSize') || '20';
     var savedLineHeight = localStorage.getItem('reader_lineHeight') || '2.0';
     var savedVariant = localStorage.getItem('reader_textVariant') || 'original';
@@ -44,15 +44,15 @@ function readerApp() {
         splitMode: false,
         themeMode: savedTheme,
         panelTitles: {
-            'compare': '对照工作台',
-            'person': '经文人物',
-            'notes': '闪念笔记',
+            'compare': '對照工作臺',
+            'person': '經文人物',
+            'notes': '閃念筆記',
             'dict': '詞典查詢',
-            'ai': 'AI 释义',
-            'settings': '阅读设置'
+            'ai': 'AI 釋義',
+            'settings': '閱讀設置'
         },
 
-        // ═══ 设置相关 ═══
+        // ═══ 設置相關 ═══
         fontSize: savedFontSize,
         lineHeight: savedLineHeight,
         textVariant: savedVariant,
@@ -60,19 +60,19 @@ function readerApp() {
         _rightOriginalHTML: null,
         _occConverter: null,
 
-        // ═══ 字体风格 ═══
+        // ═══ 字體風格 ═══
         fontStyle: savedFontStyle,
 
         // ═══ 排版方向 ═══
         writingMode: savedWritingMode,
 
-        // ═══ 分栏相关 ═══
+        // ═══ 分欄相關 ═══
         splitItem: null,
         splitJuan: 1,
         splitTotalJuans: [],
         _splitInstance: null,
 
-        // ═══ 人物相关 ═══
+        // ═══ 人物相關 ═══
         personsAuthored: [],
         personsMentioned: [],
         personsTextFound: [],
@@ -83,23 +83,23 @@ function readerApp() {
         rightPersonsMentioned: [],
         rightPersonsTextFound: [],
         rightPersonsLoading: false,
-        _rightPersonsSutraId: null,  // 已加载的右栏经文 ID（避免重复加载）
+        _rightPersonsSutraId: null,  // 已加載的右欄經文 ID（避免重複加載）
 
-        // ═══ 笔记相关 ═══
+        // ═══ 筆記相關 ═══
         noteQuote: '',
         noteContent: '',
         noteSaveStatus: '',
         notesList: [],
 
-        // ═══ 詞典相关 ═══
+        // ═══ 詞典相關 ═══
         dictQuery: '',
         dictResults: [],
         dictLoading: false,
         dictSearched: false,
-        _lastDictQuery: '',        // 上次成功查询的词（避免重复请求）
-        _dictDebounceTimer: null,  // 词典输入框防抖定时器
+        _lastDictQuery: '',        // 上次成功查詢的詞（避免重複請求）
+        _dictDebounceTimer: null,  // 詞典輸入框防抖定時器
 
-        // ═══ AI 释义 ═══
+        // ═══ AI 釋義 ═══
         aiProvider: localStorage.getItem('ai_provider') || 'deepseek',
         aiApiKey: localStorage.getItem('ai_apikey') || '',
         aiMode: 'translate',
@@ -115,13 +115,13 @@ function readerApp() {
 
         init: function () {
             var self = this;
-            // 从服务端加载偏好，合并到当前状态
+            // 從服務端加載偏好，合併到當前狀態
             this._loadServerPreferences();
 
             this.applySettings();
             this._applyFontStyle();
             this._applyWritingMode();
-            // 应用保存的主题
+            // 應用保存的主題
             if (this.themeMode === 'light') {
                 document.body.classList.add('theme-light');
             }
@@ -137,7 +137,7 @@ function readerApp() {
                 setTimeout(function () { self._convertToSimplified(); }, 200);
             }
 
-            // 监听 HTMX 替换完成，为了竖排模式自动滚动到开头
+            // 監聽 HTMX 替換完成，為了豎排模式自動滾動到開頭
             document.addEventListener('htmx:afterSettle', function (e) {
                 if (self.writingMode === 'vertical') {
                     self._scrollVerticalToStart();
@@ -153,7 +153,7 @@ function readerApp() {
                     self._equalizeVerticalHeaders();
                 }
             });
-            // 监听选中文本 → 自动填入笔记引用 + 詞典查询 + AI 选中文本
+            // 監聽選中文本 → 自動填入筆記引用 + 詞典查詢 + AI 選中文本
             document.addEventListener('mouseup', function () {
                 var sel = window.getSelection();
                 if (sel && sel.toString().trim()) {
@@ -164,24 +164,24 @@ function readerApp() {
                     if (inLeft || inRight) {
                         var text = sel.toString().trim().substring(0, 30);
                         self.noteQuote = sel.toString().trim().substring(0, 500);
-                        // 自动填入詞典查询
+                        // 自動填入詞典查詢
                         if (text.length >= 1 && text.length <= 30) {
                             self.dictQuery = text;
-                            // 取消输入框的 debounce 定时器，避免竞态
+                            // 取消輸入框的 debounce 定時器，避免競態
                             clearTimeout(self._dictDebounceTimer);
                             self.lookupDict();
                         }
-                        // 自动填入 AI 选中文本
+                        // 自動填入 AI 選中文本
                         self.aiSelectedText = sel.toString().trim().substring(0, 2000);
                     }
                 }
             });
-            // 加载 AI 提供商列表
+            // 加載 AI 提供商列表
             this._loadAiProviders();
-            // 加载今日笔记
+            // 加載今日筆記
             this._loadNotes();
 
-            // 初始化 Lucide 图标（在 Alpine 完成 DOM 处理后执行）
+            // 初始化 Lucide 圖標（在 Alpine 完成 DOM 處理後執行）
             this.$nextTick(function () {
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             });
@@ -193,7 +193,7 @@ function readerApp() {
                 content.style.fontSize = this.fontSize + 'px';
                 content.style.lineHeight = this.lineHeight;
             }
-            // 右栏对照也同步字号和行距
+            // 右欄對照也同步字號和行距
             var rightContent = document.getElementById('reader-right-content');
             if (rightContent) {
                 rightContent.style.fontSize = this.fontSize + 'px';
@@ -211,7 +211,7 @@ function readerApp() {
             }
             localStorage.setItem('reader_theme', mode);
             this._syncSettingsToServer();
-            // 刷新 Lucide 图标以适配新颜色
+            // 刷新 Lucide 圖標以適配新顏色
             if (typeof lucide !== 'undefined') lucide.createIcons();
         },
 
@@ -226,14 +226,14 @@ function readerApp() {
             this._syncSettingsToServer();
         },
 
-        // ═══ 字体切换 ═══
+        // ═══ 字體切換 ═══
         setFontStyle: function (style) {
             this.fontStyle = style;
             this._applyFontStyle();
             this._saveSettings();
         },
 
-        // ═══ 排版方向切换 ═══
+        // ═══ 排版方向切換 ═══
         setWritingMode: function (mode) {
             this.writingMode = mode;
             this._applyWritingMode();
@@ -245,14 +245,14 @@ function readerApp() {
             if (!layout) return;
             if (this.writingMode === 'vertical') {
                 layout.classList.add('writing-vertical');
-                // 竖排模式：将滚动条定位到最右侧（经文开头）
+                // 豎排模式：將滾動條定位到最右側（經文開頭）
                 this._scrollVerticalToStart();
-                // 竖排分栏：同步头部高度
+                // 豎排分欄：同步頭部高度
                 var self = this;
                 setTimeout(function () { self._equalizeVerticalHeaders(); }, 100);
             } else {
                 layout.classList.remove('writing-vertical');
-                // 切回横排时清除竖排对齐留下的最小高度
+                // 切回橫排時清除豎排對齊留下的最小高度
                 var lh = document.querySelector('.reader-sticky-top');
                 var rh = document.querySelector('.reader-right-header');
                 if (lh) lh.style.minHeight = '';
@@ -261,8 +261,8 @@ function readerApp() {
         },
 
         _scrollVerticalToStart: function () {
-            // Blink 在 vertical-rl 下对 scrollLeft 的语义并不稳定；
-            // 直接写入一个足够大的正值，能稳定落到“经文开头”的最右端。
+            // Blink 在 vertical-rl 下對 scrollLeft 的語義並不穩定；
+            // 直接寫入一個足夠大的正值，能穩定落到“經文開頭”的最右端。
             function scrollToStart(el) {
                 if (!el || el.scrollWidth <= el.clientWidth) return;
                 el.scrollLeft = el.scrollWidth;
@@ -270,7 +270,7 @@ function readerApp() {
             var self = this;
             function doScroll() {
                 if (self.splitMode) {
-                    // 分栏+竖排： juan-body 是横向滚动容器
+                    // 分欄+豎排： juan-body 是橫向滾動容器
                     scrollToStart(document.getElementById('reader-content'));
                     scrollToStart(document.getElementById('reader-right-content'));
                 } else {
@@ -279,11 +279,11 @@ function readerApp() {
             }
             setTimeout(doScroll, 50);
             setTimeout(doScroll, 200);
-            // 兜底重试：应对字体加载或 HTMX 内容延迟
+            // 兜底重試：應對字體加載或 HTMX 內容延遲
             setTimeout(doScroll, 500);
         },
 
-        // 竖排分栏：同步左右栏头部高度，避免底部边框错位
+        // 豎排分欄：同步左右欄頭部高度，避免底部邊框錯位
         _equalizeVerticalHeaders: function () {
             var left = document.querySelector('.reader-sticky-top');
             var right = document.querySelector('.reader-right-header');
@@ -293,7 +293,7 @@ function readerApp() {
                 right.style.minHeight = '';
                 return;
             }
-            // 先重置，再读取自然高度
+            // 先重置，再讀取自然高度
             left.style.minHeight = '';
             right.style.minHeight = '';
             var leftH = left.offsetHeight;
@@ -303,17 +303,17 @@ function readerApp() {
             right.style.minHeight = targetH + 'px';
         },
 
-        // 分栏时：将指定栏滚动到垂直顶部（横排阅读用）
+        // 分欄時：將指定欄滾動到垂直頂部（橫排閱讀用）
         scrollPanelToTop: function (side) {
-            // 实际滚动容器是 .juan-body，不是面板容器
+            // 實際滾動容器是 .juan-body，不是面板容器
             var id = side === 'left' ? 'reader-content' : 'reader-right-content';
             var el = document.getElementById(id);
             if (el) el.scrollTop = 0;
         },
 
-        // 分栏时：将指定栏滚动到经文开头（竖排阅读用，即最右侧）
+        // 分欄時：將指定欄滾動到經文開頭（豎排閱讀用，即最右側）
         scrollPanelToStart: function (side) {
-            // 竖排分栏：juan-body 是滚动容器
+            // 豎排分欄：juan-body 是滾動容器
             var id = side === 'left' ? 'reader-content' : 'reader-right-content';
             var el = document.getElementById(id);
             if (el && el.scrollWidth > el.clientWidth) {
@@ -332,7 +332,7 @@ function readerApp() {
             if (content) content.style.fontFamily = fontValue;
             var rightContent = document.getElementById('reader-right-content');
             if (rightContent) rightContent.style.fontFamily = fontValue;
-            // 经文标题跟随正文字体（含罕见字回退）
+            // 經文標題跟隨正文字體（含罕見字回退）
             var title = document.querySelector('.sutra-title');
             if (title) title.style.fontFamily = fontValue;
         },
@@ -352,7 +352,7 @@ function readerApp() {
             var converter = this._occConverter;
             if (!converter) return;
 
-            // 转换指定容器内的文本
+            // 轉換指定容器內的文本
             function convertContainer(el) {
                 var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
                 var node;
@@ -367,7 +367,7 @@ function readerApp() {
                 }
             }
 
-            // 左栏
+            // 左欄
             var content = document.getElementById('reader-content');
             if (content) {
                 if (!this._originalHTML) {
@@ -376,7 +376,7 @@ function readerApp() {
                 convertContainer(content);
             }
 
-            // 右栏（对照）
+            // 右欄（對照）
             var rightContent = document.getElementById('reader-right-content');
             if (rightContent && rightContent.textContent.trim()) {
                 if (!this._rightOriginalHTML) {
@@ -387,13 +387,13 @@ function readerApp() {
         },
 
         _restoreOriginal: function () {
-            // 左栏
+            // 左欄
             var content = document.getElementById('reader-content');
             if (content && this._originalHTML) {
                 content.innerHTML = this._originalHTML;
                 this._originalHTML = null;
             }
-            // 右栏
+            // 右欄
             var rightContent = document.getElementById('reader-right-content');
             if (rightContent && this._rightOriginalHTML) {
                 rightContent.innerHTML = this._rightOriginalHTML;
@@ -416,7 +416,7 @@ function readerApp() {
             this.applySettings();
         },
 
-        // ═══ 对照相关 ═══
+        // ═══ 對照相關 ═══
         compareItems: savedItems,
         addDialogOpen: false,
         addDialogType: '',
@@ -429,15 +429,15 @@ function readerApp() {
             if (this.activePanel === null) {
                 this.addDialogOpen = false;
             }
-            // 首次打开人物面板时加载数据
+            // 首次打開人物面板時加載數據
             if (name === 'person' && !this._personsLoaded) {
                 this._loadPersons();
             }
-            // 分栏模式下切换到人物面板时，自动加载右栏人物
+            // 分欄模式下切換到人物面板時，自動加載右欄人物
             if (name === 'person' && this.splitMode && this.splitItem) {
                 this._loadRightPersons();
             }
-            // 重新渲染 Lucide 图标（面板内动态内容）
+            // 重新渲染 Lucide 圖標（面板內動態內容）
             var self = this;
             this.$nextTick(function () {
                 if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -464,7 +464,7 @@ function readerApp() {
         _loadRightPersons: function () {
             if (!this.splitItem) return;
             var rightId = this.splitItem.id;
-            // 避免重复加载同一经文
+            // 避免重複加載同一經文
             if (this._rightPersonsSutraId === rightId) return;
             this.rightPersonsLoading = true;
             this._rightPersonsSutraId = rightId;
@@ -532,7 +532,7 @@ function readerApp() {
             this.addSearchQuery = '';
             this.addSearchResults = [];
             this._saveCompareState();
-            // 重新渲染 Lucide 图标（新增的 DOM 元素需要处理）
+            // 重新渲染 Lucide 圖標（新增的 DOM 元素需要處理）
             var self = this;
             this.$nextTick(function () { if (typeof lucide !== 'undefined') lucide.createIcons(); });
         },
@@ -557,7 +557,7 @@ function readerApp() {
             this.splitMode = true;
             this.activePanel = null;
             var self = this;
-            // 获取右栏经文总卷数
+            // 獲取右欄經文總卷數
             fetch('/api/search_sutra?q=' + encodeURIComponent(item.id))
                 .then(function (r) { return r.json(); })
                 .then(function (data) {
@@ -583,7 +583,7 @@ function readerApp() {
                         direction: 'horizontal'
                     });
                 }
-                // 分栏初始化后同步头部高度
+                // 分欄初始化後同步頭部高度
                 setTimeout(function () { self._equalizeVerticalHeaders(); }, 200);
             }, 100);
         },
@@ -611,12 +611,12 @@ function readerApp() {
         closeSplit: function () {
             this.splitMode = false;
             this.splitItem = null;
-            this.personTab = 'left';  // 关闭分栏时切回左栏
+            this.personTab = 'left';  // 關閉分欄時切回左欄
             if (this._splitInstance) {
                 this._splitInstance.destroy();
                 this._splitInstance = null;
             }
-            // 清理 Split.js 残留样式
+            // 清理 Split.js 殘留樣式
             var left = document.getElementById('reader-left');
             var right = document.getElementById('reader-right');
             if (left) { left.style.width = ''; left.style.flex = ''; }
@@ -628,7 +628,7 @@ function readerApp() {
                 localStorage.setItem('compare_' + this.sutraId, JSON.stringify(this.compareItems));
             } catch (e) { }
             this._syncCompareToServer();
-            // 同步注疏到 commentary API
+            // 同步註疏到 commentary API
             this._syncCommentaryToServer();
         },
 
@@ -636,7 +636,7 @@ function readerApp() {
         lookupDict: function () {
             var q = (this.dictQuery || '').trim();
             if (!q) return;
-            // 与上次查询相同且已有结果，直接跳过
+            // 與上次查詢相同且已有結果，直接跳過
             if (q === this._lastDictQuery && this.dictResults.length > 0) return;
             var self = this;
             this.dictLoading = true;
@@ -654,7 +654,7 @@ function readerApp() {
                 });
         },
 
-        // ═══ AI 释义功能 ═══
+        // ═══ AI 釋義功能 ═══
         _loadAiProviders: function () {
             var self = this;
             fetch('/api/ai/providers')
@@ -673,17 +673,17 @@ function readerApp() {
 
         askAI: function () {
             var text = (this.aiSelectedText || '').trim();
-            // 白话翻译和名相释义需要选中文字，自由问答可以不选
+            // 白話翻譯和名相釋義需要選中文字，自由問答可以不選
             if (!text && this.aiMode !== 'ask') {
-                this.aiError = '请先在经文中选中文字';
+                this.aiError = '請先在經文中選中文字';
                 return;
             }
             if (this.aiMode === 'ask' && !text && !(this.aiQuestion || '').trim()) {
-                this.aiError = '请输入问题，或先选中经文';
+                this.aiError = '請輸入問題，或先選中經文';
                 return;
             }
 
-            // 校验 API Key（Ollama 除外）
+            // 校驗 API Key（Ollama 除外）
             var providerInfo = null;
             for (var i = 0; i < this.aiProviders.length; i++) {
                 if (this.aiProviders[i].id === this.aiProvider) {
@@ -692,11 +692,11 @@ function readerApp() {
                 }
             }
             if (providerInfo && !providerInfo.no_key && !providerInfo.has_server_key && !this.aiApiKey.trim()) {
-                this.aiError = '请先在设置面板中填入 ' + (providerInfo ? providerInfo.name : '') + ' 的 API Key';
+                this.aiError = '請先在設置面板中填入 ' + (providerInfo ? providerInfo.name : '') + ' 的 API Key';
                 return;
             }
 
-            // 中止之前的请求
+            // 中止之前的請求
             if (this._aiAbortController) {
                 this._aiAbortController.abort();
             }
@@ -756,7 +756,7 @@ function readerApp() {
                                     if (parsed.content) {
                                         self.aiResult += parsed.content;
                                     }
-                                } catch (e) { /* 忽略解析错误 */ }
+                                } catch (e) { /* 忽略解析錯誤 */ }
                             }
                             return processStream();
                         });
@@ -765,7 +765,7 @@ function readerApp() {
                 })
                 .catch(function (err) {
                     if (err.name !== 'AbortError') {
-                        self.aiError = '网络错误: ' + err.message;
+                        self.aiError = '網絡錯誤: ' + err.message;
                     }
                     self.aiLoading = false;
                 });
@@ -786,14 +786,14 @@ function readerApp() {
                 localStorage.setItem('ai_custom_url', this.aiCustomUrl);
                 localStorage.setItem('ai_custom_model', this.aiCustomModel);
             } catch (e) { }
-            // AI 设置同步到服务端（不含 API Key）
+            // AI 設置同步到服務端（不含 API Key）
             this._syncAiToServer();
         },
 
-        // ═══ 服务端偏好同步 ═══
+        // ═══ 服務端偏好同步 ═══
 
         _loadServerPreferences: function () {
-            // 从服务端加载偏好，覆盖 localStorage 的默认值
+            // 從服務端加載偏好，覆蓋 localStorage 的默認值
             var self = this;
             fetch('/api/user_data/preferences')
                 .then(function (r) { return r.json(); })
@@ -801,7 +801,7 @@ function readerApp() {
                     if (!prefs || typeof prefs !== 'object') return;
                     var changed = false;
 
-                    // 合并阅读设置
+                    // 合併閱讀設置
                     if (prefs.reader) {
                         var r = prefs.reader;
                         if (r.fontSize && r.fontSize !== self.fontSize) { self.fontSize = r.fontSize; changed = true; }
@@ -812,18 +812,18 @@ function readerApp() {
                         if (r.theme && r.theme !== self.themeMode) { self.themeMode = r.theme; self.setTheme(r.theme); }
                     }
 
-                    // 合并 AI 设置（不含 API Key）
+                    // 合併 AI 設置（不含 API Key）
                     if (prefs.ai) {
                         if (prefs.ai.provider) self.aiProvider = prefs.ai.provider;
                         if (prefs.ai.customUrl) self.aiCustomUrl = prefs.ai.customUrl;
                         if (prefs.ai.customModel) self.aiCustomModel = prefs.ai.customModel;
                     }
 
-                    // 合并对照经文配置
+                    // 合併對照經文配置
                     var hasUserConfig = false;
                     if (prefs.compare && prefs.compare[self.sutraId]) {
                         var serverItems = prefs.compare[self.sutraId];
-                        // 服务端数据优先（如果 localStorage 是默认空状态）
+                        // 服務端數據優先（如果 localStorage 是默認空狀態）
                         var localSaved = localStorage.getItem('compare_' + self.sutraId);
                         if (!localSaved && serverItems.length > 0) {
                             self.compareItems = serverItems;
@@ -831,7 +831,7 @@ function readerApp() {
                         hasUserConfig = true;
                     }
 
-                    // 无用户自定义配置时，自动加载同部类注疏
+                    // 無用戶自定義配置時，自動加載同部類註疏
                     var localSaved2 = localStorage.getItem('compare_' + self.sutraId);
                     if (!hasUserConfig && !localSaved2) {
                         self._loadBuleiCommentaries();
@@ -852,26 +852,26 @@ function readerApp() {
                         } catch (e) { }
                     }
                 })
-                .catch(function () { /* 离线模式：忽略，使用 localStorage */ });
+                .catch(function () { /* 離線模式：忽略，使用 localStorage */ });
         },
 
-        // 防抖定时器
+        // 防抖定時器
         _syncTimer: null,
         _syncFailCount: 0,
 
         _onSyncFail: function (label) {
             this._syncFailCount++;
-            console.warn('[reader] ' + label + ' 同步失败');
-            // 仅首次失败时提示用户，避免频繁打扰
+            console.warn('[reader] ' + label + ' 同步失敗');
+            // 僅首次失敗時提示用戶，避免頻繁打擾
             if (this._syncFailCount === 1) {
-                this.noteSaveStatus = '⚠ 设置同步失败，将在本地保留';
+                this.noteSaveStatus = '⚠ 設置同步失敗，將在本地保留';
                 var self = this;
                 setTimeout(function () { self.noteSaveStatus = ''; }, 3000);
             }
         },
 
         _syncSettingsToServer: function () {
-            // 防抖：300ms 内多次调用只执行最后一次
+            // 防抖：300ms 內多次調用只執行最後一次
             var self = this;
             clearTimeout(this._syncTimer);
             this._syncTimer = setTimeout(function () {
@@ -889,16 +889,16 @@ function readerApp() {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
-                }).catch(function () { self._onSyncFail('阅读设置'); });
+                }).catch(function () { self._onSyncFail('閱讀設置'); });
             }, 300);
         },
 
         _syncCompareToServer: function () {
             var self = this;
-            // 构建 compare 数据（以 sutraId 为 key）
+            // 構建 compare 數據（以 sutraId 為 key）
             var compareData = {};
             compareData[this.sutraId] = this.compareItems;
-            // 需要合并已有的其他经文的对照配置
+            // 需要合併已有的其他經文的對照配置
             fetch('/api/user_data/preferences')
                 .then(function (r) { return r.json(); })
                 .then(function (prefs) {
@@ -908,20 +908,20 @@ function readerApp() {
                         method: 'PATCH',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ compare: existingCompare })
-                    }).catch(function () { self._onSyncFail('对照配置'); });
+                    }).catch(function () { self._onSyncFail('對照配置'); });
                 })
                 .catch(function () {
-                    // 无法读取已有数据，直接写入当前经文的
+                    // 無法讀取已有數據，直接寫入當前經文的
                     fetch('/api/user_data/preferences', {
                         method: 'PATCH',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ compare: compareData })
-                    }).catch(function () { self._onSyncFail('对照配置'); });
+                    }).catch(function () { self._onSyncFail('對照配置'); });
                 });
         },
 
         _syncAiToServer: function () {
-            // 同步 AI 设置（不含 API Key）
+            // 同步 AI 設置（不含 API Key）
             var data = {
                 ai: {
                     provider: this.aiProvider,
@@ -933,13 +933,13 @@ function readerApp() {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
-            }).catch(function () { self._onSyncFail('AI 设置'); });
+            }).catch(function () { self._onSyncFail('AI 設置'); });
         },
 
-        // ═══ 自动加载注疏映射 ═══
+        // ═══ 自動加載註疏映射 ═══
 
         _loadBuleiCommentaries: function () {
-            // 从 commentary API 加载注疏映射（优先用户自定义，回退默认）
+            // 從 commentary API 加載註疏映射（優先用戶自定義，回退默認）
             var self = this;
             fetch('/api/commentary/' + this.sutraId)
                 .then(function (r) { return r.json(); })
@@ -952,11 +952,11 @@ function readerApp() {
                         }
                     }
                 })
-                .catch(function () { /* 忽略错误 */ });
+                .catch(function () { /* 忽略錯誤 */ });
         },
 
         _syncCommentaryToServer: function () {
-            // 将当前经文的注疏列表同步到 commentary API
+            // 將當前經文的註疏列表同步到 commentary API
             if (!this.compareItems[0] || this.compareItems[0].id !== this.sutraId) return;
             var self = this;
             var body = {
@@ -967,10 +967,10 @@ function readerApp() {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
-            }).catch(function () { self._onSyncFail('注疏配置'); });
+            }).catch(function () { self._onSyncFail('註疏配置'); });
         },
 
-        // ═══ 笔记功能 ═══
+        // ═══ 筆記功能 ═══
         _loadNotes: function () {
             var self = this;
             fetch('/api/notes/' + this.sutraId)
@@ -996,16 +996,16 @@ function readerApp() {
                 .then(function (r) { return r.json(); })
                 .then(function (data) {
                     if (data.ok) {
-                        self.noteSaveStatus = '✅ 已记录';
+                        self.noteSaveStatus = '✅ 已記錄';
                         self.noteContent = '';
                         self.noteQuote = '';
                         self._loadNotes();
                         setTimeout(function () { self.noteSaveStatus = ''; }, 2000);
                     } else {
-                        self.noteSaveStatus = '❌ 保存失败';
+                        self.noteSaveStatus = '❌ 保存失敗';
                     }
                 })
-                .catch(function () { self.noteSaveStatus = '❌ 网络错误'; });
+                .catch(function () { self.noteSaveStatus = '❌ 網絡錯誤'; });
         },
 
         loadJuan: function () {
@@ -1043,7 +1043,7 @@ function readerApp() {
 }
 
 /* ═══════════════════════════════════════════════════════════
- * 尾注弹窗 — IIFE（独立于 Alpine.js）
+ * 尾註彈窗 — IIFE（獨立於 Alpine.js）
  * ═══════════════════════════════════════════════════════════ */
 (function () {
     var popup = null;

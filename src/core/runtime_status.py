@@ -1,8 +1,8 @@
 """
-运行时组件健康检查
+運行時組件健康檢查
 
-统一校验 CBETA 数据目录与各 SQLite 数据库的可用性，
-供 launcher、自检接口与路由降级逻辑复用。
+統一校驗 CBETA 數據目錄與各 SQLite 數據庫的可用性，
+供 launcher、自檢接口與路由降級邏輯複用。
 """
 
 from __future__ import annotations
@@ -61,7 +61,7 @@ def _validate_sqlite_schema(
             required=required,
             path=str(db_path),
             reason="unreadable",
-            message="数据库无法打开",
+            message="數據庫無法打開",
             detail=str(exc),
         )
 
@@ -83,7 +83,7 @@ def _validate_sqlite_schema(
                 required=required,
                 path=str(db_path),
                 reason="schema_invalid",
-                message=f"缺少数据表: {', '.join(missing_tables)}",
+                message=f"缺少數據表: {', '.join(missing_tables)}",
             )
 
         for table, required_columns in required_tables.items():
@@ -117,7 +117,7 @@ def _validate_sqlite_schema(
             required=required,
             path=str(db_path),
             reason="query_failed",
-            message="数据库查询失败",
+            message="數據庫查詢失敗",
             detail=str(exc),
         )
     finally:
@@ -133,7 +133,7 @@ def check_cbeta_data() -> dict:
             required=True,
             path=str(xml_dir),
             reason="ok",
-            message="CBETA XML 已就绪",
+            message="CBETA XML 已就緒",
         )
     return _status(
         "cbeta_data",
@@ -141,7 +141,7 @@ def check_cbeta_data() -> dict:
         required=True,
         path=str(xml_dir),
         reason="missing",
-        message="缺少 CBETA XML 数据目录",
+        message="缺少 CBETA XML 數據目錄",
     )
 
 
@@ -200,7 +200,7 @@ def collect_runtime_health(*, nav=None, parser=None) -> dict:
         ok=parser_ready,
         required=components["cbeta_data"]["ok"],
         reason="ok" if parser_ready else "not_initialized",
-        message="阅读核心已初始化" if parser_ready else "阅读核心未初始化",
+        message="閱讀核心已初始化" if parser_ready else "閱讀核心未初始化",
     )
 
     required_failed = any(
@@ -214,13 +214,13 @@ def collect_runtime_health(*, nav=None, parser=None) -> dict:
 
     if required_failed:
         overall = "degraded"
-        summary = "关键组件未完全就绪"
+        summary = "關鍵組件未完全就緒"
     elif optional_failed:
         overall = "degraded"
-        summary = "服务可启动，但部分可选能力已降级"
+        summary = "服務可啟動，但部分可選能力已降級"
     else:
         overall = "ok"
-        summary = "全部组件可用"
+        summary = "全部組件可用"
 
     return {
         "app": {

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}法印对照 · 首页{% endblock %}
+{% block title %}法印對照 · 首頁{% endblock %}
 
 {% block head %}
 <link rel="stylesheet" href="/static/css/lib/leaflet.css">
@@ -33,13 +33,13 @@
     </div>
     <div class="verse-card">
         <div class="verse-card-content">
-            <!-- 偈颂正文 -->
+            <!-- 偈頌正文 -->
             <blockquote class="verse-card-body">
                 <template x-for="(line, li) in currentVerse.lines" :key="li">
                     <p x-text="line"></p>
                 </template>
             </blockquote>
-            <!-- 出处 -->
+            <!-- 出處 -->
             <cite class="verse-card-source">
                 <span x-text="currentVerse.source"></span>
                 <span class="verse-custom-badge" x-show="currentVerse.type === 'custom'" x-cloak>✎ 自題</span>
@@ -248,7 +248,7 @@ function verseApp() {
 
 
 <!-- ═══════════════════════════════════════════════════════════
-     案头 — 可自定义的核心书架（完整 CRUD 交互）
+     案頭 — 可自定義的核心書架（完整 CRUD 交互）
      ═══════════════════════════════════════════════════════════ -->
 <section class="desk-section" x-data="favoritesApp()">
     <div class="section-header" style="display:flex;align-items:center;justify-content:space-between;">
@@ -262,7 +262,7 @@ function verseApp() {
                 :title="editMode ? '退出編輯' : '編輯模式'">
                 <span x-text="editMode ? '✓ 完成' : '✎ 編輯'"></span>
             </button>
-            <!-- 显示隐藏模块数量提示 -->
+            <!-- 顯示隱藏模塊數量提示 -->
             <span class="fav-hidden-hint" x-show="hiddenCount > 0" x-cloak x-text="hiddenCount + ' 個已隱藏'"></span>
         </div>
     </div>
@@ -271,14 +271,14 @@ function verseApp() {
         <template x-for="(mod, index) in modules" :key="mod.id">
             <div class="module-card" :class="'module-' + mod.color" x-show="mod.visible || editMode"
                 :data-module-index="index">
-                <!-- 模块标题栏 -->
+                <!-- 模塊標題欄 -->
                 <div class="module-header-row">
                     <button class="module-header" @click="!editMode && toggleModuleCollapse(index)"
                         :aria-expanded="!mod.collapsed" :style="editMode ? 'cursor:default' : ''">
                         <i data-lucide="lamp-desk"
                             style="width:18px;height:18px;color:var(--text-secondary);flex-shrink:0;"></i>
                         <div class="module-title-group">
-                            <!-- 模块名：编辑模式可重命名 -->
+                            <!-- 模塊名：編輯模式可重命名 -->
                             <template x-if="editingId === 'mod_' + index + '_name'">
                                 <input class="inline-edit-input" type="text" :id="'inline-edit-mod_' + index + '_name'"
                                     x-model="editingValue" @keydown.enter="confirmRename(index, null, 'name')"
@@ -290,7 +290,7 @@ function verseApp() {
                                     @dblclick="editMode && startRename('mod_' + index + '_name', mod.name)"></span>
                             </template>
 
-                            <!-- 副标语：编辑模式可重命名 -->
+                            <!-- 副標語：編輯模式可重命名 -->
                             <template x-if="editingId === 'mod_' + index + '_subtitle'">
                                 <input class="inline-edit-input inline-edit-sub" type="text"
                                     :id="'inline-edit-mod_' + index + '_subtitle'" x-model="editingValue"
@@ -309,7 +309,7 @@ function verseApp() {
                             ▾
                         </span>
                     </button>
-                    <!-- 编辑模式工具按钮 -->
+                    <!-- 編輯模式工具按鈕 -->
                     <div class="module-edit-tools" x-show="editMode" x-cloak>
                         <button class="mod-tool-btn mod-tool-rename"
                             @click="startRename('mod_' + index + '_name', mod.name)" title="重新命名">✎</button>
@@ -322,22 +322,22 @@ function verseApp() {
                     </div>
                 </div>
 
-                <!-- 模块内容（编辑模式下始终展开） -->
+                <!-- 模塊內容（編輯模式下始終展開） -->
                 <div class="module-body" x-show="!mod.collapsed || editMode" x-cloak x-transition:enter="slide-enter"
                     x-transition:enter-start="slide-enter-start" x-transition:enter-end="slide-enter-end"
                     x-transition:leave="slide-leave" x-transition:leave-start="slide-leave-start"
                     x-transition:leave-end="slide-leave-end">
 
-                    <!-- 空状态 -->
+                    <!-- 空狀態 -->
                     <div class="module-empty" x-show="mod.children.length === 0 && showFolderInput !== index">
                         <p class="empty-hint">點擊 <strong>＋</strong> 建立梵篋或本卷</p>
                         <p class="empty-sub">在搜尋欄找到經文後，可收藏至本書架</p>
                     </div>
 
-                    <!-- 文件夹和经文列表 -->
+                    <!-- 文件夾和經文列表 -->
                     <template x-for="(child, ci) in mod.children" :key="child.id">
                         <div :data-child-index="ci">
-                            <!-- 文件夹 -->
+                            <!-- 文件夾 -->
                             <template x-if="child.type === 'folder'">
                                 <div class="folder-group">
                                     <div class="folder-header" @click="!editMode && toggleFolderCollapse(index, ci)"
@@ -346,7 +346,7 @@ function verseApp() {
                                             x-show="!editMode">▾</span>
                                         <span class="folder-icon-sm"><i data-lucide="library"
                                                 style="width:16px;height:16px"></i></span>
-                                        <!-- 文件夹名：编辑模式双击可重命名 -->
+                                        <!-- 文件夾名：編輯模式雙擊可重命名 -->
                                         <template x-if="editingId === 'folder_' + index + '_' + ci + '_name'">
                                             <input class="inline-edit-input" type="text"
                                                 :id="'inline-edit-folder_' + index + '_' + ci + '_name'"
@@ -381,7 +381,7 @@ function verseApp() {
                                 </div>
                             </template>
 
-                            <!-- 直接经文 -->
+                            <!-- 直接經文 -->
                             <template x-if="child.type === 'sutra'">
                                 <div class="sutra-item-row">
                                     <a class="sutra-item" :href="'/read/' + child.id">
@@ -395,7 +395,7 @@ function verseApp() {
                         </div>
                     </template>
 
-                    <!-- 新建文件夹输入框 -->
+                    <!-- 新建文件夾輸入框 -->
                     <div class="new-folder-row" x-show="showFolderInput === index" x-cloak>
                         <span class="folder-icon-sm"><i data-lucide="library" style="width:16px;height:16px"></i></span>
                         <input class="inline-edit-input" type="text" placeholder="梵篋名稱"
@@ -405,12 +405,12 @@ function verseApp() {
                         <button class="fav-btn-sm fav-btn-cancel" @click="cancelNewFolder()">✕</button>
                     </div>
 
-                    <!-- 添加按钮 + 弹出菜单 -->
+                    <!-- 添加按鈕 + 彈出菜單 -->
                     <div class="module-add-wrapper" style="position:relative;">
                         <button class="module-add-btn" @click="openAddMenu(index)">
                             ＋ 加入
                         </button>
-                        <!-- 添加菜单 -->
+                        <!-- 添加菜單 -->
                         <div class="add-menu" x-show="addMenuModule === index" x-cloak @click.outside="closeAddMenu()"
                             x-transition>
                             <button class="add-menu-item" @click="startNewFolder(index)">
@@ -428,13 +428,13 @@ function verseApp() {
         </template>
     </div>
 
-    <!-- 显示隐藏的模块列表（编辑模式下） -->
+    <!-- 顯示隱藏的模塊列表（編輯模式下） -->
     <div class="hidden-modules-hint" x-show="editMode && hiddenCount > 0" x-cloak>
         <small>已隱藏的書架會在編輯模式下以半透明顯示，退出編輯後不可見。</small>
     </div>
 
-    <!-- 新建分区按钮 -->
-    <!-- 按钮组：新建书架 + 导出数据 -->
+    <!-- 新建分區按鈕 -->
+    <!-- 按鈕組：新建書架 + 導出數據 -->
     <div style="display: flex; gap: 1rem; margin-top: 2rem;">
         <button class="new-module-btn" @click="openNewModuleModal()" style="flex: 1;">
             ＋ 新增書架
@@ -446,7 +446,7 @@ function verseApp() {
         </a>
     </div>
 
-    <!-- ═══ 新建分区弹窗 ═══ -->
+    <!-- ═══ 新建分區彈窗 ═══ -->
     <div class="fav-modal-overlay" x-show="showNewModuleModal" x-cloak @click.self="showNewModuleModal = false"
         x-transition:enter="fade-enter" x-transition:enter-start="fade-enter-start"
         x-transition:enter-end="fade-enter-end" x-transition:leave="fade-leave"
@@ -481,7 +481,7 @@ function verseApp() {
         </div>
     </div>
 
-    <!-- ═══ 收藏经文弹窗 ═══ -->
+    <!-- ═══ 收藏經文彈窗 ═══ -->
     <div class="fav-modal-overlay" x-show="showFavModal" x-cloak @click.self="closeFavModal()"
         x-transition:enter="fade-enter" x-transition:enter-start="fade-enter-start"
         x-transition:enter-end="fade-enter-end" x-transition:leave="fade-leave"
@@ -492,7 +492,7 @@ function verseApp() {
                 <button class="fav-modal-close" @click="closeFavModal()">✕</button>
             </div>
             <div class="fav-modal-body">
-                <!-- 目标文件夹选择 -->
+                <!-- 目標文件夾選擇 -->
                 <div class="fav-target-row"
                     x-show="favTargetModule !== null && modules[favTargetModule]?.children.some(c => c.type === 'folder')">
                     <label class="fav-label">放入梵篋</label>
@@ -513,7 +513,7 @@ function verseApp() {
                 <input class="fav-input" type="text" id="fav-search-input" x-model="favSearchQuery"
                     placeholder="輸入經號或經名…" @input.debounce.300ms="doFavSearch()">
 
-                <!-- 搜索结果 -->
+                <!-- 搜索結果 -->
                 <div class="fav-results" x-show="favSearchResults.length > 0">
                     <template x-for="r in favSearchResults" :key="r.sutra_id">
                         <div class="fav-result-item" @click="addSutraToTarget(r)">
@@ -539,12 +539,12 @@ function verseApp() {
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════
-     区域 ② — 祖师（法脉图）
+     區域 ② — 祖師（法脈圖）
      ═══════════════════════════════════════════════════════════ -->
 <section class="content-section" id="lineage-section">
     <div class="section-header">
         <h2 class="section-title">
-            <div class="section-icon icon-deng" title="灯"></div>
+            <div class="section-icon icon-deng" title="燈"></div>
             祖師
             <span class="section-subtitle">人天眼目</span>
         </h2>
@@ -589,9 +589,9 @@ function verseApp() {
         </div>
     </div>
 
-    <!-- ===== 四面板仪表盘 ===== -->
+    <!-- ===== 四面板儀表盤 ===== -->
     <main class="lineage-dashboard">
-        <!-- ⓪ 左侧：编年时间轴 (320px) -->
+        <!-- ⓪ 左側：編年時間軸 (320px) -->
         <aside id="panel-timeline" class="ln-panel">
             <div class="ln-panel-header">
                 <h2><i data-lucide="scroll-text" class="ln-panel-icon"></i> 編年</h2>
@@ -604,9 +604,9 @@ function verseApp() {
             <div class="chronicle-scroll" id="chronicle-container"></div>
         </aside>
 
-        <!-- 右侧区域 -->
+        <!-- 右側區域 -->
         <div class="ln-right-area">
-            <!-- ① 右上：人物详情 (40%) -->
+            <!-- ① 右上：人物詳情 (40%) -->
             <div id="panel-detail" class="ln-panel split-v">
                 <div class="ln-panel-header">
                     <h2 id="detail-title"><i data-lucide="circle-user-round" class="ln-panel-icon"></i> 人物</h2>
@@ -620,7 +620,7 @@ function verseApp() {
                 </div>
             </div>
 
-            <!-- ② ③ 右下：法脉图 + 地图 (60%) -->
+            <!-- ② ③ 右下：法脈圖 + 地圖 (60%) -->
             <div class="ln-bottom-split split-v">
                 <div id="panel-lineage" class="ln-panel split-h">
                     <div class="ln-panel-header">
@@ -655,7 +655,7 @@ function verseApp() {
         </div>
     </main>
 
-    <!-- 状态栏 -->
+    <!-- 狀態欄 -->
     <div class="lineage-status-bar">
         <div class="ln-stat"><i data-lucide="circle-user-round" class="ln-status-icon"></i> <span
                 id="ln-stat-persons">0</span> 人物</div>
@@ -673,7 +673,7 @@ function verseApp() {
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════
-     区域 ③ — 贝阙（全藏目录浏览）
+     區域 ③ — 貝闕（全藏目錄瀏覽）
      ═══════════════════════════════════════════════════════════ -->
 <section class="content-section" id="catalog-section" x-data="catalogApp()">
     <div class="section-header">
@@ -684,7 +684,7 @@ function verseApp() {
         </h2>
     </div>
 
-    <!-- Tab 切换 + 搜索框 -->
+    <!-- Tab 切換 + 搜索框 -->
     <div class="catalog-toolbar">
         <div class="catalog-tabs">
             <button class="catalog-tab" :class="activeTab === 'bulei' ? 'active' : ''" @click="switchTab('bulei')"><i
@@ -704,25 +704,25 @@ function verseApp() {
         <span class="catalog-stat" x-show="loaded" x-cloak x-text="statText"></span>
     </div>
 
-    <!-- 目录树 -->
+    <!-- 目錄樹 -->
     <div class="catalog-tree" x-show="loaded" x-cloak>
         <template x-if="filteredTree.length === 0 && filterQuery.length > 0">
             <div class="catalog-empty">未找到相符的經文</div>
         </template>
         <template x-for="(node, i) in filteredTree" :key="i">
             <div class="catalog-branch">
-                <!-- 顶级分类标题 -->
+                <!-- 頂級分類標題 -->
                 <button class="catalog-l1-header" @click="toggleL1(i)" :class="openL1.has(i) ? 'is-open' : ''">
                     <span class="catalog-toggle" x-text="openL1.has(i) ? '▾' : '▸'"></span>
                     <span class="catalog-l1-title" x-text="node.title"></span>
                     <span class="catalog-l1-count" x-text="countLeaves(node) + ' 部'"
                         x-show="countLeaves(node) > 0"></span>
                 </button>
-                <!-- 子节点（递归） -->
+                <!-- 子節點（遞歸） -->
                 <div class="catalog-l1-body" x-show="openL1.has(i)" x-cloak>
                     <template x-for="(child, j) in node.children" :key="j">
                         <div>
-                            <!-- 有子节点 = 可折叠目录 -->
+                            <!-- 有子節點 = 可摺疊目錄 -->
                             <template x-if="child.children && child.children.length > 0">
                                 <div class="catalog-subgroup">
                                     <button class="catalog-l2-header" @click="toggleSub(i + '-' + j)"
@@ -736,7 +736,7 @@ function verseApp() {
                                     <div class="catalog-l2-body" x-show="openSub.has(i + '-' + j)" x-cloak>
                                         <template x-for="(leaf, k) in child.children" :key="k">
                                             <div>
-                                                <!-- 第三层也可能有子节点 -->
+                                                <!-- 第三層也可能有子節點 -->
                                                 <template
                                                     x-if="leaf.children && leaf.children.length > 0 && !leaf.sutra_id">
                                                     <div class="catalog-subgroup">
@@ -765,7 +765,7 @@ function verseApp() {
                                                         </div>
                                                     </div>
                                                 </template>
-                                                <!-- 叶子经文条目 -->
+                                                <!-- 葉子經文條目 -->
                                                 <template x-if="leaf.sutra_id">
                                                     <a class="catalog-leaf" :href="'/read/' + leaf.sutra_id">
                                                         <span class="catalog-leaf-id" x-text="leaf.sutra_id"></span>
@@ -778,7 +778,7 @@ function verseApp() {
                                     </div>
                                 </div>
                             </template>
-                            <!-- 叶子节点（直接经文） -->
+                            <!-- 葉子節點（直接經文） -->
                             <template x-if="child.sutra_id && (!child.children || child.children.length === 0)">
                                 <a class="catalog-leaf" :href="'/read/' + child.sutra_id">
                                     <span class="catalog-leaf-id" x-text="child.sutra_id"></span>
@@ -792,7 +792,7 @@ function verseApp() {
         </template>
     </div>
 
-    <!-- 加载状态 -->
+    <!-- 加載狀態 -->
     <div class="catalog-loading" x-show="!loaded">
         <span class="catalog-spinner"></span> 載入目錄…
     </div>

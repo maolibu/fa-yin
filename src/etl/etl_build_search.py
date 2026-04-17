@@ -1,14 +1,14 @@
 """
-CBETA Bookcase XML → 搜索专用 SQLite 数据库
-使用与阅读页面相同的分卷版 XML 数据（cbeta/XML/），用户只需下载一份数据。
+CBETA Bookcase XML → 搜索專用 SQLite 數據庫
+使用與閱讀頁面相同的分卷版 XML 數據（cbeta/XML/），用戶只需下載一份數據。
 
 用法：
-    python etl_build_search.py --all               # 转换全部（推荐）
-    python etl_build_search.py --canon T            # 转换大正藏
-    python etl_build_search.py T0251                # 转换单部经
+    python etl_build_search.py --all               # 轉換全部（推薦）
+    python etl_build_search.py --canon T            # 轉換大正藏
+    python etl_build_search.py T0251                # 轉換單部經
 
-数据源：data/raw/cbeta/XML/（Bookcase 分卷版，21960 文件）
-输出：  data/db/cbeta_search.db
+數據源：data/raw/cbeta/XML/（Bookcase 分卷版，21960 文件）
+輸出：  data/db/cbeta_search.db
 """
 
 import argparse
@@ -22,7 +22,7 @@ import time
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-# 添加模块搜索路径
+# 添加模塊搜索路徑
 ETL_DIR = Path(__file__).resolve().parent
 SRC_DIR = ETL_DIR.parent
 sys.path.insert(0, str(ETL_DIR))
@@ -30,27 +30,27 @@ sys.path.insert(0, str(SRC_DIR))
 import gaiji_map
 import config
 
-# OpenCC 繁→简
+# OpenCC 繁→簡
 from opencc import OpenCC
 cc_t2s = OpenCC('t2s')
 
 # ============================================================
-# 配置（从 config 模块读取，零硬编码）
+# 配置（從 config 模塊讀取，零硬編碼）
 # ============================================================
 
-# Bookcase 分卷版 XML 路径（与阅读页面共用同一份数据）
+# Bookcase 分卷版 XML 路徑（與閱讀頁面共用同一份數據）
 XML_BASE = Path(os.getenv(
     "CBETA_XML_BASE",
     str(config.CBETA_BASE / "XML")
 ))
 
-# 搜索数据库输出路径
+# 搜索數據庫輸出路徑
 DB_PATH = config.CBETA_SEARCH_DB
 
 LOG_DIR = ETL_DIR / "logs"
 GAIJI_PATH = config.GAIJI_PATH
 
-# XML 命名空间
+# XML 命名空間
 TEI_NS = "http://www.tei-c.org/ns/1.0"
 CB_NS = "http://www.cbeta.org/ns/1.0"
 XML_NS = "http://www.w3.org/XML/1998/namespace"
@@ -59,7 +59,7 @@ ET.register_namespace("", TEI_NS)
 ET.register_namespace("cb", CB_NS)
 
 # ============================================================
-# Schema（内嵌）
+# Schema（內嵌）
 # ============================================================
 SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS catalog (
@@ -114,7 +114,7 @@ CREATE INDEX IF NOT EXISTS idx_catalog_title_sc ON catalog(title_sc);
 
 
 def init_db(db_path):
-    """初始化搜索数据库"""
+    """初始化搜索數據庫"""
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
     conn = sqlite3.connect(str(db_path))
     conn.execute("PRAGMA journal_mode=WAL")
@@ -125,17 +125,17 @@ def init_db(db_path):
 
 
 # ============================================================
-# 辅助函数
+# 輔助函數
 # ============================================================
 def _local_tag(element):
-    """获取元素的本地名（去除命名空间）"""
+    """獲取元素的本地名（去除命名空間）"""
     tag = element.tag
     if "}" in tag:
         return tag.split("}", 1)[1]
     return tag
 
 
-# 跳过类标签
+# 跳過類標籤
 SKIP_TAGS_TEXT = {
     "note", "rdg", "anchor", "back",
     "mulu", "charDecl", "teiHeader",
@@ -147,7 +147,7 @@ SELF_CLOSING = {
 
 
 def get_text_recursive(element):
-    """递归提取元素的纯文本内容，覆盖 CBETA XML 全部标签"""
+    """遞歸提取元素的純文本內容，覆蓋 CBETA XML 全部標籤"""
     parts = []
     if element.text:
         parts.append(element.text)
@@ -193,10 +193,10 @@ def get_text_recursive(element):
 
 
 # ============================================================
-# 元数据提取
+# 元數據提取
 # ============================================================
 def extract_metadata(tree):
-    """从 teiHeader 提取经文元数据"""
+    """從 teiHeader 提取經文元數據"""
     root = tree.getroot()
     xml_id = root.get(f"{{{XML_NS}}}id", "")
 
@@ -243,10 +243,10 @@ def extract_metadata(tree):
 
 
 # ============================================================
-# 从文件名解析卷号
+# 從文件名解析卷號
 # ============================================================
 def parse_juan_from_filename(filename):
-    """从 Bookcase 文件名解析卷号，如 T08n0251_001.xml → 1"""
+    """從 Bookcase 文件名解析卷號，如 T08n0251_001.xml → 1"""
     m = re.search(r"_(\d+)\.xml$", filename)
     if m:
         return int(m.group(1))
@@ -254,12 +254,12 @@ def parse_juan_from_filename(filename):
 
 
 # ============================================================
-# 单文件处理（Bookcase 分卷版：每文件 = 一卷）
+# 單文件處理（Bookcase 分卷版：每文件 = 一卷）
 # ============================================================
 _processed_sutras = set()
 
 def process_file(xml_path, conn):
-    """处理单个 Bookcase XML 文件（一卷），写入搜索数据库"""
+    """處理單個 Bookcase XML 文件（一卷），寫入搜索數據庫"""
     global _processed_sutras
     try:
         with open(str(xml_path), "r", encoding="utf-8") as f:
@@ -270,7 +270,7 @@ def process_file(xml_path, conn):
         sutra_id = meta["sutra_id"]
         juan = parse_juan_from_filename(os.path.basename(xml_path))
 
-        # 首次遇到此经，写入 catalog
+        # 首次遇到此經，寫入 catalog
         if sutra_id not in _processed_sutras:
             _processed_sutras.add(sutra_id)
             conn.execute(
@@ -281,7 +281,7 @@ def process_file(xml_path, conn):
                  meta["title_sc"], meta["author"], meta["total_juan"]),
             )
 
-        # 直接提取 body 纯文本（每文件就是一卷，不需要 milestone 分卷）
+        # 直接提取 body 純文本（每文件就是一卷，不需要 milestone 分卷）
         root = tree.getroot()
         body = root.find(f".//{{{TEI_NS}}}body")
         if body is not None:
@@ -299,47 +299,47 @@ def process_file(xml_path, conn):
 
     except Exception as e:
         conn.rollback()
-        print(f"  ❌ 处理失败 {xml_path}: {e}")
+        print(f"  ❌ 處理失敗 {xml_path}: {e}")
         import traceback
         traceback.print_exc()
         return None
 
 
 # ============================================================
-# 文件发现（适配 Bookcase 目录结构）
-# Bookcase 结构: XML/{Canon}/{CanonVol}/{CanonVol}n{No}_{Juan}.xml
+# 文件發現（適配 Bookcase 目錄結構）
+# Bookcase 結構: XML/{Canon}/{CanonVol}/{CanonVol}n{No}_{Juan}.xml
 # 例: XML/T/T08/T08n0251_001.xml
 # ============================================================
 def find_xml_files(target):
-    """根据目标参数找到要处理的 XML 文件列表"""
+    """根據目標參數找到要處理的 XML 文件列表"""
     if target == "--all":
         return sorted(glob.glob(str(XML_BASE / "*" / "*" / "*.xml")))
 
-    # 藏经代码（如 T, X, A）
+    # 藏經代碼（如 T, X, A）
     canon_dir = XML_BASE / target
     if canon_dir.is_dir():
         return sorted(glob.glob(str(canon_dir / "*" / "*.xml")))
 
-    # 经号（如 T0251 或 T08n0251）
-    # 尝试匹配所有卷
+    # 經號（如 T0251 或 T08n0251）
+    # 嘗試匹配所有卷
     match_short = re.match(r"([A-Z]+)(\d+)$", target)
     if match_short:
         canon = match_short.group(1)
         sutra_no = match_short.group(2)
-        # 搜索所有卷册目录
+        # 搜索所有卷冊目錄
         pattern = str(XML_BASE / canon / "*" / f"*n{sutra_no}_*.xml")
         files = sorted(glob.glob(pattern))
         if files:
             return files
-        # 也尝试不补零
+        # 也嘗試不補零
         pattern2 = str(XML_BASE / canon / "*" / f"*n{sutra_no.lstrip('0')}_*.xml")
         files = sorted(glob.glob(pattern2))
         if files:
             return files
-        print(f"❌ 找不到经号 {target} 的文件")
+        print(f"❌ 找不到經號 {target} 的文件")
         return []
 
-    print(f"❌ 无法识别目标: {target}")
+    print(f"❌ 無法識別目標: {target}")
     return []
 
 
@@ -348,14 +348,14 @@ def find_xml_files(target):
 # ============================================================
 def main():
     parser = argparse.ArgumentParser(
-        description="CBETA Bookcase XML → 搜索专用数据库（含简体列 + FTS5）"
+        description="CBETA Bookcase XML → 搜索專用數據庫（含簡體列 + FTS5）"
     )
     parser.add_argument(
         "target", nargs="?", default=None,
-        help="经号（如 T0251）或藏经代码（如 T）",
+        help="經號（如 T0251）或藏經代碼（如 T）",
     )
-    parser.add_argument("--canon", type=str, help="按藏经代码转换")
-    parser.add_argument("--all", action="store_true", help="转换全部")
+    parser.add_argument("--canon", type=str, help="按藏經代碼轉換")
+    parser.add_argument("--all", action="store_true", help="轉換全部")
     args = parser.parse_args()
 
     if args.all:
@@ -372,10 +372,10 @@ def main():
     if not xml_files:
         return
 
-    print(f"📚 找到 {len(xml_files)} 个 XML 文件待转换")
-    print(f"📂 数据源: {XML_BASE}")
-    print(f"💾 搜索数据库: {DB_PATH}")
-    print(f"🔤 OpenCC 繁→简: 已启用")
+    print(f"📚 找到 {len(xml_files)} 個 XML 文件待轉換")
+    print(f"📂 數據源: {XML_BASE}")
+    print(f"💾 搜索數據庫: {DB_PATH}")
+    print(f"🔤 OpenCC 繁→簡: 已啟用")
     print()
 
     global _processed_sutras
@@ -383,7 +383,7 @@ def main():
 
     conn = init_db(DB_PATH)
     gaiji_map.load_gaiji_map(str(GAIJI_PATH))
-    print("✅ Gaiji 映射表已加载")
+    print("✅ Gaiji 映射表已加載")
 
     success = 0
     errors = []
@@ -391,7 +391,7 @@ def main():
 
     for i, xml_path in enumerate(xml_files, 1):
         filename = os.path.basename(xml_path)
-        # 每100个文件显示一次进度，避免刷屏
+        # 每100個文件顯示一次進度，避免刷屏
         if i % 100 == 1 or i == len(xml_files):
             print(f"  [{i}/{len(xml_files)}] {filename} ...", end=" ", flush=True)
 
@@ -404,7 +404,7 @@ def main():
         else:
             errors.append(xml_path)
 
-        # 每500个文件提交一次
+        # 每500個文件提交一次
         if i % 500 == 0:
             conn.commit()
 
@@ -414,31 +414,31 @@ def main():
     print()
     print("=" * 50)
     print(f"✅ 成功: {success}/{len(xml_files)}")
-    print(f"❌ 失败: {len(errors)}/{len(xml_files)}")
-    print(f"⏱️ 耗时: {elapsed:.1f} 秒")
+    print(f"❌ 失敗: {len(errors)}/{len(xml_files)}")
+    print(f"⏱️ 耗時: {elapsed:.1f} 秒")
 
     for table in ["catalog", "content"]:
         try:
             count = conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
-            print(f"📊 {table}: {count} 条")
+            print(f"📊 {table}: {count} 條")
         except Exception:
             pass
 
     db_size = os.path.getsize(str(DB_PATH))
-    print(f"💾 数据库体积: {db_size / 1024 / 1024:.1f} MB")
+    print(f"💾 數據庫體積: {db_size / 1024 / 1024:.1f} MB")
 
     if errors:
         print()
-        print(f"❌ 失败文件: {len(errors)} 个")
+        print(f"❌ 失敗文件: {len(errors)} 個")
         os.makedirs(LOG_DIR, exist_ok=True)
         log_path = LOG_DIR / "search_etl_errors.log"
         with open(log_path, "w", encoding="utf-8") as f:
             for e in errors:
                 f.write(f"{e}\n")
-        print(f"  日志已保存: {log_path}")
+        print(f"  日誌已保存: {log_path}")
 
     conn.close()
-    print(f"\n✅ 搜索数据库已生成: {DB_PATH}")
+    print(f"\n✅ 搜索數據庫已生成: {DB_PATH}")
 
 
 if __name__ == "__main__":

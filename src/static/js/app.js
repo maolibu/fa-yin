@@ -1,9 +1,9 @@
 /**
- * 法印对照 50_reader+ — 前端交互
- * Alpine.js 组件：导航栏搜索 + 首页搜索 + 收藏夹案头
+ * 法印對照 50_reader+ — 前端交互
+ * Alpine.js 組件：導航欄搜索 + 首頁搜索 + 收藏夾案頭
  */
 
-/* ─── 导航栏全局搜索组件 ──────────────────────────────────── */
+/* ─── 導航欄全局搜索組件 ──────────────────────────────────── */
 function navSearchApp() {
     return {
         query: '',
@@ -33,7 +33,7 @@ function navSearchApp() {
                     this.showResults = true;
                 }
             } catch (e) {
-                console.error('导航搜索失败:', e);
+                console.error('導航搜索失敗:', e);
             } finally {
                 this.loading = false;
             }
@@ -41,7 +41,7 @@ function navSearchApp() {
     };
 }
 
-/* ─── 首页搜索栏组件 ──────────────────────────────────────── */
+/* ─── 首頁搜索欄組件 ──────────────────────────────────────── */
 function searchApp() {
     return {
         query: '',
@@ -72,7 +72,7 @@ function searchApp() {
                     this.showResults = true;
                 }
             } catch (e) {
-                console.error('搜索失败:', e);
+                console.error('搜索失敗:', e);
             } finally {
                 this.loading = false;
             }
@@ -81,58 +81,58 @@ function searchApp() {
 }
 
 
-/* ─── 收藏夹案头组件 ──────────────────────────────────────── */
+/* ─── 收藏夾案頭組件 ──────────────────────────────────────── */
 function favoritesApp() {
     return {
         modules: [],
         loaded: false,
-        editMode: false,        // 编辑模式
+        editMode: false,        // 編輯模式
 
-        // ── 新建分区弹窗 ──
+        // ── 新建分區彈窗 ──
         showNewModuleModal: false,
         newModule: { name: '', subtitle: '', color: 'bamboo' },
         colorOptions: [
             // 第一行
             { value: 'bamboo', label: '竹青', css: '#4a7c5c' },
-            { value: 'ochre', label: '枯黄', css: '#8b7335' },
+            { value: 'ochre', label: '枯黃', css: '#8b7335' },
             { value: 'sandalwood', label: '檀色', css: '#8c5e3a' },
-            { value: 'cloud', label: '云峰', css: '#6b7a8a' },
+            { value: 'cloud', label: '雲峰', css: '#6b7a8a' },
             // 第二行
-            { value: 'indigo', label: '靛蓝', css: '#4a5c8a' },
-            { value: 'crimson', label: '朱砂', css: '#8a4a4a' },
+            { value: 'indigo', label: '靛藍', css: '#4a5c8a' },
+            { value: 'crimson', label: '硃砂', css: '#8a4a4a' },
             { value: 'rosewood', label: '紫檀', css: '#6e4a6e' },
-            { value: 'pine', label: '松烟', css: '#3d5c52' },
+            { value: 'pine', label: '松煙', css: '#3d5c52' },
             // 第三行
             { value: 'celadon', label: '青瓷', css: '#4a7a7a' },
             { value: 'amber', label: '琥珀', css: '#8a6a2a' },
             { value: 'moonwhite', label: '月白', css: '#7a8590' },
-            { value: 'rust', label: '铁锈', css: '#7a5040' },
+            { value: 'rust', label: '鐵鏽', css: '#7a5040' },
         ],
 
-        // ── 添加菜单 ──
-        addMenuModule: null,    // 当前打开添加菜单的模块索引
+        // ── 添加菜單 ──
+        addMenuModule: null,    // 當前打開添加菜單的模塊索引
 
-        // ── 新建文件夹 ──
-        showFolderInput: null,  // 正在新建文件夹的模块索引
+        // ── 新建文件夾 ──
+        showFolderInput: null,  // 正在新建文件夾的模塊索引
         newFolderName: '',
 
-        // ── 内联编辑 ──
-        editingId: null,        // 正在编辑的项目标识（如 'mod_0_name', 'folder_0_1_name'）
+        // ── 內聯編輯 ──
+        editingId: null,        // 正在編輯的項目標識（如 'mod_0_name', 'folder_0_1_name'）
         editingValue: '',
 
-        // ── 收藏弹窗 ──
+        // ── 收藏彈窗 ──
         showFavModal: false,
         favSearchQuery: '',
         favSearchResults: [],
         favSearchLoading: false,
-        favTargetModule: null,  // 模块索引
-        favTargetFolder: null,  // 文件夹索引（null = 直接添加到模块）
+        favTargetModule: null,  // 模塊索引
+        favTargetFolder: null,  // 文件夾索引（null = 直接添加到模塊）
 
         // ── Toast ──
         toastMsg: '',
         toastVisible: false,
 
-        /* ═══ 初始化与基础 ═══ */
+        /* ═══ 初始化與基礎 ═══ */
 
         async init() {
             try {
@@ -141,13 +141,13 @@ function favoritesApp() {
                     this.modules = await resp.json();
                 }
             } catch (e) {
-                console.error('加载收藏夹失败:', e);
+                console.error('加載收藏夾失敗:', e);
             }
             this.loaded = true;
         },
 
         toggleModuleCollapse(index) {
-            // 如果旧数据没有 collapsed 属性，默认认为是 false（展开）
+            // 如果舊數據沒有 collapsed 屬性，默認認為是 false（展開）
             const isCollapsed = this.modules[index].collapsed === true;
             this.modules[index].collapsed = !isCollapsed;
             this.save();
@@ -181,19 +181,19 @@ function favoritesApp() {
                     body: JSON.stringify(this.modules),
                 });
                 if (resp.ok) {
-                    console.log('收藏夹已保存');
+                    console.log('收藏夾已保存');
                 }
             } catch (e) {
-                console.error('保存失败:', e);
+                console.error('保存失敗:', e);
             }
         },
 
-        /* ═══ 新建分区（模块） ═══ */
+        /* ═══ 新建分區（模塊） ═══ */
 
         openNewModuleModal() {
             this.newModule = { name: '', subtitle: '', color: 'bamboo' };
             this.showNewModuleModal = true;
-            // 聚焦输入框
+            // 聚焦輸入框
             this.$nextTick(() => {
                 const input = document.getElementById('new-module-name-input');
                 if (input) input.focus();
@@ -215,29 +215,29 @@ function favoritesApp() {
             });
             this.showNewModuleModal = false;
             this.save();
-            this.showToast('已创建书架「' + name + '」');
+            this.showToast('已創建書架「' + name + '」');
         },
 
-        /* ═══ 删除模块 ═══ */
+        /* ═══ 刪除模塊 ═══ */
 
         deleteModule(index) {
             const name = this.modules[index].name;
-            if (!this._confirm('确定删除书架「' + name + '」？')) return;
+            if (!this._confirm('確定刪除書架「' + name + '」？')) return;
             this.modules.splice(index, 1);
             this.save();
-            this.showToast('已删除书架「' + name + '」');
+            this.showToast('已刪除書架「' + name + '」');
         },
 
-        /* ═══ 隐藏/显示模块 ═══ */
+        /* ═══ 隱藏/顯示模塊 ═══ */
 
         toggleModuleVisibility(index) {
             this.modules[index].visible = !this.modules[index].visible;
             this.save();
-            const action = this.modules[index].visible ? '显示' : '隐藏';
+            const action = this.modules[index].visible ? '顯示' : '隱藏';
             this.showToast('已' + action + '「' + this.modules[index].name + '」');
         },
 
-        /* ═══ 添加菜单 ═══ */
+        /* ═══ 添加菜單 ═══ */
 
         openAddMenu(moduleIndex) {
             this.addMenuModule = this.addMenuModule === moduleIndex ? null : moduleIndex;
@@ -247,7 +247,7 @@ function favoritesApp() {
             this.addMenuModule = null;
         },
 
-        /* ═══ 新建文件夹 ═══ */
+        /* ═══ 新建文件夾 ═══ */
 
         startNewFolder(moduleIndex) {
             this.addMenuModule = null;
@@ -274,7 +274,7 @@ function favoritesApp() {
             this.showFolderInput = null;
             this.newFolderName = '';
             this.save();
-            this.showToast('已创建文件夹「' + name + '」');
+            this.showToast('已創建文件夾「' + name + '」');
         },
 
         cancelNewFolder() {
@@ -282,22 +282,22 @@ function favoritesApp() {
             this.newFolderName = '';
         },
 
-        /* ═══ 删除文件夹 ═══ */
+        /* ═══ 刪除文件夾 ═══ */
 
         deleteFolder(moduleIndex, childIndex) {
             const folder = this.modules[moduleIndex].children[childIndex];
             const name = folder.name;
-            if (!this._confirm('确定删除文件夹「' + name + '」及其中的所有经文？')) return;
+            if (!this._confirm('確定刪除文件夾「' + name + '」及其中的所有經文？')) return;
             this.modules[moduleIndex].children.splice(childIndex, 1);
             this.save();
-            this.showToast('已删除文件夹「' + name + '」');
+            this.showToast('已刪除文件夾「' + name + '」');
         },
 
-        /* ═══ 删除经文 ═══ */
+        /* ═══ 刪除經文 ═══ */
 
         deleteSutra(moduleIndex, childIndex, sutraIndex) {
-            // sutraIndex != null → 经文在文件夹中，childIndex 是文件夹索引
-            // sutraIndex == null → 经文直接在模块根级，childIndex 是经文索引
+            // sutraIndex != null → 經文在文件夾中，childIndex 是文件夾索引
+            // sutraIndex == null → 經文直接在模塊根級，childIndex 是經文索引
             if (sutraIndex !== undefined && sutraIndex !== null) {
                 const folder = this.modules[moduleIndex].children[childIndex];
                 const sutra = folder.children[sutraIndex];
@@ -312,7 +312,7 @@ function favoritesApp() {
             }
         },
 
-        /* ═══ 内联编辑（重命名） ═══ */
+        /* ═══ 內聯編輯（重命名） ═══ */
 
         startRename(editId, currentValue) {
             this.editingId = editId;
@@ -326,15 +326,15 @@ function favoritesApp() {
         confirmRename(moduleIndex, childIndex, field) {
             const val = this.editingValue.trim();
             if (!val && field === 'name') {
-                // 名称不能为空，取消编辑
+                // 名稱不能為空，取消編輯
                 this.cancelEdit();
                 return;
             }
             if (childIndex !== undefined && childIndex !== null) {
-                // 编辑文件夹名
+                // 編輯文件夾名
                 this.modules[moduleIndex].children[childIndex][field] = val;
             } else {
-                // 编辑模块名或副标语
+                // 編輯模塊名或副標語
                 this.modules[moduleIndex][field] = val;
             }
             this.editingId = null;
@@ -348,7 +348,7 @@ function favoritesApp() {
             this.editingValue = '';
         },
 
-        /* ═══ 收藏经文弹窗 ═══ */
+        /* ═══ 收藏經文彈窗 ═══ */
 
         openFavModal(moduleIndex) {
             this.addMenuModule = null;
@@ -376,7 +376,7 @@ function favoritesApp() {
                     this.favSearchResults = await resp.json();
                 }
             } catch (e) {
-                console.error('搜索失败:', e);
+                console.error('搜索失敗:', e);
             } finally {
                 this.favSearchLoading = false;
             }
@@ -393,14 +393,14 @@ function favoritesApp() {
             };
             if (this.favTargetFolder !== null && this.favTargetFolder !== undefined) {
                 const folder = this.modules[mi].children[this.favTargetFolder];
-                // 检查重复
+                // 檢查重複
                 if (folder.children.some(c => c.id === sutra.sutra_id)) {
                     this.showToast('已存在「' + sutra.title + '」');
                     return;
                 }
                 folder.children.push(newItem);
             } else {
-                // 直接加到模块根级
+                // 直接加到模塊根級
                 if (this.modules[mi].children.some(c => c.id === sutra.sutra_id && c.type === 'sutra')) {
                     this.showToast('已存在「' + sutra.title + '」');
                     return;
@@ -417,18 +417,18 @@ function favoritesApp() {
             this.favSearchResults = [];
         },
 
-        /* ═══ 编辑模式 ═══ */
+        /* ═══ 編輯模式 ═══ */
 
-        // 存储 Sortable 实例，退出编辑时销毁
+        // 存儲 Sortable 實例，退出編輯時銷燬
         _sortableInstances: [],
 
         toggleEditMode() {
             this.editMode = !this.editMode;
             if (this.editMode) {
-                // 进入编辑模式 → 初始化拖拽排序
+                // 進入編輯模式 → 初始化拖拽排序
                 this.$nextTick(() => this._initSortables());
             } else {
-                // 退出编辑模式 → 销毁拖拽 & 清理状态
+                // 退出編輯模式 → 銷燬拖拽 & 清理狀態
                 this._destroySortables();
                 this.editingId = null;
                 this.editingValue = '';
@@ -448,7 +448,7 @@ function favoritesApp() {
             const chosenClass = 'sortable-chosen';
             const dragClass = 'sortable-drag';
 
-            // ① 模块级排序（书架卡片之间拖拽）
+            // ① 模塊級排序（書架卡片之間拖拽）
             const grid = this.$refs.modulesGrid;
             if (grid) {
                 this._sortableInstances.push(
@@ -465,15 +465,15 @@ function favoritesApp() {
                 );
             }
 
-            // ② 模块内子项排序（文件夹 / 经文）
+            // ② 模塊內子項排序（文件夾 / 經文）
             grid?.querySelectorAll('.module-body').forEach((bodyEl) => {
-                // 找到这个 module-body 对应的模块索引
+                // 找到這個 module-body 對應的模塊索引
                 const card = bodyEl.closest('.module-card');
                 if (!card) return;
                 const mi = parseInt(card.dataset.moduleIndex);
                 if (isNaN(mi)) return;
-                // 找到子项容器（template 渲染后的直接子 div 列表）
-                // module-body 内的直接子元素包含 template 渲染的各个 div[data-child-index]
+                // 找到子項容器（template 渲染後的直接子 div 列表）
+                // module-body 內的直接子元素包含 template 渲染的各個 div[data-child-index]
                 this._sortableInstances.push(
                     Sortable.create(bodyEl, {
                         animation: 180,
@@ -488,14 +488,14 @@ function favoritesApp() {
                     })
                 );
 
-                // ③ 文件夹内经文排序
+                // ③ 文件夾內經文排序
                 bodyEl.querySelectorAll('.folder-group').forEach((folderEl) => {
-                    // 找到该文件夹在 children 中的位置
+                    // 找到該文件夾在 children 中的位置
                     const childDiv = folderEl.closest('[data-child-index]');
                     if (!childDiv) return;
                     const ci = parseInt(childDiv.dataset.childIndex);
                     if (isNaN(ci) || !self.modules[mi].children[ci]) return;
-                    // 经文列表容器是 folder-group 内 folder-header 之后的 div
+                    // 經文列表容器是 folder-group 內 folder-header 之後的 div
                     const sutraContainer = folderEl.querySelector('div[x-show]');
                     if (!sutraContainer) return;
                     self._sortableInstances.push(
@@ -526,14 +526,14 @@ function favoritesApp() {
             arr.splice(to, 0, item);
         },
 
-        /* ═══ 辅助：确认弹窗 ═══ */
-        // 使用自定义 inline 确认而非 window.confirm
-        // 出于简洁考虑暂用 confirm()，后续可替换
+        /* ═══ 輔助：確認彈窗 ═══ */
+        // 使用自定義 inline 確認而非 window.confirm
+        // 出於簡潔考慮暫用 confirm()，後續可替換
         _confirm(msg) {
             return window.confirm(msg);
         },
 
-        /* ═══ 计算已隐藏模块数量 ═══ */
+        /* ═══ 計算已隱藏模塊數量 ═══ */
 
         get hiddenCount() {
             return this.modules.filter(m => !m.visible).length;
@@ -542,17 +542,17 @@ function favoritesApp() {
 }
 
 
-/* ─── 贝阙全藏目录组件 ────────────────────────────────────── */
+/* ─── 貝闕全藏目錄組件 ────────────────────────────────────── */
 function catalogApp() {
     return {
-        activeTab: 'bulei',    // 'bulei' 部类 | 'canon' 经藏
-        treeData: [],          // 原始目录树
-        filteredTree: [],      // 过滤后的目录树
-        filterQuery: '',       // 搜索关键词
+        activeTab: 'bulei',    // 'bulei' 部類 | 'canon' 經藏
+        treeData: [],          // 原始目錄樹
+        filteredTree: [],      // 過濾後的目錄樹
+        filterQuery: '',       // 搜索關鍵詞
         loaded: false,
         statText: '',
-        openL1: new Set(),     // 展开的 L1 索引
-        openSub: new Set(),    // 展开的子级 key（如 "0-1", "0-1-2"）
+        openL1: new Set(),     // 展開的 L1 索引
+        openSub: new Set(),    // 展開的子級 key（如 "0-1", "0-1-2"）
 
         async init() {
             await this.loadTree('bulei');
@@ -578,7 +578,7 @@ function catalogApp() {
                     this.updateStat();
                 }
             } catch (e) {
-                console.error('加载目录失败:', e);
+                console.error('加載目錄失敗:', e);
             }
             this.loaded = true;
         },
@@ -589,7 +589,7 @@ function catalogApp() {
             } else {
                 this.openL1.add(index);
             }
-            // Alpine 需要重新赋值 Set 来触发响应式
+            // Alpine 需要重新賦值 Set 來觸發響應式
             this.openL1 = new Set(this.openL1);
         },
 
@@ -602,7 +602,7 @@ function catalogApp() {
             this.openSub = new Set(this.openSub);
         },
 
-        // 递归计算叶子节点数量
+        // 遞歸計算葉子節點數量
         countLeaves(node) {
             if (!node.children || node.children.length === 0) {
                 return node.sutra_id ? 1 : 0;
@@ -614,14 +614,14 @@ function catalogApp() {
             return count;
         },
 
-        // 从 "T0001 長阿含經" 提取经名部分
+        // 從 "T0001 長阿含經" 提取經名部分
         extractTitle(text) {
             if (!text) return '';
             const m = text.match(/^[A-Z]+[a-zA-Z]*\d+[a-zA-Z]*\s+(.+)/);
             return m ? m[1].trim() : text.trim();
         },
 
-        // 搜索过滤
+        // 搜索過濾
         applyFilter() {
             const q = this.filterQuery.trim();
             if (!q) {
@@ -631,7 +631,7 @@ function catalogApp() {
                 this.updateStat();
                 return;
             }
-            // 繁简兼容：生成简体和繁体两个搜索词
+            // 繁簡兼容：生成簡體和繁體兩個搜索詞
             let q_sc = q.toLowerCase();
             let q_tc = q.toLowerCase();
             try {
@@ -643,9 +643,9 @@ function catalogApp() {
                 }
             } catch (e) { /* OpenCC 不可用，只用原文匹配 */ }
 
-            // 递归过滤：保留包含匹配叶子的分支
+            // 遞歸過濾：保留包含匹配葉子的分支
             this.filteredTree = this._filterNodes(this.treeData, q.toLowerCase(), q_sc, q_tc);
-            // 自动展开所有匹配的分支
+            // 自動展開所有匹配的分支
             this.openL1 = new Set();
             this.openSub = new Set();
             for (let i = 0; i < this.filteredTree.length; i++) {
@@ -695,10 +695,10 @@ function catalogApp() {
                 }
             };
             countAll(this.filteredTree);
-            const tabName = this.activeTab === 'bulei' ? '部类' : '经藏';
+            const tabName = this.activeTab === 'bulei' ? '部類' : '經藏';
             this.statText = this.filterQuery
-                ? `${tabName}视图 · 匹配 ${total} 部`
-                : `${tabName}视图 · 共 ${total} 部`;
+                ? `${tabName}視圖 · 匹配 ${total} 部`
+                : `${tabName}視圖 · 共 ${total} 部`;
         },
     };
 }

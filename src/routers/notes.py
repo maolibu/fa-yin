@@ -1,4 +1,4 @@
-"""闪念笔记 API — Append-only Markdown 存储"""
+"""閃念筆記 API — Append-only Markdown 存儲"""
 import json
 from datetime import datetime
 from pathlib import Path
@@ -19,12 +19,12 @@ class NoteBody(BaseModel):
 
 
 def _today_file() -> Path:
-    """返回今日笔记文件路径"""
+    """返回今日筆記文件路徑"""
     return NOTES_DIR / f"{datetime.now().strftime('%Y-%m-%d')}-ReadingLog.md"
 
 
 def _parse_notes(filepath: Path) -> list[dict]:
-    """解析 Markdown 笔记文件，返回笔记列表（最新在前）"""
+    """解析 Markdown 筆記文件，返回筆記列表（最新在前）"""
     if not filepath.exists():
         return []
     text = filepath.read_text(encoding="utf-8")
@@ -38,7 +38,7 @@ def _parse_notes(filepath: Path) -> list[dict]:
         lines = block.split("\n")
         for line in lines:
             if line.startswith("### 🕒"):
-                # ### 🕒 10:05 | T0235 金刚般若波罗蜜经 · 卷1
+                # ### 🕒 10:05 | T0235 金剛般若波羅蜜經 · 卷1
                 parts = line.replace("### 🕒 ", "").split(" | ", 1)
                 note["time"] = parts[0].strip() if parts else ""
                 if len(parts) > 1:
@@ -61,22 +61,22 @@ def _parse_notes(filepath: Path) -> list[dict]:
 
 @router.get("/api/notes/{sutra_id}")
 async def get_notes(sutra_id: str):
-    """获取今日笔记"""
+    """獲取今日筆記"""
     filepath = _today_file()
     all_notes = _parse_notes(filepath)
-    # 过滤当前经文的笔记（可选：也可以返回全部）
+    # 過濾當前經文的筆記（可選：也可以返回全部）
     filtered = [n for n in all_notes if sutra_id in n.get("sutra_title", "")]
-    # 如果没有过滤结果，返回全部今日笔记
+    # 如果沒有過濾結果，返回全部今日筆記
     return {"notes": filtered if filtered else all_notes}
 
 
 @router.post("/api/notes/{sutra_id}")
 async def save_note(sutra_id: str, body: NoteBody, request: Request):
-    """追加一条笔记"""
+    """追加一條筆記"""
     now = datetime.now()
     filepath = _today_file()
 
-    # 优先从运行中的导航索引获取真实经名，前端漏传 title 时也能正确保存。
+    # 優先從運行中的導航索引獲取真實經名，前端漏傳 title 時也能正確保存。
     sutra_title = request.query_params.get("title", "").strip()
     if not sutra_title:
         nav = getattr(request.app.state, "nav", None)
@@ -85,7 +85,7 @@ async def save_note(sutra_id: str, body: NoteBody, request: Request):
     if not sutra_title:
         sutra_title = sutra_id
 
-    # 构造 Markdown 条目
+    # 構造 Markdown 條目
     entry_lines = [
         f"### 🕒 {now.strftime('%H:%M')} | {sutra_id} {sutra_title} · 卷{body.juan}",
         "",
@@ -101,7 +101,7 @@ async def save_note(sutra_id: str, body: NoteBody, request: Request):
 
     entry = "\n".join(entry_lines)
 
-    # 确保笔记目录存在
+    # 確保筆記目錄存在
     NOTES_DIR.mkdir(parents=True, exist_ok=True)
 
     # Append 到文件

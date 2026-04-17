@@ -1,9 +1,9 @@
 /* ═══════════════════════════════════════════════════════════
-   法印对照 50_reader+ — 暗金主题
-   从 20_xml_reader 迁移设计令牌 + 新增首页布局
+   法印對照 50_reader+ — 暗金主題
+   從 20_xml_reader 遷移設計令牌 + 新增首頁佈局
    ═══════════════════════════════════════════════════════════ */
 
-/* ─── 文津宋体 @font-face ──────────────────────────────────── */
+/* ─── 文津宋體 @font-face ──────────────────────────────────── */
 @font-face {
     font-family: 'WenJinMincho';
     src: url('/static/fonts/WenJinMinchoP0-Regular.woff2') format('woff2');
@@ -30,7 +30,7 @@
     unicode-range: U+2CEB0-2F7FF;
 }
 
-/* ─── 思源宋体（可变字重） ────────────────────────────────── */
+/* ─── 思源宋體（可變字重） ────────────────────────────────── */
 @font-face {
     font-family: 'SourceHanSerif';
     src: url('/static/fonts/SourceHanSerif-VF.otf.woff2') format('woff2');
@@ -39,7 +39,7 @@
     font-display: swap;
 }
 
-/* ─── 字云体（Jigmo 三平面） ─────────────────────────────── */
+/* ─── 字雲體（Jigmo 三平面） ─────────────────────────────── */
 @font-face {
     font-family: 'Jigmo';
     src: url('/static/fonts/Jigmo.woff2') format('woff2');
@@ -66,7 +66,7 @@
     unicode-range: U+2A700-2B81F;
 }
 
-/* ─── 老宋体（NanoOldSong 四区） ─────────────────────────── */
+/* ─── 老宋體（NanoOldSong 四區） ─────────────────────────── */
 @font-face {
     font-family: 'NanoOldSong';
     src: url('/static/fonts/NanoOldSongA-Regular.woff2') format('woff2');
@@ -102,7 +102,7 @@
     unicode-range: U+2A700-2FA1F;
 }
 
-/* ─── 设计令牌 ────────────────────────────────────────────── */
+/* ─── 設計令牌 ────────────────────────────────────────────── */
 :root {
     /* 暗金配色 */
     --bg-primary: #0f0f13;
@@ -111,9 +111,9 @@
     --bg-card-hover: #262636;
     --bg-surface: #22222e;
 
-    /* 首页栏目主色调 */
+    /* 首頁欄目主色調 */
     --hero-section-color: #d4a853;
-    /* 暗色模式：金黄色 */
+    /* 暗色模式：金黃色 */
 
     --gold-bright: #d4a853;
     --gold-dim: #a07a30;
@@ -131,26 +131,26 @@
     --red-accent: #c0504d;
     --green-dim: #5a7a5a;
 
-    /* 模块 4 色 */
+    /* 模塊 4 色 */
     --bamboo: #4a7c5c;
     /* 竹青 */
     --bamboo-glow: #5f9e75;
     --ochre: #8b7335;
-    /* 枯黄 */
+    /* 枯黃 */
     --ochre-glow: #b89a48;
     --sandalwood: #8c5e3a;
     /* 檀色 */
     --sandalwood-glow: #b07a50;
     --cloud: #6b7a8a;
-    /* 云峰白 */
+    /* 雲峰白 */
     --cloud-glow: #8a9db0;
 
-    /* 字体 */
+    /* 字體 */
     --font-serif: 'Noto Serif TC', 'Noto Serif CJK TC', 'Source Han Serif TC', 'WenJinMincho', serif;
     --font-sans: 'Noto Sans TC', 'Noto Sans CJK TC', 'Source Han Sans TC', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
-    /* 间距 */
+    /* 間距 */
     --space-xs: 0.25rem;
     --space-sm: 0.5rem;
     --space-md: 1rem;
@@ -158,19 +158,19 @@
     --space-xl: 2rem;
     --space-2xl: 3rem;
 
-    /* 圆角 */
+    /* 圓角 */
     --radius-sm: 4px;
     --radius-md: 8px;
     --radius-lg: 12px;
 
-    /* 过渡 */
+    /* 過渡 */
     --transition: 0.2s ease;
 
-    /* 版心（正文区最大宽度，em 单位随字号自动缩放，1em ≈ 1 个汉字宽） */
+    /* 版心（正文區最大寬度，em 單位隨字號自動縮放，1em ≈ 1 個漢字寬） */
     --text-block-width: 36em;
 }
 
-/* ─── 浅色主题（纸卷风） ────────────────────────────────── */
+/* ─── 淺色主題（紙捲風） ────────────────────────────────── */
 .theme-light {
     --bg-primary: #f5f0e8;
     --bg-secondary: #ece6da;
@@ -178,7 +178,7 @@
     --bg-card-hover: #f0e8d8;
     --bg-surface: #f8f2e6;
 
-    /* 首页栏目主色调 */
+    /* 首頁欄目主色調 */
     --hero-section-color: #003366;
     /* 亮色模式：藏青色 */
 
@@ -198,7 +198,7 @@
     --red-accent: #b8413e;
     --green-dim: #4a7a4a;
 
-    /* 模块 4 色 — 浅色适配 */
+    /* 模塊 4 色 — 淺色適配 */
     --bamboo: #3a6a4c;
     --bamboo-glow: #4f8e65;
     --ochre: #7b6325;
@@ -209,7 +209,7 @@
     --cloud-glow: #7a8da0;
 }
 
-/* 浅色主题 — 工具栏 & 面板硬编码色覆盖 */
+/* 淺色主題 — 工具欄 & 面板硬編碼色覆蓋 */
 .theme-light .tool-strip {
     background: rgba(255, 248, 238, 0.92);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
@@ -223,7 +223,7 @@
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
 }
 
-/* 浅色主题 — 滚动条 */
+/* 淺色主題 — 滾動條 */
 .theme-light ::-webkit-scrollbar-track {
     background: var(--bg-secondary);
 }
@@ -237,7 +237,7 @@
 }
 
 
-/* ─── 基础重置 ────────────────────────────────────────────── */
+/* ─── 基礎重置 ────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -278,7 +278,7 @@ a:hover {
 }
 
 
-/* ─── 顶部导航 ────────────────────────────────────────────── */
+/* ─── 頂部導航 ────────────────────────────────────────────── */
 .top-nav {
     background: var(--bg-secondary);
     border-bottom: 1px solid var(--border-subtle);
@@ -341,7 +341,7 @@ a:hover {
 }
 
 
-/* ─── 主内容区 ────────────────────────────────────────────── */
+/* ─── 主內容區 ────────────────────────────────────────────── */
 .main-content {
     max-width: 1100px;
     margin: 0 auto;
@@ -686,7 +686,7 @@ a:hover {
     margin-bottom: var(--space-xl);
 }
 
-/* ─── 搜索栏 ──────────────────────────────────────────────── */
+/* ─── 搜索欄 ──────────────────────────────────────────────── */
 .search-container {
     position: relative;
     max-width: 600px;
@@ -734,7 +734,7 @@ a:hover {
     cursor: not-allowed;
 }
 
-/* ─── 搜索结果下拉 ────────────────────────────────────────── */
+/* ─── 搜索結果下拉 ────────────────────────────────────────── */
 .search-results {
     position: absolute;
     top: 100%;
@@ -809,7 +809,7 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════
-   区域 ① — 我的案头（手风琴模块）
+   區域 ① — 我的案頭（手風琴模塊）
    ═══════════════════════════════════════════════════════════ */
 .desk-section {
     margin-bottom: var(--space-2xl);
@@ -899,7 +899,7 @@ a:hover {
     opacity: 0.4;
 }
 
-/* 祖师/贝阙等内容区域 */
+/* 祖師/貝闕等內容區域 */
 .content-section {
     margin-bottom: var(--space-xl);
 }
@@ -924,7 +924,7 @@ a:hover {
     margin-bottom: var(--space-sm);
 }
 
-/* 模块网格：3 列 */
+/* 模塊網格：3 列 */
 .modules-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -943,7 +943,7 @@ a:hover {
     }
 }
 
-/* ─── 模块卡片 ────────────────────────────────────────────── */
+/* ─── 模塊卡片 ────────────────────────────────────────────── */
 .module-card {
     position: relative;
     background: var(--bg-card);
@@ -957,7 +957,7 @@ a:hover {
     border-color: rgba(255, 255, 255, 0.08);
 }
 
-/* 4 色主题 — 顶部边框彩色条 */
+/* 4 色主題 — 頂部邊框彩色條 */
 .module-bamboo {
     border-top: 3px solid var(--bamboo);
 }
@@ -995,7 +995,7 @@ a:hover {
     box-shadow: 0 -2px 12px rgba(107, 122, 138, 0.15);
 }
 
-/* ─── 模块标题栏 ──────────────────────────────────────────── */
+/* ─── 模塊標題欄 ──────────────────────────────────────────── */
 .module-header {
     display: flex;
     align-items: center;
@@ -1067,13 +1067,13 @@ a:hover {
     transform: rotate(180deg);
 }
 
-/* ─── 模块内容 ────────────────────────────────────────────── */
+/* ─── 模塊內容 ────────────────────────────────────────────── */
 .module-body {
     padding: 0 var(--space-lg) var(--space-lg);
     border-top: 1px solid var(--border-subtle);
 }
 
-/* 手风琴展开/折叠动画 */
+/* 手風琴展開/摺疊動畫 */
 .slide-enter {
     overflow: hidden;
     transition: max-height 0.3s ease;
@@ -1104,7 +1104,7 @@ a:hover {
     opacity: 0;
 }
 
-/* 空状态 */
+/* 空狀態 */
 .module-empty {
     padding: var(--space-lg) 0;
     text-align: center;
@@ -1121,7 +1121,7 @@ a:hover {
     font-size: 0.8rem;
 }
 
-/* 文件夹组 */
+/* 文件夾組 */
 .folder-group {
     margin-top: var(--space-md);
 }
@@ -1145,7 +1145,7 @@ a:hover {
     color: var(--text-muted);
 }
 
-/* 文件夹折叠箭头 */
+/* 文件夾摺疊箭頭 */
 .folder-chevron {
     font-size: 0.75rem;
     color: var(--text-muted);
@@ -1157,7 +1157,7 @@ a:hover {
     transform: rotate(-90deg);
 }
 
-/* 经文条目 */
+/* 經文條目 */
 .sutra-item {
     display: flex;
     align-items: center;
@@ -1187,7 +1187,7 @@ a:hover {
     flex: 1;
 }
 
-/* 添加按钮 */
+/* 添加按鈕 */
 .module-add-btn {
     display: block;
     width: 100%;
@@ -1210,9 +1210,9 @@ a:hover {
 }
 
 
-/* ─── 案头 CRUD 交互样式 ─────────────────────────────────── */
+/* ─── 案頭 CRUD 交互樣式 ─────────────────────────────────── */
 
-/* 编辑模式切换按钮 */
+/* 編輯模式切換按鈕 */
 .fav-edit-toggle {
     padding: 4px 12px;
     background: transparent;
@@ -1242,7 +1242,7 @@ a:hover {
     opacity: 0.7;
 }
 
-/* 模块标题行（含编辑工具） */
+/* 模塊標題行（含編輯工具） */
 .module-header-row {
     display: flex;
     align-items: center;
@@ -1253,7 +1253,7 @@ a:hover {
     min-width: 0;
 }
 
-/* 编辑模式工具按钮组 */
+/* 編輯模式工具按鈕組 */
 .module-edit-tools {
     position: absolute;
     top: 4px;
@@ -1295,7 +1295,7 @@ a:hover {
     background: rgba(199, 80, 80, 0.1);
 }
 
-/* 内联编辑输入框 */
+/* 內聯編輯輸入框 */
 .inline-edit-input {
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid var(--gold-dim);
@@ -1318,7 +1318,7 @@ a:hover {
     max-width: 140px;
 }
 
-/* 删除按钮（项目级） */
+/* 刪除按鈕（項目級） */
 .item-delete-btn {
     display: inline-flex;
     align-items: center;
@@ -1340,7 +1340,7 @@ a:hover {
     color: #c75050;
 }
 
-/* 经文行（含删除按钮） */
+/* 經文行（含刪除按鈕） */
 .sutra-item-row {
     display: flex;
     align-items: center;
@@ -1352,7 +1352,7 @@ a:hover {
     min-width: 0;
 }
 
-/* 新建文件夹输入行 */
+/* 新建文件夾輸入行 */
 .new-folder-row {
     display: flex;
     align-items: center;
@@ -1397,7 +1397,7 @@ a:hover {
     background: rgba(199, 80, 80, 0.2);
 }
 
-/* 添加菜单（弹出） */
+/* 添加菜單（彈出） */
 .add-menu {
     position: absolute;
     bottom: 100%;
@@ -1436,12 +1436,12 @@ a:hover {
     border-top: 1px solid var(--border-subtle);
 }
 
-/* 隐藏模块（编辑模式下半透明） */
+/* 隱藏模塊（編輯模式下半透明） */
 .module-card[style*="opacity"] {
     transition: opacity var(--transition);
 }
 
-/* ─── 拖拽排序视觉反馈 ──────────────────────────────────── */
+/* ─── 拖拽排序視覺反饋 ──────────────────────────────────── */
 .sortable-ghost {
     opacity: 0.3;
 }
@@ -1456,7 +1456,7 @@ a:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
-/* 编辑模式下可拖拽元素的光标 */
+/* 編輯模式下可拖拽元素的光標 */
 .module-card .module-header {
     cursor: pointer;
 }
@@ -1472,7 +1472,7 @@ a:hover {
     font-size: 0.8rem;
 }
 
-/* ─── 弹窗（Modal） ───────────────────────────────────────── */
+/* ─── 彈窗（Modal） ───────────────────────────────────────── */
 
 .fav-modal-overlay {
     position: fixed;
@@ -1541,7 +1541,7 @@ a:hover {
     border-top: 1px solid var(--border-subtle);
 }
 
-/* 表单控件 */
+/* 表單控件 */
 .fav-label {
     display: block;
     font-size: 0.8rem;
@@ -1594,7 +1594,7 @@ a:hover {
     border-color: var(--gold-dim);
 }
 
-/* 颜色选择器 */
+/* 顏色選擇器 */
 .fav-color-picker {
     display: grid;
     grid-template-columns: repeat(4, 28px);
@@ -1633,7 +1633,7 @@ a:hover {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* 按钮 */
+/* 按鈕 */
 .fav-btn {
     padding: 6px 18px;
     border: none;
@@ -1669,7 +1669,7 @@ a:hover {
     color: var(--text-primary);
 }
 
-/* 收藏搜索结果 */
+/* 收藏搜索結果 */
 .fav-results {
     max-height: 300px;
     overflow-y: auto;
@@ -1757,7 +1757,7 @@ a:hover {
     opacity: 1;
 }
 
-/* 弹窗淡入/淡出动画 */
+/* 彈窗淡入/淡出動畫 */
 .fade-enter {
     transition: opacity 0.2s ease;
 }
@@ -1782,7 +1782,7 @@ a:hover {
     opacity: 0;
 }
 
-/* 新增颜色主题 */
+/* 新增顏色主題 */
 .module-indigo {
     border-top: 3px solid #4a5c8a;
 }
@@ -1857,7 +1857,7 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════
-   占位符区域（区域 ②③）
+   佔位符區域（區域 ②③）
    ═══════════════════════════════════════════════════════════ */
 .placeholder-section {
     margin-bottom: var(--space-xl);
@@ -1906,10 +1906,10 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════
-   区域 ③ — 贝阙（全藏目录浏览）
+   區域 ③ — 貝闕（全藏目錄瀏覽）
    ═══════════════════════════════════════════════════════════ */
 
-/* 工具栏：Tab + 搜索 */
+/* 工具欄：Tab + 搜索 */
 .catalog-toolbar {
     display: flex;
     align-items: center;
@@ -2008,7 +2008,7 @@ a:hover {
     white-space: nowrap;
 }
 
-/* 目录树 */
+/* 目錄樹 */
 .catalog-tree {
     max-height: 70vh;
     overflow-y: auto;
@@ -2024,7 +2024,7 @@ a:hover {
     font-size: 0.9rem;
 }
 
-/* L1 分类标题 */
+/* L1 分類標題 */
 .catalog-l1-header {
     display: flex;
     align-items: center;
@@ -2074,7 +2074,7 @@ a:hover {
     padding-left: var(--space-sm);
 }
 
-/* L2 子分类 */
+/* L2 子分類 */
 .catalog-subgroup {
     border-left: 2px solid var(--border-subtle);
     margin-left: var(--space-sm);
@@ -2126,7 +2126,7 @@ a:hover {
     padding-left: var(--space-sm);
 }
 
-/* 叶子：经文条目 */
+/* 葉子：經文條目 */
 .catalog-leaf {
     display: flex;
     align-items: center;
@@ -2157,7 +2157,7 @@ a:hover {
     font-family: var(--font-serif);
 }
 
-/* 加载状态 */
+/* 加載狀態 */
 .catalog-loading {
     padding: var(--space-xl);
     text-align: center;
@@ -2185,10 +2185,10 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════
-   区域 ② — 祖师（完整四面板仪表盘）
+   區域 ② — 祖師（完整四面板儀表盤）
    ═══════════════════════════════════════════════════════════ */
 
-/* --- 搜索栏 + Chips --- */
+/* --- 搜索欄 + Chips --- */
 .lineage-header {
     display: flex;
     flex-wrap: nowrap;
@@ -2275,7 +2275,7 @@ a:hover {
     color: var(--text-muted);
 }
 
-/* Chips — PC 端在搜索框右侧 */
+/* Chips — PC 端在搜索框右側 */
 .lineage-search-chips {
     flex: 1;
     display: flex;
@@ -2295,7 +2295,7 @@ a:hover {
     margin: 0 2px;
 }
 
-/* 移动端：chips 折到搜索框下方 */
+/* 移動端：chips 折到搜索框下方 */
 @media (max-width: 768px) {
     .lineage-header {
         flex-wrap: wrap;
@@ -2344,7 +2344,7 @@ a:hover {
     color: #8dcfc4;
 }
 
-/* --- 四面板仪表盘 --- */
+/* --- 四面板儀表盤 --- */
 .lineage-dashboard {
     display: grid;
     grid-template-columns: 320px 1fr;
@@ -2420,7 +2420,7 @@ a:hover {
     overflow: hidden;
 }
 
-/* Split.js 分割线 */
+/* Split.js 分割線 */
 .gutter {
     background: var(--border-subtle);
     transition: background 0.2s;
@@ -2440,7 +2440,7 @@ a:hover {
     width: 6px !important;
 }
 
-/* 空状态 */
+/* 空狀態 */
 .ln-empty-state {
     display: flex;
     flex-direction: column;
@@ -2464,7 +2464,7 @@ a:hover {
     opacity: 0.6;
 }
 
-/* --- 编年时间轴 --- */
+/* --- 編年時間軸 --- */
 #panel-timeline {
     overflow: hidden;
 }
@@ -2543,7 +2543,7 @@ a:hover {
     display: block;
 }
 
-/* 二级行 */
+/* 二級行 */
 .chr-sub-row {
     display: flex;
     align-items: center;
@@ -2581,7 +2581,7 @@ a:hover {
     gap: 2px;
 }
 
-/* 三级详情 */
+/* 三級詳情 */
 .chr-detail-panel {
     display: none;
     padding: 4px 8px;
@@ -2661,7 +2661,7 @@ a:hover {
     color: #fff;
 }
 
-/* --- 人物详情三栏 --- */
+/* --- 人物詳情三欄 --- */
 .sidebar-columns {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -2706,7 +2706,7 @@ a:hover {
     line-height: 1.6;
 }
 
-/* 人物元数据 */
+/* 人物元數據 */
 .person-meta {
     margin-bottom: 8px;
 }
@@ -2760,7 +2760,7 @@ a:hover {
     color: var(--text-secondary);
 }
 
-/* 师承/弟子标签流 */
+/* 師承/弟子標籤流 */
 .tag-flow {
     line-height: 2;
 }
@@ -2777,7 +2777,7 @@ a:hover {
     text-decoration: underline;
 }
 
-/* 经典列表 */
+/* 經典列表 */
 .scripture-list {
     list-style: none;
     padding: 0;
@@ -2810,7 +2810,7 @@ a:hover {
     color: var(--text-muted);
 }
 
-/* --- 法脉图 --- */
+/* --- 法脈圖 --- */
 #lineage-container {
     position: relative;
     height: 100%;
@@ -2854,7 +2854,7 @@ a:hover {
     border-radius: 0;
 }
 
-/* --- 地图 --- */
+/* --- 地圖 --- */
 #map-container {
     height: 100%;
     width: 100%;
@@ -2865,7 +2865,7 @@ a:hover {
     background: #e8e0d0;
 }
 
-/* Leaflet 暗色适配 */
+/* Leaflet 暗色適配 */
 .leaflet-popup-content-wrapper {
     background: var(--bg-card) !important;
     color: var(--text-primary) !important;
@@ -2922,7 +2922,7 @@ a:hover {
     background: rgba(209, 163, 65, 0.5);
 }
 
-/* --- 状态栏 --- */
+/* --- 狀態欄 --- */
 .lineage-status-bar {
     display: flex;
     align-items: center;
@@ -2963,7 +2963,7 @@ a:hover {
     pointer-events: none;
 }
 
-/* --- 响应式 --- */
+/* --- 響應式 --- */
 @media (max-width: 1024px) {
     .lineage-dashboard {
         grid-template-columns: 1fr;
@@ -2993,7 +2993,7 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════
-   页脚
+   頁腳
    ═══════════════════════════════════════════════════════════ */
 .site-footer {
     text-align: center;
@@ -3027,8 +3027,125 @@ a:hover {
 }
 
 
+/* ═══════════════════════════════════════════════════════════
+   外部資源頁
+   ═══════════════════════════════════════════════════════════ */
+.resources-page {
+    padding-top: var(--space-sm);
+}
+
+.resources-intro {
+    display: block;
+    margin-bottom: var(--space-xl);
+}
+
+.resources-intro-content {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: var(--space-lg) var(--space-xl);
+    text-align: left;
+}
+
+.resources-intro-text {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.9;
+    color: var(--text-secondary);
+}
+
+.resource-section {
+    margin-bottom: calc(var(--space-xl) + var(--space-sm));
+}
+
+.resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-lg);
+}
+
+.resource-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    min-height: 100%;
+    padding: var(--space-lg);
+    background: linear-gradient(180deg, rgba(255, 248, 232, 0.03), rgba(255, 248, 232, 0.015));
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    box-shadow: inset 0 0 0 1px rgba(212, 168, 83, 0.02);
+}
+
+.resource-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+}
+
+.resource-card-title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    letter-spacing: 0.06em;
+}
+
+.resource-badge {
+    flex-shrink: 0;
+    padding: 3px 8px;
+    border: 1px solid rgba(212, 168, 83, 0.18);
+    border-radius: 999px;
+    font-size: 0.72rem;
+    color: var(--gold-bright);
+    background: rgba(212, 168, 83, 0.08);
+    letter-spacing: 0.08em;
+}
+
+.resource-card-desc {
+    margin: 0;
+    color: var(--text-secondary);
+    line-height: 1.85;
+}
+
+.resource-card-usage {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+}
+
+.resource-card-link {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    width: fit-content;
+    color: var(--gold-bright);
+    border-bottom: 1px solid rgba(212, 168, 83, 0.24);
+    transition: color var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.resource-card-link:hover {
+    color: var(--gold);
+    border-bottom-color: rgba(212, 168, 83, 0.4);
+    transform: translateX(2px);
+}
+
+@media (max-width: 768px) {
+    .resources-intro-content,
+    .resource-card {
+        padding: var(--space-md);
+    }
+
+    .resource-card-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+
 /* ═══════════════════════════════════════════════════════════════
-   导航栏搜索框
+   導航欄搜索框
    ═══════════════════════════════════════════════════════════════ */
 
 .nav-search {
@@ -3171,7 +3288,7 @@ a:hover {
     color: var(--text-muted);
 }
 
-/* 搜索分段标签 */
+/* 搜索分段標籤 */
 .search-section-label {
     font-size: 0.7rem;
     color: var(--gold-dim);
@@ -3183,16 +3300,30 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   沉浸式阅读模式 (Immersive Reader Mode)
+   沉浸式閱讀模式 (Immersive Reader Mode)
    ═══════════════════════════════════════════════════════════════ */
 
-/* 阅读模式下隐藏标准页脚、将内容放满 */
+/* 閱讀模式下保留頁腳，但改為更輕的樣式，方便進入外部資源頁 */
 .reader-mode .site-footer {
-    display: none;
+    display: block;
+    padding: var(--space-lg) var(--space-lg) calc(var(--space-lg) + env(safe-area-inset-bottom));
+    border-top-color: rgba(212, 168, 83, 0.12);
+    background: linear-gradient(180deg, rgba(255, 248, 232, 0.015), rgba(255, 248, 232, 0.03));
+}
+
+.reader-mode .footer-verse {
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    opacity: 0.9;
+}
+
+.reader-mode .footer-credits {
+    font-size: 0.76rem;
+    line-height: 1.9;
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   阅读页布局（主区 + 右侧图标条）
+   閱讀頁佈局（主區 + 右側圖標條）
    ═══════════════════════════════════════════════════════════════ */
 
 .reader-layout {
@@ -3208,12 +3339,12 @@ a:hover {
     min-width: 0;
     padding: var(--space-xl) var(--space-lg);
     padding-top: 60px;
-    /* 为顶部工具栏留空间 */
+    /* 為頂部工具欄留空間 */
     padding-right: calc(var(--space-lg) + 2rem);
-    /* 右侧额外留白避免工具栏遮挡 */
+    /* 右側額外留白避免工具欄遮擋 */
 }
 
-/* 版心：阅读主区内容居中约束 */
+/* 版心：閱讀主區內容居中約束 */
 .reader-main .sutra-header,
 .reader-main .juan-selector,
 .reader-main .breadcrumb {
@@ -3224,10 +3355,10 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   面包屑
+   麵包屑
    ═══════════════════════════════════════════════════════════════ */
 
-/* 单栏时吸顶容器：包裹面包屑 + 经文头部 */
+/* 單欄時吸頂容器：包裹麵包屑 + 經文頭部 */
 .reader-sticky-top {
     position: sticky;
     top: 0;
@@ -3270,7 +3401,7 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   经文 Header + 详情面板
+   經文 Header + 詳情面板
    ═══════════════════════════════════════════════════════════════ */
 
 .sutra-header {
@@ -3283,7 +3414,7 @@ a:hover {
     position: relative;
 }
 
-/* 标题 + 卷导航 合并为一行 */
+/* 標題 + 卷導航 合併為一行 */
 .sutra-header-row {
     display: flex;
     align-items: center;
@@ -3293,7 +3424,7 @@ a:hover {
     min-height: 36px;
 }
 
-/* 左侧：经名 + 经号 + 详情按钮 */
+/* 左側：經名 + 經號 + 詳情按鈕 */
 .sutra-header-left {
     display: flex;
     align-items: center;
@@ -3349,7 +3480,7 @@ a:hover {
     color: var(--gold-dim);
 }
 
-/* 右侧：卷选择 + 翻页 */
+/* 右側：卷選擇 + 翻頁 */
 .sutra-header-right {
     display: flex;
     align-items: center;
@@ -3468,7 +3599,7 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   卷选择器
+   卷選擇器
    ═══════════════════════════════════════════════════════════════ */
 
 .juan-selector {
@@ -3527,7 +3658,7 @@ a:hover {
     font-family: var(--font-sans);
 }
 
-/* 回顶/回首按钮：加左侧分隔线 */
+/* 回頂/回首按鈕：加左側分隔線 */
 .scroll-home-btn {
     margin-left: var(--space-sm);
     border-left: 2px solid var(--border-subtle);
@@ -3564,7 +3695,7 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   经文正文渲染
+   經文正文渲染
    ═══════════════════════════════════════════════════════════════ */
 
 .juan-body {
@@ -3574,13 +3705,13 @@ a:hover {
     color: var(--text-primary);
     letter-spacing: 0.02em;
     white-space: pre-line;
-    /* 版心宽度：em 单位随字号自动缩放，保持约 34 字/行 */
+    /* 版心寬度：em 單位隨字號自動縮放，保持約 34 字/行 */
     max-width: var(--text-block-width);
     margin-left: auto;
     margin-right: auto;
 }
 
-/* 行号 */
+/* 行號 */
 .juan-body .line-num {
     font-size: 0.65rem;
     color: var(--text-muted);
@@ -3616,7 +3747,7 @@ a:hover {
     display: none;
 }
 
-/* 标题 */
+/* 標題 */
 .juan-body h3,
 .juan-body .head- {
     font-family: var(--font-serif);
@@ -3625,7 +3756,7 @@ a:hover {
     margin: var(--space-lg) 0 var(--space-sm);
 }
 
-/* 偈颂 */
+/* 偈頌 */
 .juan-body .verse,
 .lg {
     width: fit-content;
@@ -3667,7 +3798,7 @@ a:hover {
     width: 1.5em;
 }
 
-/* 分页标记 */
+/* 分頁標記 */
 .juan-body .page-break {
     display: inline;
 }
@@ -3676,7 +3807,7 @@ a:hover {
     display: none;
 }
 
-/* 原版图片链接 */
+/* 原版圖片鏈接 */
 .juan-body .page-img-link {
     font-size: 1em;
     line-height: 1;
@@ -3693,18 +3824,18 @@ a:hover {
     opacity: 0.65;
 }
 
-/* 隐藏目录标记 */
+/* 隱藏目錄標記 */
 .juan-body .mulu[hidden] {
     display: none;
 }
 
-/* 锚点 */
+/* 錨點 */
 .juan-body a.anchor {
     text-decoration: none;
     color: inherit;
 }
 
-/* 卷头 */
+/* 卷頭 */
 .jhead {
     display: block;
     font-family: var(--font-serif);
@@ -3760,7 +3891,7 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   注释系统
+   註釋系統
    ═══════════════════════════════════════════════════════════════ */
 
 .note-inline {
@@ -3807,7 +3938,7 @@ a:hover {
     color: var(--gold-bright);
 }
 
-/* 注释弹窗 */
+/* 註釋彈窗 */
 .note-popup {
     position: fixed;
     z-index: 9999;
@@ -3838,7 +3969,7 @@ a:hover {
     margin-right: 0.3em;
 }
 
-/* 尾注区 */
+/* 尾註區 */
 .endnotes {
     margin-top: var(--space-2xl);
     padding-top: var(--space-xl);
@@ -3923,7 +4054,7 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   加载指示器
+   加載指示器
    ═══════════════════════════════════════════════════════════════ */
 
 .loading-hint {
@@ -3966,7 +4097,7 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   右侧图标条 (Tool Strip)
+   右側圖標條 (Tool Strip)
    ═══════════════════════════════════════════════════════════════ */
 
 .tool-strip {
@@ -3986,7 +4117,7 @@ a:hover {
     z-index: 100;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     font-family: var(--font-sans);
-    /* 思源黑体 */
+    /* 思源黑體 */
 }
 
 .tool-strip-btn {
@@ -4058,7 +4189,7 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   覆盖面板 (Overlay Panel)
+   覆蓋面板 (Overlay Panel)
    ═══════════════════════════════════════════════════════════════ */
 
 .overlay-backdrop {
@@ -4137,7 +4268,7 @@ a:hover {
     padding: var(--space-lg);
 }
 
-/* 面板内容通用样式 */
+/* 面板內容通用樣式 */
 .panel-desc {
     font-size: 0.85rem;
     color: var(--text-secondary);
@@ -4211,7 +4342,7 @@ a:hover {
     background: rgba(220, 80, 80, 0.1);
 }
 
-/* 占位符样式 */
+/* 佔位符樣式 */
 .parallel-placeholder {
     text-align: center;
     padding: var(--space-xl) 0;
@@ -4238,7 +4369,7 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   设置面板 (Settings Panel)
+   設置面板 (Settings Panel)
    ═══════════════════════════════════════════════════════════════ */
 
 .settings-section {
@@ -4259,7 +4390,7 @@ a:hover {
     margin-left: var(--space-xs);
 }
 
-/* 按钮组（简繁切换） */
+/* 按鈕組（簡繁切換） */
 .settings-btn-group {
     display: flex;
     gap: 2px;
@@ -4292,7 +4423,7 @@ a:hover {
     color: var(--gold-bright);
 }
 
-/* 滑块行 */
+/* 滑塊行 */
 .settings-slider-row {
     display: flex;
     align-items: center;
@@ -4308,7 +4439,7 @@ a:hover {
     text-align: center;
 }
 
-/* 自定义滑块样式 */
+/* 自定義滑塊樣式 */
 .settings-slider {
     -webkit-appearance: none;
     appearance: none;
@@ -4351,7 +4482,7 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   对照工作台 (Comparison Workspace)
+   對照工作臺 (Comparison Workspace)
    ═══════════════════════════════════════════════════════════════ */
 
 .compare-item {
@@ -4448,7 +4579,7 @@ a:hover {
     opacity: 1;
 }
 
-/* 注疏文件夹 */
+/* 註疏文件夾 */
 .compare-sub-folder {
     border-top: 1px solid var(--border-subtle);
 }
@@ -4504,7 +4635,7 @@ a:hover {
     text-overflow: ellipsis;
 }
 
-/* 添加按钮 */
+/* 添加按鈕 */
 .compare-add-btn {
     display: inline-flex;
     align-items: center;
@@ -4535,7 +4666,7 @@ a:hover {
     border-style: dashed;
 }
 
-/* 搜索对话框 */
+/* 搜索對話框 */
 .compare-add-dialog {
     background: var(--bg-surface);
     border: 1px solid var(--border-gold);
@@ -4609,7 +4740,7 @@ a:hover {
 }
 
 
-/* ═══ AI 释义面板 ═══ */
+/* ═══ AI 釋義面板 ═══ */
 .ai-mode-tabs {
     display: flex;
     gap: 4px;
@@ -4838,7 +4969,7 @@ a:hover {
     border-top: 1px solid var(--border-subtle);
 }
 
-/* AI 设置区 */
+/* AI 設置區 */
 .ai-provider-select {
     width: 100%;
     padding: 8px 12px;
@@ -4893,7 +5024,7 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   阅读页响应式
+   閱讀頁響應式
    ═══════════════════════════════════════════════════════════════ */
 
 @media (max-width: 960px) {
@@ -4955,7 +5086,7 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   对照分栏 (Split Panel)
+   對照分欄 (Split Panel)
    ═══════════════════════════════════════════════════════════════ */
 
 .reader-layout.split-active {
@@ -4964,7 +5095,7 @@ a:hover {
     overflow: hidden;
 }
 
-/* 横排分栏：左栏纵向 flex，头部吸顶，内容区滚动 */
+/* 橫排分欄：左欄縱向 flex，頭部吸頂，內容區滾動 */
 .reader-layout.split-active:not(.writing-vertical) .reader-main {
     display: flex;
     flex-direction: column;
@@ -4973,7 +5104,7 @@ a:hover {
     padding-top: 0;
 }
 
-/* 头部元素：吸顶显示，不随内容滚动 */
+/* 頭部元素：吸頂顯示，不隨內容滾動 */
 .reader-layout.split-active:not(.writing-vertical) .reader-sticky-top {
     flex-shrink: 0;
     position: sticky;
@@ -4982,7 +5113,7 @@ a:hover {
     background: var(--bg-primary);
 }
 
-/* 双栏时左栏头部简化：去边框和底色，加底线，与右栏一致 */
+/* 雙欄時左欄頭部簡化：去邊框和底色，加底線，與右欄一致 */
 .reader-layout.split-active .reader-sticky-top {
     padding: 0;
 }
@@ -4997,12 +5128,12 @@ a:hover {
     border-bottom: 1px solid var(--gold-dim, #b8860b55);
 }
 
-/* 双栏时隐藏详情面板（因为详情按钮已隐藏） */
+/* 雙欄時隱藏詳情面板（因為詳情按鈕已隱藏） */
 .reader-layout.split-active .detail-panel {
     display: none !important;
 }
 
-/* 双栏时头部两行布局：第一行经名，第二行导航 */
+/* 雙欄時頭部兩行佈局：第一行經名，第二行導航 */
 .reader-layout.split-active .sutra-header-row {
     flex-wrap: wrap;
 }
@@ -5011,14 +5142,14 @@ a:hover {
     width: 100%;
 }
 
-/* 双栏时隐藏详情按钮和卷下拉框，让左栏与右栏格式一致 */
-/* 只隐藏左栏 (.reader-main) 内的，不影响右栏的 ✕ 关闭按钮 */
+/* 雙欄時隱藏詳情按鈕和卷下拉框，讓左欄與右欄格式一致 */
+/* 只隱藏左欄 (.reader-main) 內的，不影響右欄的 ✕ 關閉按鈕 */
 .reader-layout.split-active .reader-main .detail-toggle,
 .reader-layout.split-active .sutra-header-right .juan-select {
     display: none;
 }
 
-/* 内容区：填满剩余高度，纵向滚动 */
+/* 內容區：填滿剩餘高度，縱向滾動 */
 .reader-layout.split-active:not(.writing-vertical) .juan-body {
     flex: 1;
     overflow-y: auto;
@@ -5026,7 +5157,7 @@ a:hover {
     height: auto;
 }
 
-/* 横排分栏右栏：同样 flex布局 */
+/* 橫排分欄右欄：同樣 flex佈局 */
 .reader-layout.split-active:not(.writing-vertical) .reader-right {
     display: flex;
     flex-direction: column;
@@ -5052,12 +5183,12 @@ a:hover {
     height: auto;
 }
 
-/* 分栏时隐藏面包屑（的所有模式）：节省空间，两栏高度更对称 */
+/* 分欄時隱藏麵包屑（的所有模式）：節省空間，兩欄高度更對稱 */
 .reader-layout.split-active .breadcrumb {
     display: none;
 }
 
-/* 右栏头部：与左栏 sutra-header-row 格式一致 */
+/* 右欄頭部：與左欄 sutra-header-row 格式一致 */
 .reader-right-header {
     display: flex;
     align-items: center;
@@ -5069,7 +5200,7 @@ a:hover {
     min-height: 0;
 }
 
-/* 左组：标题 + ID + 关闭 */
+/* 左組：標題 + ID + 關閉 */
 .rr-header-left {
     display: flex;
     align-items: center;
@@ -5078,7 +5209,7 @@ a:hover {
     flex: 1;
 }
 
-/* 右组：翻卷导航 + 回顶/回首（双栏时独占第二行） */
+/* 右組：翻卷導航 + 回頂/回首（雙欄時獨佔第二行） */
 .rr-header-right {
     display: flex;
     align-items: center;
@@ -5172,7 +5303,7 @@ a:hover {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   闪念笔记面板 (Notes Panel)
+   閃念筆記面板 (Notes Panel)
    ═══════════════════════════════════════════════════════════════ */
 
 .notes-input-area {
@@ -5196,7 +5327,7 @@ a:hover {
 }
 
 .notes-quote-box:empty::before {
-    content: '选中经文后自动填入，或直接跳过';
+    content: '選中經文後自動填入，或直接跳過';
     color: var(--text-muted);
     font-style: italic;
     font-family: var(--font-sans);
@@ -5597,14 +5728,14 @@ a:hover {
     opacity: 0.4;
 }
 
-/* 字体风格预览文字 */
+/* 字體風格預覽文字 */
 .settings-font-preview {
     font-size: 0.8rem;
     color: var(--text-muted);
     margin-top: 2px;
 }
 
-/* ─── 悉昙字符 GIF 图片 ───────────────────────────────────── */
+/* ─── 悉曇字符 GIF 圖片 ───────────────────────────────────── */
 .siddham-char {
     display: inline-block;
     height: 1.4em;
@@ -5612,7 +5743,7 @@ a:hover {
     vertical-align: middle;
     margin: 0 1px;
     filter: invert(1);
-    /* 黑底白字 → 适配暗色主题 */
+    /* 黑底白字 → 適配暗色主題 */
 }
 
 .siddham {
@@ -5635,7 +5766,7 @@ ruby.pinyin-ruby rt {
     user-select: none;
 }
 
-/* ── 阅读进度条 ── */
+/* ── 閱讀進度條 ── */
 .reading-progress {
     position: fixed;
     top: 0;
@@ -5648,7 +5779,7 @@ ruby.pinyin-ruby rt {
     pointer-events: none;
 }
 
-/* ── 回到顶部按钮 ── */
+/* ── 回到頂部按鈕 ── */
 .back-to-top {
     position: fixed;
     bottom: 2rem;
@@ -5700,7 +5831,7 @@ html.theme-light .section-icon {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   版心：右栏对照也居中约束
+   版心：右欄對照也居中約束
    ═══════════════════════════════════════════════════════════════ */
 
 .reader-right .juan-body {
@@ -5711,11 +5842,11 @@ html.theme-light .section-icon {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   竖排模式 (writing-mode: vertical-rl)
+   豎排模式 (writing-mode: vertical-rl)
    ═══════════════════════════════════════════════════════════════ */
 
-/* 竖排单栏时：头部水平吸附，不随经文横向滚动 */
-/* 改为 flex 布局：头部固定 + 经文区横向滚动，与分栏竖排一致 */
+/* 豎排單欄時：頭部水平吸附，不隨經文橫向滾動 */
+/* 改為 flex 佈局：頭部固定 + 經文區橫向滾動，與分欄豎排一致 */
 .reader-layout.writing-vertical:not(.split-active) {
     overflow: hidden;
     max-width: 100vw;
@@ -5739,7 +5870,7 @@ html.theme-light .section-icon {
     background: var(--bg-primary);
 }
 
-/* 竖排经文通用样式 */
+/* 豎排經文通用樣式 */
 .reader-layout.writing-vertical .juan-body {
     writing-mode: vertical-rl;
     text-orientation: mixed;
@@ -5750,7 +5881,7 @@ html.theme-light .section-icon {
     background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-primary) 100%);
 }
 
-/* ── 分栏 + 竖排 ── */
+/* ── 分欄 + 豎排 ── */
 
 .reader-layout.writing-vertical.split-active {
     overflow: hidden;
@@ -5775,7 +5906,7 @@ html.theme-light .section-icon {
     min-height: 0;
     height: 100%;
     padding-right: 2px;
-    /* 防止 juan-body 右边框被裁切 */
+    /* 防止 juan-body 右邊框被裁切 */
 }
 
 .reader-layout.writing-vertical.split-active .reader-sticky-top,
@@ -5793,7 +5924,7 @@ html.theme-light .section-icon {
     overflow-y: hidden;
 }
 
-/* ── 竖排单栏 ── */
+/* ── 豎排單欄 ── */
 
 .reader-layout.writing-vertical:not(.split-active) .juan-body {
     flex: 1;
@@ -5804,7 +5935,7 @@ html.theme-light .section-icon {
     overflow-y: hidden !important;
 }
 
-/* 竖排标题和作者行：不缩进，居中即可 */
+/* 豎排標題和作者行：不縮進，居中即可 */
 .reader-layout.writing-vertical .juan-body .head,
 .reader-layout.writing-vertical .juan-body .byline,
 .reader-layout.writing-vertical .juan-body .juan {
@@ -5814,34 +5945,34 @@ html.theme-light .section-icon {
     padding-top: 0;
 }
 
-/* 竖排偈颂：统一缩进 4 字 */
+/* 豎排偈頌：統一縮進 4 字 */
 .reader-layout.writing-vertical .juan-body .verse,
 .reader-layout.writing-vertical .juan-body .lg {
     width: auto;
     margin: var(--space-md) 0;
     padding-top: 4em;
-    /* 顶部缩进 4 个汉字 */
+    /* 頂部縮進 4 個漢字 */
 }
 
-/* 竖排版心：固定每列 20 字（大藏经传统格式），不随窗口缩放 */
+/* 豎排版心：固定每列 20 字（大藏經傳統格式），不隨窗口縮放 */
 .reader-layout.writing-vertical .juan-body p {
     text-indent: 2em;
     height: 20em;
     /* 1em ≈ 1 字，固定 20 字/列 */
 }
 
-/* 竖排时行号隐藏（位置会错乱） */
+/* 豎排時行號隱藏（位置會錯亂） */
 .reader-layout.writing-vertical .juan-body .line-num {
     display: none;
 }
 
-/* 竖排时 header/selector 仍然横排 */
+/* 豎排時 header/selector 仍然橫排 */
 .reader-layout.writing-vertical .reader-sticky-top,
 .reader-layout.writing-vertical .juan-selector {
     writing-mode: horizontal-tb;
 }
 
-/* 竖排时的滚动条样式 */
+/* 豎排時的滾動條樣式 */
 .reader-layout.writing-vertical .juan-body::-webkit-scrollbar {
     height: 6px;
 }

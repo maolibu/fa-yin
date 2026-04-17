@@ -24,7 +24,7 @@ log = logging.getLogger(__name__)
 
 @router.get("", response_class=JSONResponse)
 async def list_verses():
-    """获取全部偈颂（内置 + 用户），以及今日索引"""
+    """獲取全部偈頌（內置 + 用戶），以及今日索引"""
     all_v = get_all_verses()
     daily_idx = get_daily_index()
     prefs = get_user_prefs()
@@ -38,7 +38,7 @@ async def list_verses():
 
 @router.post("", response_class=JSONResponse)
 async def create_verse(request: Request):
-    """新增一条用户偈颂"""
+    """新增一條用戶偈頌"""
     try:
         body = await request.json()
         lines = body.get("lines", [])
@@ -50,14 +50,14 @@ async def create_verse(request: Request):
                 content={"status": "error", "detail": "偈頌正文和出處不可為空"}
             )
 
-        # lines 如果是字符串，按换行拆分
+        # lines 如果是字符串，按換行拆分
         if isinstance(lines, str):
             lines = [l.strip() for l in lines.split("\n") if l.strip()]
 
         new_verse = add_user_verse(lines, source)
         return {"status": "ok", "verse": new_verse}
     except Exception as e:
-        log.error(f"新增偈颂失败: {e}")
+        log.error(f"新增偈頌失敗: {e}")
         return JSONResponse(
             status_code=500,
             content={"status": "error", "detail": str(e)}
@@ -66,7 +66,7 @@ async def create_verse(request: Request):
 
 @router.delete("/{verse_id}", response_class=JSONResponse)
 async def remove_verse(verse_id: int):
-    """删除一条用户偈颂"""
+    """刪除一條用戶偈頌"""
     success = delete_user_verse(verse_id)
     if success:
         return {"status": "ok"}
@@ -78,14 +78,14 @@ async def remove_verse(verse_id: int):
 
 @router.post("/pin", response_class=JSONResponse)
 async def pin_verse(request: Request):
-    """置顶一条偈颂为今日偈颂"""
+    """置頂一條偈頌為今日偈頌"""
     try:
         body = await request.json()
         verse_id = body.get("id")
         verse_type = body.get("type", "builtin")
 
         prefs = get_user_prefs()
-        # 如果已经置顶的和请求的一样，则取消置顶
+        # 如果已經置頂的和請求的一樣，則取消置頂
         if prefs.get("pinned_id") == verse_id and prefs.get("pinned_type") == verse_type:
             prefs.pop("pinned_id", None)
             prefs.pop("pinned_type", None)
@@ -97,7 +97,7 @@ async def pin_verse(request: Request):
         save_user_prefs(prefs)
         return {"status": "ok", "pinned": True}
     except Exception as e:
-        log.error(f"置顶偈颂失败: {e}")
+        log.error(f"置頂偈頌失敗: {e}")
         return JSONResponse(
             status_code=500,
             content={"status": "error", "detail": str(e)}

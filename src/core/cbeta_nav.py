@@ -1,12 +1,12 @@
 """
-CBETA 导航数据解析模块 — 零数据库方案
+CBETA 導航數據解析模塊 — 零數據庫方案
 
-直接读取 CBETA Bookcase 原始文件，在启动时解析到内存：
-  - advance_nav.xhtml → 经藏目录树 + 经文元数据（经号、经名）【主数据源】
-  - bulei_nav.xhtml   → 部类目录树（阿含部、般若部等）
-  - catalog.txt       → 补充作者、部类信息
-  - bookdata.txt      → 藏经代码→名称映射
-  - toc/              → 品章目录 + 卷索引（按需加载）
+直接讀取 CBETA Bookcase 原始文件，在啟動時解析到內存：
+  - advance_nav.xhtml → 經藏目錄樹 + 經文元數據（經號、經名）【主數據源】
+  - bulei_nav.xhtml   → 部類目錄樹（阿含部、般若部等）
+  - catalog.txt       → 補充作者、部類信息
+  - bookdata.txt      → 藏經代碼→名稱映射
+  - toc/              → 品章目錄 + 卷索引（按需加載）
 """
 
 import re
@@ -20,12 +20,12 @@ log = logging.getLogger(__name__)
 
 class CBETANav:
     """
-    CBETA Bookcase 导航数据管理器。
-    启动时解析 xhtml 导航文件构建目录树和经文索引。
+    CBETA Bookcase 導航數據管理器。
+    啟動時解析 xhtml 導航文件構建目錄樹和經文索引。
     """
 
-    # 大般若经子编号 → (全局起始卷偏移, 本部分卷数)
-    # CBETA 将 T0220 拆分为 a~o 共 15 个子编号，但 toc/XML 只用 T0220
+    # 大般若經子編號 → (全局起始卷偏移, 本部分卷數)
+    # CBETA 將 T0220 拆分為 a~o 共 15 個子編號，但 toc/XML 只用 T0220
     _SUB_SUTRA_MAP = {
         'T0220a': (0, 200),      # 卷1-200
         'T0220b': (200, 200),    # 卷201-400
@@ -49,62 +49,62 @@ class CBETANav:
         self.xml_dir = self.cbeta_dir / "XML"
         self.toc_dir = self.cbeta_dir / "toc"
 
-        # 内存数据
+        # 內存數據
         self.catalog: dict[str, dict] = {}      # {sutra_id: {title, author, juan_count, ...}}
         self.canon_names: dict[str, str] = {}   # {canon_code: canon_name_zh}
-        self.canon_tree: list[dict] = []        # 经藏目录树
-        self.bulei_tree: list[dict] = []        # 部类目录树
+        self.canon_tree: list[dict] = []        # 經藏目錄樹
+        self.bulei_tree: list[dict] = []        # 部類目錄樹
 
-        # 1. 加载藏经名称
+        # 1. 加載藏經名稱
         self._load_bookdata()
 
-        # 2. 解析 xhtml 导航文件 → 目录树 + 经文索引（主数据源）
+        # 2. 解析 xhtml 導航文件 → 目錄樹 + 經文索引（主數據源）
         self._load_canon_tree()
         self._load_bulei_tree()
 
-        # 3. 从 xhtml 树中提取所有经文元数据到 catalog
+        # 3. 從 xhtml 樹中提取所有經文元數據到 catalog
         self._build_catalog_from_trees()
 
-        # 4. 从 catalog.txt 补充作者和部类（可选）
+        # 4. 從 catalog.txt 補充作者和部類（可選）
         self._supplement_from_catalog_txt()
 
-        log.info(f"CBETANav 初始化完成: {len(self.catalog)} 个经文, "
-                 f"{len(self.canon_tree)} 个经藏, {len(self.bulei_tree)} 个部类")
+        log.info(f"CBETANav 初始化完成: {len(self.catalog)} 個經文, "
+                 f"{len(self.canon_tree)} 個經藏, {len(self.bulei_tree)} 個部類")
 
     # ================================================================
-    # 公开接口
+    # 公開接口
     # ================================================================
 
     def get_sutra_info(self, sutra_id: str) -> dict | None:
-        """查询经文元数据"""
+        """查詢經文元數據"""
         info = self.catalog.get(sutra_id)
         if info:
             return info
-        # 子编号回退：T0220a → T0220
+        # 子編號回退：T0220a → T0220
         base = self._strip_sub_letter(sutra_id)
         if base:
             return self.catalog.get(base)
         return None
 
     def get_total_juan(self, sutra_id: str) -> int:
-        """查询经文总卷数（按需从 toc 加载）"""
+        """查詢經文總卷數（按需從 toc 加載）"""
         info = self.catalog.get(sutra_id)
         if not info:
-            # 子编号映射表快速查找（如 T0220a → 200 卷）
+            # 子編號映射錶快速查找（如 T0220a → 200 卷）
             sub = self._SUB_SUTRA_MAP.get(sutra_id)
             if sub:
                 return sub[1]
             return 1
         if info["juan_count"] == 0:
-            # 子编号映射表优先
+            # 子編號映射表優先
             sub = self._SUB_SUTRA_MAP.get(sutra_id)
             if sub:
                 info["juan_count"] = sub[1]
             else:
-                # 按需加载卷数
+                # 按需加載卷數
                 canon = info.get("canon") or self._guess_canon(sutra_id)
                 count = self._get_juan_count_from_toc(sutra_id, canon)
-                # 子编号回退（如 T0220a → T0220）
+                # 子編號回退（如 T0220a → T0220）
                 if count <= 1:
                     base_id = self._strip_sub_letter(sutra_id)
                     if base_id:
@@ -115,11 +115,11 @@ class CBETANav:
         return info["juan_count"]
 
     def get_sutra_title(self, sutra_id: str) -> str:
-        """查询经名"""
+        """查詢經名"""
         info = self.catalog.get(sutra_id)
         if info:
             return info.get("title", sutra_id)
-        # 子编号回退：T0220a → T0220
+        # 子編號回退：T0220a → T0220
         base = self._strip_sub_letter(sutra_id)
         if base:
             base_info = self.catalog.get(base)
@@ -130,9 +130,9 @@ class CBETANav:
     @staticmethod
     def _strip_sub_letter(sutra_id: str) -> str | None:
         """
-        去掉子编号后缀，如 T0220a → T0220。
-        CBETA 大般若经等大经被拆成 T0220a~T0220o，但 toc/XML 文件只用 T0220。
-        仅当末尾是小写字母且前面是数字时才剥离。
+        去掉子編號後綴，如 T0220a → T0220。
+        CBETA 大般若經等大經被拆成 T0220a~T0220o，但 toc/XML 文件只用 T0220。
+        僅當末尾是小寫字母且前面是數字時才剝離。
         """
         if sutra_id and sutra_id[-1].islower() and len(sutra_id) > 2 and sutra_id[-2].isdigit():
             return sutra_id[:-1]
@@ -140,12 +140,12 @@ class CBETANav:
 
     def resolve_scroll_path(self, sutra_id: str, juan: int) -> Path | None:
         """
-        根据经号和卷号定位 XML 文件路径。
-        优先 toc 精确查找，回退到目录扫描。
-        对 T0220a 等子编号，先将 local_juan 偏移为全局卷号，
-        再用基础编号 T0220 查找。
+        根據經號和卷號定位 XML 文件路徑。
+        優先 toc 精確查找，回退到目錄掃描。
+        對 T0220a 等子編號，先將 local_juan 偏移為全局卷號，
+        再用基礎編號 T0220 查找。
         """
-        # 子编号偏移处理：T0220a 的第 1 卷 → 全局第 1 卷，T0220b 的第 1 卷 → 全局第 201 卷
+        # 子編號偏移處理：T0220a 的第 1 卷 → 全局第 1 卷，T0220b 的第 1 卷 → 全局第 201 卷
         sub = self._SUB_SUTRA_MAP.get(sutra_id)
         if sub:
             offset, total = sub
@@ -158,20 +158,20 @@ class CBETANav:
                 path = self._resolve_by_scan(base_id, global_juan)
                 if path and path.exists():
                     return path
-            # 如果偏移后找不到，不再回退，直接返回 None
+            # 如果偏移後找不到，不再回退，直接返回 None
             return None
 
-        # 方法1: 从 toc 文件查找精确路径
+        # 方法1: 從 toc 文件查找精確路徑
         path = self._resolve_from_toc(sutra_id, juan)
         if path and path.exists():
             return path
 
-        # 方法2: 目录扫描回退
+        # 方法2: 目錄掃描回退
         path = self._resolve_by_scan(sutra_id, juan)
         if path and path.exists():
             return path
 
-        # 方法3: 子编号回退 — 去掉末尾字母重试（如 T0220a → T0220）
+        # 方法3: 子編號回退 — 去掉末尾字母重試（如 T0220a → T0220）
         base_id = self._strip_sub_letter(sutra_id)
         if base_id:
             path = self._resolve_from_toc(base_id, juan)
@@ -184,15 +184,15 @@ class CBETANav:
         return None
 
     def get_canon_tree(self) -> list[dict]:
-        """返回经藏目录树"""
+        """返回經藏目錄樹"""
         return self.canon_tree
 
     def get_bulei_tree(self) -> list[dict]:
-        """返回部类目录树"""
+        """返回部類目錄樹"""
         return self.bulei_tree
 
     # ================================================================
-    # 加载 bookdata.txt → 藏经代码映射
+    # 加載 bookdata.txt → 藏經代碼映射
     # ================================================================
 
     def _load_bookdata(self):
@@ -213,34 +213,34 @@ class CBETANav:
                 if code and full_name:
                     self.canon_names[code] = full_name
 
-        log.info(f"  bookdata.txt: {len(self.canon_names)} 个藏经代码")
+        log.info(f"  bookdata.txt: {len(self.canon_names)} 個藏經代碼")
 
     # ================================================================
-    # 解析 xhtml 导航文件 → 目录树
+    # 解析 xhtml 導航文件 → 目錄樹
     # ================================================================
 
     def _load_canon_tree(self):
-        """解析 advance_nav.xhtml 为经藏目录树"""
+        """解析 advance_nav.xhtml 為經藏目錄樹"""
         path = self.cbeta_dir / "advance_nav.xhtml"
         if not path.exists():
             log.warning(f"advance_nav.xhtml 不存在: {path}")
             return
         self.canon_tree = self._parse_nav_xhtml(path)
-        log.info(f"  advance_nav.xhtml: {len(self.canon_tree)} 个顶级节点")
+        log.info(f"  advance_nav.xhtml: {len(self.canon_tree)} 個頂級節點")
 
     def _load_bulei_tree(self):
-        """解析 bulei_nav.xhtml 为部类目录树"""
+        """解析 bulei_nav.xhtml 為部類目錄樹"""
         path = self.cbeta_dir / "bulei_nav.xhtml"
         if not path.exists():
             log.warning(f"bulei_nav.xhtml 不存在: {path}")
             return
         self.bulei_tree = self._parse_nav_xhtml(path)
-        log.info(f"  bulei_nav.xhtml: {len(self.bulei_tree)} 个顶级节点")
+        log.info(f"  bulei_nav.xhtml: {len(self.bulei_tree)} 個頂級節點")
 
     @staticmethod
     def _extract_sutra_id(text: str) -> str | None:
         """
-        从 cblink 文本中提取经号。
+        從 cblink 文本中提取經號。
         支持：T0001、Ba001、JA042、GA0026、T0150A 等
         """
         m = re.match(r"^([A-Z]+[a-zA-Z]*\d+[a-zA-Z]*)\b", text)
@@ -249,7 +249,7 @@ class CBETANav:
     @staticmethod
     def _extract_sutra_title(text: str) -> str:
         """
-        从 cblink 文本中提取经名（去掉前面的经号）。
+        從 cblink 文本中提取經名（去掉前面的經號）。
         'T0001 長阿含經' → '長阿含經'
         """
         m = re.match(r"^[A-Z]+[a-zA-Z]*\d+[a-zA-Z]*\s+(.+)", text)
@@ -257,7 +257,7 @@ class CBETANav:
 
     def _parse_nav_xhtml(self, file_path: Path) -> list[dict]:
         """
-        解析 xhtml 导航文件为树形结构。
+        解析 xhtml 導航文件為樹形結構。
         返回: [{title, sutra_id, href, children: [...]}]
         """
         content = file_path.read_text(encoding="utf-8")
@@ -295,7 +295,7 @@ class CBETANav:
                 node["title"] = text
                 node["sutra_id"] = self._extract_sutra_id(text)
 
-            # 递归处理子 <ol>
+            # 遞歸處理子 <ol>
             for ol in li_elem.findall("ol"):
                 for li in ol.findall("li"):
                     child = parse_li(li)
@@ -304,7 +304,7 @@ class CBETANav:
 
             return node
 
-        # 处理 <nav> 的直接子元素
+        # 處理 <nav> 的直接子元素
         children = list(nav)
         current_section = None
         for child in children:
@@ -336,14 +336,14 @@ class CBETANav:
         return result
 
     # ================================================================
-    # 从目录树构建 catalog（主数据源）
+    # 從目錄樹構建 catalog（主數據源）
     # ================================================================
 
     def _build_catalog_from_trees(self):
         """
-        遍历 advance_nav + bulei_nav 目录树，提取所有叶子节点的经号和经名。
-        bulei_nav 包含 T0220a~o 等子编号，advance_nav 中没有。
-        卷数不在启动时加载（太慢），改为按需查 toc。
+        遍歷 advance_nav + bulei_nav 目錄樹，提取所有葉子節點的經號和經名。
+        bulei_nav 包含 T0220a~o 等子編號，advance_nav 中沒有。
+        卷數不在啟動時加載（太慢），改為按需查 toc。
         """
         def walk_tree(nodes, canon_hint=""):
             for node in nodes:
@@ -358,7 +358,7 @@ class CBETANav:
                         "title": title,
                         "author": "",
                         "category": "",
-                        "juan_count": 0,  # 0 = 未加载，按需查 toc
+                        "juan_count": 0,  # 0 = 未加載，按需查 toc
                     }
 
                 title = node.get("title", "")
@@ -373,19 +373,19 @@ class CBETANav:
 
         walk_tree(self.canon_tree)
         canon_count = len(self.catalog)
-        # 同时遍历部类目录树，补充子编号（如 T0220a~o）
+        # 同時遍歷部類目錄樹，補充子編號（如 T0220a~o）
         walk_tree(self.bulei_tree)
         bulei_extra = len(self.catalog) - canon_count
-        log.info(f"  从目录树提取: {canon_count} 个经文 (经藏) + {bulei_extra} 个补充 (部类)")
+        log.info(f"  從目錄樹提取: {canon_count} 個經文 (經藏) + {bulei_extra} 個補充 (部類)")
 
     @staticmethod
     def _guess_canon(sutra_id: str) -> str:
-        """从经号推断 canon 代码：T0001→T, Ba001→B, JA042→J, GA0026→GA"""
+        """從經號推斷 canon 代碼：T0001→T, Ba001→B, JA042→J, GA0026→GA"""
         m = re.match(r"^([A-Z]+)", sutra_id)
         return m.group(1) if m else ""
 
     def _get_juan_count_from_toc(self, sutra_id: str, canon: str) -> int:
-        """从 toc 文件获取卷数"""
+        """從 toc 文件獲取卷數"""
         toc_path = self.toc_dir / canon / f"{sutra_id}.xml"
         if not toc_path.exists():
             return 1
@@ -405,16 +405,16 @@ class CBETANav:
                     if count > 0:
                         return count
         except Exception as e:
-            log.debug(f"toc 解析出错 {sutra_id}: {e}")
+            log.debug(f"toc 解析出錯 {sutra_id}: {e}")
 
         return 1
 
     # ================================================================
-    # 从 catalog.txt 补充作者和部类（可选增强）
+    # 從 catalog.txt 補充作者和部類（可選增強）
     # ================================================================
 
     def _supplement_from_catalog_txt(self):
-        """从 catalog.txt 补充 author 和 category 字段"""
+        """從 catalog.txt 補充 author 和 category 字段"""
         path = self.cbeta_dir / "catalog.txt"
         if not path.exists():
             return
@@ -443,14 +443,14 @@ class CBETANav:
                 if not self.catalog[sutra_id]["category"] and category:
                     self.catalog[sutra_id]["category"] = category
 
-        log.info(f"  catalog.txt 补充: {supplemented} 个作者信息")
+        log.info(f"  catalog.txt 補充: {supplemented} 個作者信息")
 
     # ================================================================
-    # 文件路径解析
+    # 文件路徑解析
     # ================================================================
 
     def _resolve_from_toc(self, sutra_id: str, juan: int) -> Path | None:
-        """从 toc 文件查找卷对应的 XML 文件路径"""
+        """從 toc 文件查找卷對應的 XML 文件路徑"""
         info = self.catalog.get(sutra_id)
         canon = info["canon"] if info else self._guess_canon(sutra_id)
         if not canon:
@@ -467,7 +467,7 @@ class CBETANav:
         except Exception:
             return None
 
-        # 找 <nav type="juan"> 中第 juan 个 cblink
+        # 找 <nav type="juan"> 中第 juan 個 cblink
         for nav_elem in root.xpath("//*[local-name()='nav']"):
             if nav_elem.get("type") == "juan":
                 juan_num = 0
@@ -485,14 +485,14 @@ class CBETANav:
         return None
 
     def _resolve_by_scan(self, sutra_id: str, juan: int) -> Path | None:
-        """通过扫描目录匹配文件（回退方案）"""
+        """通過掃描目錄匹配文件（回退方案）"""
         canon = self._guess_canon(sutra_id)
         if not canon:
             return None
 
         no = sutra_id[len(canon):]
-        # 针对诸如 J15nB005 这样的经号，文件名中往往只有 nB005_
-        # 我们寻找 'n' 后面的部分作为实际要匹配的经号特征
+        # 針對諸如 J15nB005 這樣的經號，文件名中往往只有 nB005_
+        # 我們尋找 'n' 後面的部分作為實際要匹配的經號特徵
         actual_no = no
         if 'n' in no.lower():
             actual_no = no.lower().split('n')[-1]
@@ -514,18 +514,18 @@ class CBETANav:
 
 
 # ================================================================
-# 便捷的全局初始化函数
+# 便捷的全局初始化函數
 # ================================================================
 
 _nav_instance: CBETANav | None = None
 
 
 def get_nav(cbeta_dir: str | Path = None) -> CBETANav:
-    """获取全局 CBETANav 实例（单例模式）"""
+    """獲取全局 CBETANav 實例（單例模式）"""
     global _nav_instance
     if _nav_instance is None:
         if cbeta_dir is None:
-            # 从 config 模块获取 CBETA 数据路径
+            # 從 config 模塊獲取 CBETA 數據路徑
             import config
             cbeta_dir = config.CBETA_BASE
         _nav_instance = CBETANav(cbeta_dir)

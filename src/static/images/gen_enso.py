@@ -1,38 +1,38 @@
 #!/usr/bin/env python3
 """
-生成墨痕圆相（Ensō）SVG 图标
-每个图标：手绘感的圈 + 中间的书法字
-输出为 SVG 文件，可直接在网页中使用
+生成墨痕圓相（Ensō）SVG 圖標
+每個圖標：手繪感的圈 + 中間的書法字
+輸出為 SVG 文件，可直接在網頁中使用
 """
 import math
 import random
 import os
 
-# 确保可重复
+# 確保可重複
 random.seed(42)
 
 def gen_enso_path(cx, cy, r, variation=0.08):
     """
-    生成一个带有手绘变化的近似圆形路径
-    使用多段贝塞尔曲线模拟毛笔墨痕
+    生成一個帶有手繪變化的近似圓形路徑
+    使用多段貝塞爾曲線模擬毛筆墨痕
     """
-    points = 24  # 采样点数
+    points = 24  # 採樣點數
     coords = []
     for i in range(points):
         angle = 2 * math.pi * i / points
-        # 半径随机波动，模拟墨痕不均
+        # 半徑隨機波動，模擬墨痕不均
         dr = r * (1 + random.uniform(-variation, variation))
         x = cx + dr * math.cos(angle)
         y = cy + dr * math.sin(angle)
         coords.append((x, y))
     
-    # 构建平滑路径（三次贝塞尔）
+    # 構建平滑路徑（三次貝塞爾）
     path = f"M {coords[0][0]:.1f} {coords[0][1]:.1f} "
     for i in range(len(coords)):
         p0 = coords[i]
         p1 = coords[(i + 1) % len(coords)]
         p2 = coords[(i + 2) % len(coords)]
-        # 控制点
+        # 控制點
         cp1x = p0[0] + (p1[0] - coords[(i - 1) % len(coords)][0]) * 0.25
         cp1y = p0[1] + (p1[1] - coords[(i - 1) % len(coords)][1]) * 0.25
         cp2x = p1[0] - (p2[0] - p0[0]) * 0.25
@@ -45,24 +45,24 @@ def gen_enso_path(cx, cy, r, variation=0.08):
 
 def gen_enso_svg(char, color, circle_color, filename):
     """
-    生成单个 Ensō SVG 图标
-    char: 中间的汉字
-    color: 字的颜色
-    circle_color: 圈的颜色
+    生成單個 Ensō SVG 圖標
+    char: 中間的漢字
+    color: 字的顏色
+    circle_color: 圈的顏色
     """
     size = 256
     cx, cy = size / 2, size / 2
-    r = 100  # 圈半径
+    r = 100  # 圈半徑
 
-    # 圈的笔画宽度有变化（模拟毛笔粗细）
-    # 用两层：外圈粗、内圈略细，制造墨痕层次
+    # 圈的筆畫寬度有變化（模擬毛筆粗細）
+    # 用兩層：外圈粗、內圈略細，製造墨痕層次
     path1 = gen_enso_path(cx, cy, r, variation=0.06)
     
-    # 留一个小缺口（禅宗圆相的特征）— 通过 dasharray 实现
-    # 实际用 stroke 而非 fill，更接近书法
+    # 留一個小缺口（禪宗圓相的特徵）— 通過 dasharray 實現
+    # 實際用 stroke 而非 fill，更接近書法
     
     # 重新用 stroke 方式
-    random.seed(42)  # 重置种子保持一致
+    random.seed(42)  # 重置種子保持一致
     
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {size} {size}" width="{size}" height="{size}">
   <defs>
@@ -75,7 +75,7 @@ def gen_enso_svg(char, color, circle_color, filename):
     </filter>
   </defs>
   
-  <!-- 墨痕圆相 — 用 stroke 模拟毛笔 -->
+  <!-- 墨痕圓相 — 用 stroke 模擬毛筆 -->
   <circle cx="{cx}" cy="{cy}" r="{r}" 
     fill="none" 
     stroke="{circle_color}" 
@@ -88,7 +88,7 @@ def gen_enso_svg(char, color, circle_color, filename):
     transform="rotate(-30 {cx} {cy})"
   />
   
-  <!-- 第二层：略粗的墨迹，增加厚度感 -->
+  <!-- 第二層：略粗的墨跡，增加厚度感 -->
   <circle cx="{cx}" cy="{cy}" r="{r}" 
     fill="none" 
     stroke="{circle_color}" 
@@ -100,11 +100,11 @@ def gen_enso_svg(char, color, circle_color, filename):
     transform="rotate(15 {cx} {cy})"
   />
 
-  <!-- 中间的书法字 -->
+  <!-- 中間的書法字 -->
   <text x="{cx}" y="{cy}" 
     text-anchor="middle" 
     dominant-baseline="central"
-    font-family="'Noto Serif TC', 'Noto Serif CJK TC', 'Source Han Serif TC', 'KaiTi', '楷体', serif"
+    font-family="'Noto Serif TC', 'Noto Serif CJK TC', 'Source Han Serif TC', 'KaiTi', '楷體', serif"
     font-size="80"
     font-weight="900"
     fill="{color}"
@@ -120,13 +120,13 @@ def gen_enso_svg(char, color, circle_color, filename):
 
 
 if __name__ == '__main__':
-    # 熏 — 金色系（案头）
-    gen_enso_svg('熏', '#d4a853', '#a07a30', 'enso_xun.svg')
+    # 燻 — 金色系（案頭）
+    gen_enso_svg('燻', '#d4a853', '#a07a30', 'enso_xun.svg')
     
-    # 灯 — 玄青色（祖师）
-    gen_enso_svg('灯', '#7a9ab8', '#4a6a80', 'enso_deng.svg')
+    # 燈 — 玄青色（祖師）
+    gen_enso_svg('燈', '#7a9ab8', '#4a6a80', 'enso_deng.svg')
     
-    # 藏 — 琥珀色（贝阙）
+    # 藏 — 琥珀色（貝闕）
     gen_enso_svg('藏', '#b08a50', '#806030', 'enso_zang.svg')
     
     print("全部完成！")

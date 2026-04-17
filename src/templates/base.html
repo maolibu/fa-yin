@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg">
-    <title>{% block title %}法印对照 · 整合阅读平台{% endblock %}</title>
-    <meta name="description" content="基于 TEI P5 XML 原文的高保真佛经在线阅读 · 法脉时空图谱 · 同经异译对照">
+    <title>{% block title %}法印對照 · 整合閱讀平台{% endblock %}</title>
+    <meta name="description" content="基於 TEI P5 XML 原文的高保真佛經在線閱讀 · 法脈時空圖譜 · 同經異譯對照">
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="/static/js/lib/htmx.min.js"></script>
     <script src="/static/js/lib/split.min.js"></script>
@@ -46,14 +46,14 @@
                         <path d="M14 8c0 0 6 6 6 10s-6 10-6 10" opacity="0.6" />
                     </svg>
                 </span>
-                <span class="brand-text">法印对照</span>
+                <span class="brand-text">法印對照</span>
             </a>
 
             <!-- 导航栏搜索框（全局可用） -->
             <div class="nav-search" x-data="navSearchApp()">
                 <div class="nav-search-wrapper">
                     <span class="nav-search-icon">🔍</span>
-                    <input type="text" class="nav-search-input" placeholder="搜索经名或经文内容…" x-model="query"
+                    <input type="text" class="nav-search-input" placeholder="搜索經名或經文內容…" x-model="query"
                         @input.debounce.300ms="doSearch()" @focus="showResults = results.length > 0"
                         @keydown.escape="showResults = false">
                 </div>
@@ -63,7 +63,7 @@
                     <!-- 标题匹配 -->
                     <template x-if="titleResults.length > 0">
                         <div>
-                            <div class="search-section-label">经名匹配</div>
+                            <div class="search-section-label">經名匹配</div>
                             <template x-for="r in titleResults" :key="r.sutra_id">
                                 <a class="nav-search-result-item" :href="'/read/' + r.sutra_id">
                                     <div class="result-header">
@@ -95,7 +95,7 @@
                 <div class="nav-search-results nav-search-no-result"
                     x-show="showResults && query.length > 0 && results.length === 0 && !loading" x-cloak
                     @click.outside="showResults = false">
-                    <p>未找到匹配的经文</p>
+                    <p>未找到匹配的經文</p>
                 </div>
             </div>
 
@@ -116,6 +116,8 @@
             <a href="https://www.cbeta.org" target="_blank" rel="noopener">CBETA</a> ·
             人物
             <a href="https://authority.dila.edu.tw/" target="_blank" rel="noopener">DILA</a> ·
+            參考
+            <a href="/resources">索引</a> ·
             源碼
             <a href="https://github.com/maolibu/fa-yin" target="_blank" rel="noopener">GitHub ↗</a>
         </p>

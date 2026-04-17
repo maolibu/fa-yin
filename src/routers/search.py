@@ -1,7 +1,7 @@
 """
 全局搜索 API
-统一搜索：先返回标题匹配，再返回全文匹配（带 snippet），繁简兼容。
-连接 cbeta_search.db（ETL 生成），降级到内存字典搜索。
+統一搜索：先返回標題匹配，再返回全文匹配（帶 snippet），繁簡兼容。
+連接 cbeta_search.db（ETL 生成），降級到內存字典搜索。
 """
 
 import logging
@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api", tags=["search"])
 
-# OpenCC 繁简互转
+# OpenCC 繁簡互轉
 try:
     from opencc import OpenCC
     _cc_t2s = OpenCC('t2s')
@@ -35,8 +35,8 @@ except ImportError:
 
 
 def _sanitize_snippet(raw: str) -> str:
-    """转义 snippet 中的 HTML，仅保留 <mark></mark> 高亮标签。"""
-    # 先暂存 <mark>/<\mark> 为占位符，转义其余内容，再还原
+    """轉義 snippet 中的 HTML，僅保留 <mark></mark> 高亮標籤。"""
+    # 先暫存 <mark>/<\mark> 為佔位符，轉義其餘內容，再還原
     placeholder_open = "\x00MARK_OPEN\x00"
     placeholder_close = "\x00MARK_CLOSE\x00"
     text = raw.replace("<mark>", placeholder_open).replace("</mark>", placeholder_close)
@@ -45,7 +45,7 @@ def _sanitize_snippet(raw: str) -> str:
 
 
 def _get_search_db():
-    """获取搜索数据库只读连接"""
+    """獲取搜索數據庫只讀連接"""
     conn = sqlite3.connect(
         f"file:{config.CBETA_SEARCH_DB}?mode=ro", uri=True
     )
@@ -56,12 +56,12 @@ def _get_search_db():
 @router.get("/search", response_class=JSONResponse)
 async def search_sutras(
     request: Request,
-    q: str = Query(..., min_length=1, description="搜索关键词"),
-    lang: str = Query(default="tc", description="显示语言: tc(繁体) | sc(简体)"),
+    q: str = Query(..., min_length=1, description="搜索關鍵詞"),
+    lang: str = Query(default="tc", description="顯示語言: tc(繁體) | sc(簡體)"),
 ):
     """
-    统一搜索：先标题匹配再全文匹配。
-    lang 参数控制返回结果的繁简，跟随用户阅读设置。
+    統一搜索：先標題匹配再全文匹配。
+    lang 參數控制返回結果的繁簡，跟隨用戶閱讀設置。
     """
     health = getattr(request.app.state, "runtime_health", None)
     if health is None:
@@ -76,21 +76,21 @@ async def search_sutras(
         try:
             return _unified_search(q, lang)
         except sqlite3.Error as exc:
-            log.warning(f"搜索数据库查询失败，已降级到内存搜索: {exc}")
+            log.warning(f"搜索數據庫查詢失敗，已降級到內存搜索: {exc}")
         except Exception as exc:
-            log.warning(f"搜索数据库异常，已降级到内存搜索: {exc}")
+            log.warning(f"搜索數據庫異常，已降級到內存搜索: {exc}")
 
     return _memory_search(request, q)
 
 
 def _unified_search(q: str, lang: str = "tc"):
-    """统一搜索：标题匹配在前，全文匹配在后。lang 控制返回繁简。"""
+    """統一搜索：標題匹配在前，全文匹配在後。lang 控制返回繁簡。"""
     use_sc = (lang == "sc")
     db = _get_search_db()
     try:
         results = []
 
-        # ── 1. 标题匹配 ──
+        # ── 1. 標題匹配 ──
         q_upper = q.upper()
         q_sc = to_sc(q)
 
@@ -135,7 +135,7 @@ def _unified_search(q: str, lang: str = "tc"):
                 """, (fts_query,)).fetchall()
 
                 for r in ft_rows:
-                    # snippet 来自简体列，转义后仅保留 <mark> 高亮
+                    # snippet 來自簡體列，轉義後僅保留 <mark> 高亮
                     raw_snippet = r["snippet"] or ""
                     display_snippet = raw_snippet if use_sc else to_tc(raw_snippet)
                     display_snippet = _sanitize_snippet(display_snippet)
@@ -147,7 +147,7 @@ def _unified_search(q: str, lang: str = "tc"):
                         "section": "fulltext",
                     })
             except Exception as e:
-                log.debug(f"FTS 全文搜索出错（已降级为仅标题）: {e}")
+                log.debug(f"FTS 全文搜索出錯（已降級為僅標題）: {e}")
 
         return results
     finally:
@@ -155,7 +155,7 @@ def _unified_search(q: str, lang: str = "tc"):
 
 
 def _memory_search(request: Request, q: str):
-    """降级：内存字典搜索（原有逻辑，cbeta_search.db 不可用时）"""
+    """降級：內存字典搜索（原有邏輯，cbeta_search.db 不可用時）"""
     nav = request.app.state.nav
     if nav is None:
         return []

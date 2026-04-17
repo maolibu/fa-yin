@@ -1,7 +1,7 @@
 """
-祖师法脉 API — 从 30_Lineage/main.py 迁移整合
-提供人物搜索、详情、法脉图、编年表、地图等 API。
-所有端点前缀 /api/lineage。
+祖師法脈 API — 從 30_Lineage/main.py 遷移整合
+提供人物搜索、詳情、法脈圖、編年表、地圖等 API。
+所有端點前綴 /api/lineage。
 """
 
 import sqlite3
@@ -15,14 +15,14 @@ from fastapi.responses import JSONResponse
 import config
 from core.runtime_status import check_lineage_db
 
-router = APIRouter(prefix="/api/lineage", tags=["祖师法脉"])
+router = APIRouter(prefix="/api/lineage", tags=["祖師法脈"])
 
-# ─── 数据库连接 ────────────────────────────────────────────────
+# ─── 數據庫連接 ────────────────────────────────────────────────
 def get_db():
-    """获取 lineage.db 只读连接"""
+    """獲取 lineage.db 只讀連接"""
     status = check_lineage_db()
     if not status["ok"]:
-        raise HTTPException(status_code=503, detail=f"法脉数据库不可用：{status['message']}")
+        raise HTTPException(status_code=503, detail=f"法脈數據庫不可用：{status['message']}")
 
     db_path = config.LINEAGE_DB
     try:
@@ -30,10 +30,10 @@ def get_db():
         conn.row_factory = sqlite3.Row
         return conn
     except sqlite3.Error as exc:
-        raise HTTPException(status_code=503, detail=f"法脉数据库打开失败：{exc}") from exc
+        raise HTTPException(status_code=503, detail=f"法脈數據庫打開失敗：{exc}") from exc
 
 
-# ─── 朝代配置（编年表用） ──────────────────────────────────────
+# ─── 朝代配置（編年表用） ──────────────────────────────────────
 
 DYNASTY_ORDER = [
     ("先秦", -3000, -221),
@@ -93,10 +93,10 @@ _DYNASTY_NAME_MAP = {
 }
 
 
-# ─── 辅助函数 ──────────────────────────────────────────────────
+# ─── 輔助函數 ──────────────────────────────────────────────────
 
 def _load_eras(db):
-    """从 DB 加载清洗后的中国年号"""
+    """從 DB 加載清洗後的中國年號"""
     rows = db.execute("""
         SELECT e.era_id, e.name_zh, e.start_year, e.end_year,
                d.name_zh as dynasty_name
@@ -120,7 +120,7 @@ def _load_eras(db):
 
 
 def _build_periods(db):
-    """构建时段列表：小朝代整段，大朝代用年号细分"""
+    """構建時段列表：小朝代整段，大朝代用年號細分"""
     eras_by_dynasty = _load_eras(db)
 
     for dynasty_name, era_list in eras_by_dynasty.items():
@@ -169,13 +169,13 @@ def _build_periods(db):
 
 
 # ═══════════════════════════════════════════════════════════════
-# API 端点
+# API 端點
 # ═══════════════════════════════════════════════════════════════
 
 @router.get("/search")
 async def search(q: str = Query(..., min_length=1)):
-    """人名搜索（模糊匹配，繁简兼容）"""
-    # 简→繁转换，确保简体输入也能匹配繁体人名
+    """人名搜索（模糊匹配，繁簡兼容）"""
+    # 簡→繁轉換，確保簡體輸入也能匹配繁體人名
     try:
         from opencc import OpenCC
         _cc_s2t = OpenCC('s2t')
@@ -185,7 +185,7 @@ async def search(q: str = Query(..., min_length=1)):
 
     db = get_db()
     try:
-        # 如果简繁转换结果相同，只用一组条件
+        # 如果簡繁轉換結果相同，只用一組條件
         if q_t == q:
             rows = db.execute("""
                 SELECT person_id, name, dynasty, sect, birth_year, death_year
@@ -200,7 +200,7 @@ async def search(q: str = Query(..., min_length=1)):
                 LIMIT 20
             """, (f"%{q}%", f"%{q}%", f"%{q}%", q, f"{q}%", f"%{q}%")).fetchall()
         else:
-            # 用转换后的繁体也搜索
+            # 用轉換後的繁體也搜索
             rows = db.execute("""
                 SELECT person_id, name, dynasty, sect, birth_year, death_year
                 FROM persons
@@ -227,7 +227,7 @@ async def search(q: str = Query(..., min_length=1)):
 
 @router.get("/person/{person_id}")
 async def get_person(person_id: str):
-    """人物详情 + 师承 + 经文"""
+    """人物詳情 + 師承 + 經文"""
     db = get_db()
     try:
         p = db.execute("SELECT * FROM persons WHERE person_id = ?", (person_id,)).fetchone()
@@ -281,7 +281,7 @@ async def get_person(person_id: str):
 
 @router.get("/lineage/{person_id}")
 async def get_lineage(person_id: str, depth: int = Query(default=3, ge=1, le=5)):
-    """以 person_id 为根的法脉子树（ego-centric）"""
+    """以 person_id 為根的法脈子樹（ego-centric）"""
     db = get_db()
     try:
         nodes = {}
@@ -344,9 +344,9 @@ async def get_lineage(person_id: str, depth: int = Query(default=3, ge=1, le=5))
 @router.get("/chronicle")
 async def get_chronicle(
     sect: str = Query(default=None),
-    monk: str = Query(default=None, description="僧俗过滤: monk=僧人, lay=俗人"),
+    monk: str = Query(default=None, description="僧俗過濾: monk=僧人, lay=俗人"),
 ):
-    """编年表数据 — 三层手风琴"""
+    """編年表數據 — 三層手風琴"""
     db = get_db()
     try:
         conditions = ["1=1"]
@@ -476,7 +476,7 @@ async def get_map_data(
     sect: str = Query(default=None),
     limit: int = Query(default=2000, le=5000),
 ):
-    """地图联动数据 — 籍贯 + 寺庙 + 山峰"""
+    """地圖聯動數據 — 籍貫 + 寺廟 + 山峰"""
     db = get_db()
     try:
         conditions = ["place_origin IS NOT NULL"]
@@ -573,7 +573,7 @@ async def get_map_data(
 
 @router.get("/person_places/{person_id}")
 async def get_person_places(person_id: str):
-    """通过 place_origin 查找人物关联的地点坐标"""
+    """通過 place_origin 查找人物關聯的地點座標"""
     db = get_db()
     try:
         p = db.execute(
@@ -602,7 +602,7 @@ async def get_person_places(person_id: str):
 
 @router.get("/stats")
 async def get_stats():
-    """统计数据 — 状态栏用"""
+    """統計數據 — 狀態欄用"""
     db = get_db()
     try:
         persons = db.execute("SELECT COUNT(*) FROM persons").fetchone()[0]

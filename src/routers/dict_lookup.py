@@ -1,10 +1,10 @@
 """
-字典查询 API
+字典查詢 API
 用法: /api/dict/lookup?q=般若
 
 支持:
-  - 内置词典 (dicts.db, 6部精选佛学词典 + 通用汉语辞典)
-  - 用户词典 (data/dicts/user/ 目录下的 MDX/JSON/CSV 文件)
+  - 內置詞典 (dicts.db, 6部精選佛學詞典 + 通用漢語辭典)
+  - 用戶詞典 (data/dicts/user/ 目錄下的 MDX/JSON/CSV 文件)
 """
 import logging
 import sqlite3
@@ -21,21 +21,21 @@ log = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/dict", tags=["dict"])
 
-# 内置词典数据库路径
+# 內置詞典數據庫路徑
 DICT_DB = DATA_DIR / "dicts.db"
 
-# 启动时校验 schema，避免每次请求都尝试连接损坏的数据库
+# 啟動時校驗 schema，避免每次請求都嘗試連接損壞的數據庫
 _builtin_ok: bool = check_dict_db(DICT_DB)["ok"] if DICT_DB.exists() else False
 
-# 用户词典目录
+# 用戶詞典目錄
 USER_DICT_DIR = PROJECT_ROOT / "data" / "dicts" / "user"
 
-# 用户词典管理器（延迟加载，首次查询时才真正读取词典文件）
+# 用戶詞典管理器（延遲加載，首次查詢時才真正讀取詞典文件）
 _user_mgr: Optional[UserDictManager] = None
 
 
 def _get_user_mgr() -> UserDictManager:
-    """获取用户词典管理器（单例）"""
+    """獲取用戶詞典管理器（單例）"""
     global _user_mgr
     if _user_mgr is None:
         _user_mgr = UserDictManager(USER_DICT_DIR)
@@ -43,7 +43,7 @@ def _get_user_mgr() -> UserDictManager:
 
 
 def _get_conn() -> sqlite3.Connection:
-    """获取内置词典只读连接"""
+    """獲取內置詞典只讀連接"""
     conn = sqlite3.connect(f"file:{DICT_DB}?mode=ro", uri=True)
     conn.row_factory = sqlite3.Row
     return conn
@@ -52,14 +52,14 @@ def _get_conn() -> sqlite3.Connection:
 @router.get("/lookup")
 async def lookup(q: str = Query(..., min_length=1, max_length=30)):
     """
-    查询词条，同时匹配繁体和简体。
-    返回内置词典 + 用户词典的合并结果。
+    查詢詞條，同時匹配繁體和簡體。
+    返回內置詞典 + 用戶詞典的合併結果。
     """
     results = []
     seen = set()
     builtin_available = False
 
-    # 1. 查询内置词典 (SQLite)
+    # 1. 查詢內置詞典 (SQLite)
     if _builtin_ok:
         try:
             conn = _get_conn()
@@ -88,9 +88,9 @@ async def lookup(q: str = Query(..., min_length=1, max_length=30)):
             finally:
                 conn.close()
         except sqlite3.Error as exc:
-            log.warning(f"内置词典数据库不可用，已降级到用户词典: {exc}")
+            log.warning(f"內置詞典數據庫不可用，已降級到用戶詞典: {exc}")
 
-    # 2. 查询用户词典 (MDX/JSON/CSV)
+    # 2. 查詢用戶詞典 (MDX/JSON/CSV)
     mgr = _get_user_mgr()
     user_results = mgr.lookup(q)
     for r in user_results:
@@ -109,10 +109,10 @@ async def lookup(q: str = Query(..., min_length=1, max_length=30)):
 
 @router.get("/dicts")
 async def list_dicts():
-    """列出所有收录的词典（内置 + 用户）"""
+    """列出所有收錄的詞典（內置 + 用戶）"""
     results = []
 
-    # 内置词典
+    # 內置詞典
     if _builtin_ok:
         try:
             conn = _get_conn()
@@ -125,9 +125,9 @@ async def list_dicts():
             finally:
                 conn.close()
         except sqlite3.Error as exc:
-            log.warning(f"读取内置词典列表失败，已降级到用户词典: {exc}")
+            log.warning(f"讀取內置詞典列表失敗，已降級到用戶詞典: {exc}")
 
-    # 用户词典
+    # 用戶詞典
     mgr = _get_user_mgr()
     results.extend(mgr.list_dicts())
 
@@ -136,11 +136,11 @@ async def list_dicts():
 
 @router.post("/reload")
 async def reload_user_dicts():
-    """热重载用户词典（添加/删除词典文件后调用）"""
+    """熱重載用戶詞典（添加/刪除詞典文件後調用）"""
     global _user_mgr
     _user_mgr = UserDictManager(USER_DICT_DIR)
     dicts = _user_mgr.list_dicts()
     return {
-        "message": f"用户词典已重新加载，共 {len(dicts)} 部",
+        "message": f"用戶詞典已重新加載，共 {len(dicts)} 部",
         "dicts": dicts,
     }

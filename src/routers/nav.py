@@ -1,91 +1,91 @@
 """
-导航目录 API — 贝阙区（全藏目录浏览）
+導航目錄 API — 貝闕區（全藏目錄瀏覽）
 
-将 cbeta_nav.py 的部类/经藏目录树暴露为 JSON API。
-包含动态同部类注疏提取接口。
+將 cbeta_nav.py 的部類/經藏目錄樹暴露為 JSON API。
+包含動態同部類註疏提取接口。
 """
 
 import re
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
-router = APIRouter(prefix="/api/nav", tags=["导航"])
+router = APIRouter(prefix="/api/nav", tags=["導航"])
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# 多层注疏检测配置
+# 多層註疏檢測配置
 #
-# 策略：基础关键词 + 扩展复合词 + ID 白名单
-#     + 宽松关键词（仅注疏文件夹内且非原典经号）
-#     + 黑名单排除
+# 策略：基礎關鍵詞 + 擴展複合詞 + ID 白名單
+#     + 寬鬆關鍵詞（僅註疏文件夾內且非原典經號）
+#     + 黑名單排除
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# 第1层：基础单字关键词（高精度，任何场景都启用）
+# 第1層：基礎單字關鍵詞（高精度，任何場景都啟用）
 _BASE_KEYWORDS = ("疏", "鈔", "註", "注", "箋", "抄", "科")
 
-# 第2层：扩展复合词（高精度，任何场景都启用）
+# 第2層：擴展複合詞（高精度，任何場景都啟用）
 _COMPOUND_KEYWORDS = (
-    # 疏类
+    # 疏類
     "義疏", "略疏", "新疏", "通疏", "正脈疏",
-    # 解类
+    # 解類
     "直解", "集解", "要解", "合解", "會解", "類解",
     "略解", "淺解", "正解", "易解", "論解",
     "句解", "節解",
-    # 说类
-    "直說", "郢說", "肤說", "闡說", "請益說",
-    # 记类
+    # 說類
+    "直說", "郢說", "膚說", "闡說", "請益說",
+    # 記類
     "述記", "義記", "翼記", "經記", "法記",
     "私記", "宗圓記", "復古記",
-    # 义类
+    # 義類
     "玄義", "會義", "義章", "通義",
     "如是經義", "分齊章",
-    # 科类
+    # 科類
     "科判", "科文", "科釋", "科註", "科節",
-    # 注类
+    # 注類
     "箋要", "箋註", "集註", "集釋", "纂註",
-    # 讲习类
+    # 講習類
     "講義", "講記", "講錄", "講述",
-    # 论释类
+    # 論釋類
     "釋論", "論釋",
-    # 贊类
+    # 贊類
     "幽贊", "玄贊", "述贊", "通贊", "旨贊",
-    # 述/抄类
+    # 述/抄類
     "還源述", "義述",
-    # 音义/指南/纲要类
+    # 音義/指南/綱要類
     "音義", "音釋", "懸談",
     "指南", "指歸", "綱要", "綱目",
     "宗通", "宗要", "會本",
     "提綱", "要旨", "文句",
-    # 镜/览类
+    # 鏡/覽類
     "玄鏡", "懸鏡",
     "節要", "釋要", "纂要",
     "備覽", "要覽",
-    # 大意/纶贯/直指/秘录类
+    # 大意/綸貫/直指/秘錄類
     "大意", "綸貫", "直指", "秘錄",
     "撮要", "會元",
-    # 口诀/演义/贯义/部旨等
+    # 口訣/演義/貫義/部旨等
     "口訣", "演義", "貫義", "部旨",
     "旨槩", "大略", "示珠指",
-    # 自查发现的注疏体裁词
+    # 自查發現的註疏體裁詞
     "正眼", "發隱", "彙纂", "決疑",
-    "采微", "添足", "指掌", "開度", "際決",
+    "採微", "添足", "指掌", "開度", "際決",
     "知音", "擊節", "大窾", "授手",
     "演古", "訂義", "備撿", "玄籤",
     "隨釋", "備釋",
     "傳弘決", "搜要",
     "發微錄", "顯性錄",
     "披雲集", "吞海集",
-    # 用户第5轮确认
+    # 用戶第5輪確認
     "義解", "釋義", "關法",
-    # 律部注释
+    # 律部註釋
     "毘婆沙", "事義",
 )
 
-# 第3层：宽松关键词（仅在注疏文件夹内且经号非原典区时生效）
-# 「說」回归：有经号守卫保护，T0001-T1420 的「佛說X經」不会误匹配
+# 第3層：寬鬆關鍵詞（僅在註疏文件夾內且經號非原典區時生效）
+# 「說」迴歸：有經號守衛保護，T0001-T1420 的「佛說X經」不會誤匹配
 _LOOSE_KEYWORDS = ("解", "釋", "論", "說", "述", "贊", "記", "談")
 
-# 第4层：黑名单（即使其他层命中也强制排除）
+# 第4層：黑名單（即使其他層命中也強制排除）
 _BLACKLIST = (
     "語錄", "全集", "詩集", "年譜", "行狀",
     "碑文", "塔銘", "造像記",
@@ -94,17 +94,17 @@ _BLACKLIST = (
 
 
 def _is_likely_original(sid: str, title: str = "") -> bool:
-    """判断是否可能是原典（非注疏），用于限制宽松关键词的生效范围。
+    """判斷是否可能是原典（非註疏），用於限制寬鬆關鍵詞的生效範圍。
     
-    满足以下任一条件即视为原典：
-    1. 大正藏经号在 T0001-T1420（经律原典区）
-    2. 标题以「經」结尾（任何藏的经典通常如此）
+    滿足以下任一條件即視為原典：
+    1. 大正藏經號在 T0001-T1420（經律原典區）
+    2. 標題以「經」結尾（任何藏的經典通常如此）
     """
-    # 条件1：大正藏原典区
+    # 條件1：大正藏原典區
     m = re.match(r"T(\d+)", sid)
     if m and int(m.group(1)) <= 1420:
         return True
-    # 条件2：标题以經结尾
+    # 條件2：標題以經結尾
     clean = re.sub(r"[\(（].*?[\)）]", "", title).strip()
     if clean.endswith("經"):
         return True
@@ -112,9 +112,9 @@ def _is_likely_original(sid: str, title: str = "") -> bool:
 
 
 def _is_whitelist_id(sid: str) -> bool:
-    """判断经号是否在大正藏注疏/释论区。
-    T1505-1535: 释经论 (大正藏卷25)
-    T1693-1821: 经疏部+论疏部 (大正藏卷33-40)
+    """判斷經號是否在大正藏註疏/釋論區。
+    T1505-1535: 釋經論 (大正藏卷25)
+    T1693-1821: 經疏部+論疏部 (大正藏卷33-40)
     T2732-2865: 古逸疏 (大正藏卷85)
     """
     m = re.match(r"T(\d+)", sid)
@@ -127,52 +127,52 @@ def _is_whitelist_id(sid: str) -> bool:
 
 
 def _folder_is_commentary_type(title: str) -> bool:
-    """判断文件夹标题是否标记为注疏类型（含疏/論/註等字）"""
+    """判斷文件夾標題是否標記為註疏類型（含疏/論/註等字）"""
     hints = ("疏", "論", "註", "注", "釋", "解", "科", "記", "贊", "鈔")
     return any(h in title for h in hints)
 
 
 def _is_commentary(title: str, sid: str = "",
                     folder_is_commentary: bool = False) -> bool:
-    """多层注疏检测。
+    """多層註疏檢測。
 
     Args:
-        title: 经文标题
-        sid: 经文编号（如 T1700）
-        folder_is_commentary: 该经文所在文件夹是否为注疏型
+        title: 經文標題
+        sid: 經文編號（如 T1700）
+        folder_is_commentary: 該經文所在文件夾是否為註疏型
     """
     if not title:
         return False
 
-    # 黑名单优先排除
+    # 黑名單優先排除
     for bk in _BLACKLIST:
         if bk in title:
             return False
 
-    # 判断标题是否以「經」结尾（经典而非注疏）
+    # 判斷標題是否以「經」結尾（經典而非註疏）
     clean_title = re.sub(r"[\(（].*?[\)）]", "", title).strip()
     title_ends_jing = clean_title.endswith("經")
 
-    # 第1层：基础关键词（即使以經结尾也生效，如「注維摩詰經」）
+    # 第1層：基礎關鍵詞（即使以經結尾也生效，如「注維摩詰經」）
     for kw in _BASE_KEYWORDS:
         if kw in title:
             return True
 
-    # 以經结尾的标题：跳过复合词和宽松词（防止「大意經」「決疑經」误判）
-    # 只允许基础关键词和 ID 白名单命中
+    # 以經結尾的標題：跳過複合詞和寬鬆詞（防止「大意經」「決疑經」誤判）
+    # 只允許基礎關鍵詞和 ID 白名單命中
     if title_ends_jing:
         return _is_whitelist_id(sid)
 
-    # 第2层：扩展复合词
+    # 第2層：擴展複合詞
     for kw in _COMPOUND_KEYWORDS:
         if kw in title:
             return True
 
-    # 第3层：ID 白名单（大正藏注疏区经号）
+    # 第3層：ID 白名單（大正藏註疏區經號）
     if _is_whitelist_id(sid):
         return True
 
-    # 第4层：宽松关键词（仅在注疏文件夹内 + 非原典时生效）
+    # 第4層：寬鬆關鍵詞（僅在註疏文件夾內 + 非原典時生效）
     if folder_is_commentary and not _is_likely_original(sid, title):
         for kw in _LOOSE_KEYWORDS:
             if kw in title:
@@ -182,11 +182,11 @@ def _is_commentary(title: str, sid: str = "",
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# 树遍历工具函数
+# 樹遍歷工具函數
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 def _extract_all_sutra_ids(node: dict) -> list[str]:
-    """递归提取节点下所有 sutra_id"""
+    """遞歸提取節點下所有 sutra_id"""
     results = []
     sid = node.get("sutra_id")
     if sid:
@@ -197,7 +197,7 @@ def _extract_all_sutra_ids(node: dict) -> list[str]:
 
 
 def _find_with_ancestors(nodes: list[dict], target_id: str, ancestors=None):
-    """查找 target_id，同时记录祖先路径"""
+    """查找 target_id，同時記錄祖先路徑"""
     if ancestors is None:
         ancestors = []
     for node in nodes:
@@ -215,7 +215,7 @@ def _find_with_ancestors(nodes: list[dict], target_id: str, ancestors=None):
 
 def _get_commentaries(nav, sutra_id: str,
                       parent_node: dict) -> list[dict]:
-    """从父节点中提取注疏列表（多层检测）"""
+    """從父節點中提取註疏列表（多層檢測）"""
     folder_title = parent_node.get("title", "")
     is_comm_folder = _folder_is_commentary_type(folder_title)
 
@@ -233,12 +233,12 @@ def _get_commentaries(nav, sutra_id: str,
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# API 端点
+# API 端點
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 @router.get("/canon")
 async def get_canon_tree(request: Request):
-    """经藏目录树（T大正藏 → X卍续藏 → …）"""
+    """經藏目錄樹（T大正藏 → X卍續藏 → …）"""
     nav = request.app.state.nav
     if not nav:
         return JSONResponse([], status_code=200)
@@ -247,7 +247,7 @@ async def get_canon_tree(request: Request):
 
 @router.get("/bulei")
 async def get_bulei_tree(request: Request):
-    """部类目录树（阿含部 → 般若部 → …）"""
+    """部類目錄樹（阿含部 → 般若部 → …）"""
     nav = request.app.state.nav
     if not nav:
         return JSONResponse([], status_code=200)
@@ -257,15 +257,15 @@ async def get_bulei_tree(request: Request):
 @router.get("/bulei_siblings/{sutra_id}")
 async def get_bulei_siblings(request: Request, sutra_id: str):
     """
-    获取经文的同部类注疏列表。
+    獲取經文的同部類註疏列表。
 
-    多层检测算法：
-    1. 基础关键词（疏/鈔/註 等）→ 无条件生效
-    2. 扩展复合词（義疏/玄義/文句 等）→ 无条件生效
-    3. ID 白名单（T1505-1535, T1693-1821 等）→ 无条件生效
-    4. 宽松关键词（解/釋/論 等）→ 仅注疏文件夹内 + 非原典经号
-    5. 黑名单排除（語錄/全集 等）→ 优先排除
-    6. 向上回退：直接父级无注疏时搜索祖父节点
+    多層檢測算法：
+    1. 基礎關鍵詞（疏/鈔/註 等）→ 無條件生效
+    2. 擴展複合詞（義疏/玄義/文句 等）→ 無條件生效
+    3. ID 白名單（T1505-1535, T1693-1821 等）→ 無條件生效
+    4. 寬鬆關鍵詞（解/釋/論 等）→ 僅註疏文件夾內 + 非原典經號
+    5. 黑名單排除（語錄/全集 等）→ 優先排除
+    6. 向上回退：直接父級無註疏時搜索祖父節點
     """
     nav = request.app.state.nav
     if not nav:
@@ -275,7 +275,7 @@ async def get_bulei_siblings(request: Request, sutra_id: str):
             "commentaries": [],
         })
 
-    # 查找父节点及祖先链
+    # 查找父節點及祖先鏈
     result = _find_with_ancestors(nav.bulei_tree, sutra_id)
     if not result:
         return JSONResponse({
@@ -288,8 +288,8 @@ async def get_bulei_siblings(request: Request, sutra_id: str):
     group_title = parent.get("title", "")
     commentaries = _get_commentaries(nav, sutra_id, parent)
 
-    # 如果直接父级无注疏，尝试向上一层（祖父节点）再搜索
-    # 处理金刚经、法华经、心经等"译本子文件夹"情况
+    # 如果直接父級無註疏，嘗試向上一層（祖父節點）再搜索
+    # 處理金剛經、法華經、心經等"譯本子文件夾"情況
     if not commentaries and ancestors:
         grandparent = ancestors[-1]
         group_title = grandparent.get("title", "")

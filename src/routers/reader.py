@@ -1,6 +1,6 @@
 """
-阅读页路由 — /read/{sutra_id}
-单栏阅读 + HTMX 无刷新翻卷 + 侧边栏骨架
+閱讀頁路由 — /read/{sutra_id}
+單欄閱讀 + HTMX 無刷新翻卷 + 側邊欄骨架
 """
 
 from fastapi import APIRouter, Request, Query
@@ -19,38 +19,38 @@ router = APIRouter(tags=["reader"])
 
 @router.get("/read/{sutra_id}", response_class=HTMLResponse)
 async def read_sutra(request: Request, sutra_id: str, juan: int = Query(1, ge=1)):
-    """阅读页 — 经文单栏阅读 + 侧边栏"""
+    """閱讀頁 — 經文單欄閱讀 + 側邊欄"""
     nav = request.app.state.nav
     parser = request.app.state.parser
     templates = request.app.state.templates
 
     if nav is None:
-        return HTMLResponse("<h1>CBETA 数据未配置</h1><p>请先配置 CBETA_BASE 路径。</p>", status_code=503)
+        return HTMLResponse("<h1>CBETA 數據未配置</h1><p>請先配置 CBETA_BASE 路徑。</p>", status_code=503)
 
     total_juan = nav.get_total_juan(sutra_id)
     title = nav.get_sutra_title(sutra_id)
     info = nav.get_sutra_info(sutra_id) or {}
 
-    # 经号不在目录中，返回 404
+    # 經號不在目錄中，返回 404
     if total_juan == 0 and not info:
         return templates.TemplateResponse("404.html", {
             "request": request,
-            "message": f"未找到经文：{sutra_id}",
+            "message": f"未找到經文：{sutra_id}",
         }, status_code=404)
 
-    # 经藏名称（如 "大正新修大藏經"）
+    # 經藏名稱（如 "大正新修大藏經"）
     canon_code = info.get("canon", "") or ""
     canon_name = nav.canon_names.get(canon_code, canon_code)
 
-    # 从 XML teiHeader 提取详细元数据
+    # 從 XML teiHeader 提取詳細元數據
     hm = {}
     if parser is not None:
         try:
             hm = parser.parse_header(sutra_id) or {}
         except Exception as exc:
-            log.warning(f"读取经文头信息失败，已回退到目录元数据: {sutra_id}: {exc}")
+            log.warning(f"讀取經文頭信息失敗，已回退到目錄元數據: {sutra_id}: {exc}")
 
-    # 初始卷号校验
+    # 初始卷號校驗
     initial_juan = min(juan, total_juan) if total_juan > 0 else 1
 
     return templates.TemplateResponse("read.html", {
@@ -68,7 +68,7 @@ async def read_sutra(request: Request, sutra_id: str, juan: int = Query(1, ge=1)
 
 @router.get("/api/content/{sutra_id}/{scroll}", response_class=HTMLResponse)
 async def get_content(request: Request, sutra_id: str, scroll: int):
-    """获取经文 HTML 内容（HTMX 片段）"""
+    """獲取經文 HTML 內容（HTMX 片段）"""
     parser = request.app.state.parser
 
     if parser is None:
@@ -79,13 +79,13 @@ async def get_content(request: Request, sutra_id: str, scroll: int):
         return HTMLResponse(content)
     except FileNotFoundError:
         return HTMLResponse(
-            f"<div class='error'>未找到经文 {sutra_id} 卷{scroll} 的数据文件</div>",
+            f"<div class='error'>未找到經文 {sutra_id} 卷{scroll} 的數據文件</div>",
             status_code=404,
         )
     except Exception as e:
-        log.error(f"解析经文失败 {sutra_id}/{scroll}: {e}")
+        log.error(f"解析經文失敗 {sutra_id}/{scroll}: {e}")
         return HTMLResponse(
-            "<div class='error'>经文解析出错，请稍后再试</div>",
+            "<div class='error'>經文解析出錯，請稍後再試</div>",
             status_code=500,
         )
 
@@ -93,14 +93,14 @@ async def get_content(request: Request, sutra_id: str, scroll: int):
 @router.get("/api/search_sutra")
 async def search_sutra(request: Request, q: str = Query("", min_length=1)):
     """
-    搜索经文（供对照工作台添加经文使用）。
-    复用首页搜索逻辑：输入繁简均可，内部转为繁简两种形式匹配。
+    搜索經文（供對照工作臺添加經文使用）。
+    複用首頁搜索邏輯：輸入繁簡均可，內部轉為繁簡兩種形式匹配。
     """
     nav = request.app.state.nav
     if nav is None:
         return JSONResponse({"results": []})
 
-    # OpenCC 简繁互转（与 search.py 同源）
+    # OpenCC 簡繁互轉（與 search.py 同源）
     try:
         from opencc import OpenCC
         _t2s = OpenCC('t2s')
@@ -114,8 +114,8 @@ async def search_sutra(request: Request, q: str = Query("", min_length=1)):
     results = []
 
     for sid, info in nav.catalog.items():
-        title = info.get("title", "")  # catalog 中标题为繁体
-        # 匹配经号（忽略大小写）或经名（繁简均可）
+        title = info.get("title", "")  # catalog 中標題為繁體
+        # 匹配經號（忽略大小寫）或經名（繁簡均可）
         if (q_upper in sid.upper()
                 or q_tc.lower() in title.lower()
                 or q_sc.lower() in title.lower()):
@@ -129,7 +129,7 @@ async def search_sutra(request: Request, q: str = Query("", min_length=1)):
 
 @router.get("/api/persons/{sutra_id}")
 async def get_sutra_persons(request: Request, sutra_id: str):
-    """获取与经文关联的人物：authority 数据 + 正文扫描"""
+    """獲取與經文關聯的人物：authority 數據 + 正文掃描"""
     import re
 
     lineage_status = check_lineage_db()
@@ -156,7 +156,7 @@ async def get_sutra_persons(request: Request, sutra_id: str):
         }, status_code=503)
 
     try:
-        # ── 1. 从 person_scriptures 获取权威数据 ──
+        # ── 1. 從 person_scriptures 獲取權威數據 ──
         rows = conn.execute("""
             SELECT ps.person_id, p.name, p.dynasty, p.sect,
                    p.birth_year, p.death_year, ps.relation
@@ -184,12 +184,12 @@ async def get_sutra_persons(request: Request, sutra_id: str):
             else:
                 mentioned.append(person)
 
-        # ── 2. 正文扫描：从经文 HTML 提取文本，匹配人名 ──
+        # ── 2. 正文掃描：從經文 HTML 提取文本，匹配人名 ──
         text_found = []
         parser = request.app.state.parser
         nav = request.app.state.nav
         if parser and nav:
-            # 获取前 3 卷文本（性能平衡）
+            # 獲取前 3 卷文本（性能平衡）
             total = nav.get_total_juan(sutra_id)
             scan_juans = min(total, 3)
             all_text = []
@@ -200,11 +200,11 @@ async def get_sutra_persons(request: Request, sutra_id: str):
                     text = re.sub(r'\s+', '', text)
                     all_text.append(text)
                 except Exception as e:
-                    log.debug(f"人名扫描卷 {j} 出错: {e}")
+                    log.debug(f"人名掃描卷 {j} 出錯: {e}")
             full_text = ''.join(all_text)
 
             if full_text:
-                # 误匹配排除列表（佛教常见术语/身份而非具体人名）
+                # 誤匹配排除列表（佛教常見術語/身份而非具體人名）
                 SKIP = {
                     "不可思議", "無為法", "阿那含", "阿羅漢",
                     "優婆塞", "優婆夷", "菩提薩埵", "善男子",
@@ -216,7 +216,7 @@ async def get_sutra_persons(request: Request, sutra_id: str):
                     "金剛般若波羅蜜經",
                 }
 
-                # 加载 3 字以上人名
+                # 加載 3 字以上人名
                 prows = conn.execute("""
                     SELECT person_id, name, dynasty, sect,
                            birth_year, death_year
@@ -234,7 +234,7 @@ async def get_sutra_persons(request: Request, sutra_id: str):
                     if n not in name_to_persons:
                         name_to_persons[n] = pr
 
-                # 按长度降序匹配
+                # 按長度降序匹配
                 sorted_names = sorted(
                     name_to_persons.keys(),
                     key=len, reverse=True
@@ -258,7 +258,7 @@ async def get_sutra_persons(request: Request, sutra_id: str):
                             "count": cnt,
                         })
 
-                # 按出现次数排序
+                # 按出現次數排序
                 text_found.sort(key=lambda x: x["count"], reverse=True)
 
         return JSONResponse({

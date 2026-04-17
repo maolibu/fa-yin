@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """
-法印对照 · 一键启动脚本
+法印對照 · 一鍵啟動腳本
 
-生命周期：
-  Step 1  数据自检 — 检查 CBETA 原始 XML 是否存在
-  Step 2  引导下载 — 若缺失则打印提示并等待用户操作
-  Step 3  数据库构建 — 若搜索数据库不存在则自动运行 ETL
+生命週期：
+  Step 1  數據自檢 — 檢查 CBETA 原始 XML 是否存在
+  Step 2  引導下載 — 若缺失則打印提示並等待用戶操作
+  Step 3  數據庫構建 — 若搜索數據庫不存在則自動運行 ETL
   Step 4  Obsidian Vault — 生成 Obsidian Markdown 文件
-  Step 5  服务启动 — 启动 FastAPI 后端
-  Step 6  终端贴士 — 打印访问地址与使用说明，自动打开浏览器
+  Step 5  服務啟動 — 啟動 FastAPI 後端
+  Step 6  終端貼士 — 打印訪問地址與使用說明，自動打開瀏覽器
 
 用法:
-  python launcher.py              # 正常启动
-  python launcher.py --check      # 仅运行自检，不启动服务
+  python launcher.py              # 正常啟動
+  python launcher.py --check      # 僅運行自檢，不啟動服務
   python launcher.py --port 8080  # 指定端口
 """
 
@@ -28,7 +28,7 @@ import unicodedata
 from datetime import datetime
 from pathlib import Path
 
-# ─── 确保 src/ 在 Python 搜索路径中 ─────────────────────────
+# ─── 確保 src/ 在 Python 搜索路徑中 ─────────────────────────
 PROJECT_ROOT = Path(__file__).resolve().parent
 SRC_DIR = PROJECT_ROOT / "src"
 sys.path.insert(0, str(SRC_DIR))
@@ -38,15 +38,15 @@ from core.runtime_status import check_dict_db, check_lineage_db, check_search_db
 
 
 # ============================================================
-# 终端显示辅助函数（中英文混排自动对齐）
+# 終端顯示輔助函數（中英文混排自動對齊）
 # ============================================================
 
 def display_width(text):
-    """计算终端显示宽度（中文全角=2, 英文半角=1, 零宽字符=0）"""
+    """計算終端顯示寬度（中文全角=2, 英文半角=1, 零寬字符=0）"""
     width = 0
     for c in text:
         cat = unicodedata.category(c)
-        # 零宽字符：变体选择符(Mn)、格式字符(Cf)、组合标记等
+        # 零寬字符：變體選擇符(Mn)、格式字符(Cf)、組合標記等
         if cat in ('Mn', 'Me', 'Cf'):
             continue
         eaw = unicodedata.east_asian_width(c)
@@ -58,7 +58,7 @@ def display_width(text):
 
 
 def box_center(content, inner_width, border="║"):
-    """打印居中对齐的边框行"""
+    """打印居中對齊的邊框行"""
     w = display_width(content)
     pad = inner_width - w
     left = pad // 2
@@ -67,30 +67,30 @@ def box_center(content, inner_width, border="║"):
 
 
 def box_left(content, inner_width, border="│"):
-    """打印左对齐的边框行"""
+    """打印左對齊的邊框行"""
     w = display_width(content)
     pad = max(inner_width - w, 1)
     print(f"  {border}{content}{' ' * pad}{border}")
 
 
 def box_empty(inner_width, border="│"):
-    """打印空白边框行"""
+    """打印空白邊框行"""
     print(f"  {border}{' ' * inner_width}{border}")
 
 
 def print_banner():
-    """打印启动横幅"""
-    W = 38  # ═ 号的数量 = 边框内部宽度
+    """打印啟動橫幅"""
+    W = 38  # ═ 號的數量 = 邊框內部寬度
     print()
     print(f"  ╔{'═' * W}╗")
-    box_center("法 印 对 照 · 阅 读 平 台", W)
+    box_center("法 印 對 照 · 閱 讀 平 臺", W)
     box_center(f"Fa-Yin Reading Platform  {config.APP_VERSION_DISPLAY}", W)
     print(f"  ╚{'═' * W}╝")
     print()
 
 
 def print_step(step_num, title, status=""):
-    """打印步骤状态"""
+    """打印步驟狀態"""
     icons = {1: "🔍", 2: "📥", 3: "🗄️", 4: "📖", 5: "🚀", 6: "📋"}
     icon = icons.get(step_num, "•")
     status_str = f"  {status}" if status else ""
@@ -98,7 +98,7 @@ def print_step(step_num, title, status=""):
 
 
 def check_port_available(host, port):
-    """检查端口是否可用"""
+    """檢查端口是否可用"""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         try:
             s.bind((host, port))
@@ -108,7 +108,7 @@ def check_port_available(host, port):
 
 
 def wait_for_server(host, port, timeout=15):
-    """等待服务器启动（最多 timeout 秒）"""
+    """等待服務器啟動（最多 timeout 秒）"""
     start = time.time()
     while time.time() - start < timeout:
         try:
@@ -122,18 +122,18 @@ def wait_for_server(host, port, timeout=15):
 
 
 # ============================================================
-# Step 0: 数据解压（首次运行时从 tar.gz 解压词典/地图）
+# Step 0: 數據解壓（首次運行時從 tar.gz 解壓詞典/地圖）
 # ============================================================
 
-# 2 个打包文件 → 解压目标路径（字体已直接提交到 src/static/fonts/）
+# 2 個打包文件 → 解壓目標路徑（字體已直接提交到 src/static/fonts/）
 _ARCHIVES = [
-    ("data/dicts.tar.gz", "tools/dict_converter", "tools/dict_converter/13dicts", "词典"),
-    ("data/tiles.tar.gz", "data", "data/tiles", "地图瓦片"),
+    ("data/dicts.tar.gz", "tools/dict_converter", "tools/dict_converter/13dicts", "詞典"),
+    ("data/tiles.tar.gz", "data", "data/tiles", "地圖瓦片"),
 ]
 
 
 def extract_archives():
-    """检查并解压 tar.gz 数据包（仅在目标目录不存在时执行）"""
+    """檢查並解壓 tar.gz 數據包（僅在目標目錄不存在時執行）"""
     import tarfile
     needed = []
     for arc, dest, check_dir, label in _ARCHIVES:
@@ -145,7 +145,7 @@ def extract_archives():
     if not needed:
         return
 
-    print("  📦 首次运行，解压数据包...")
+    print("  📦 首次運行，解壓數據包...")
     for arc_path, dest_path, label in needed:
         size_mb = arc_path.stat().st_size / (1024 * 1024)
         print(f"      ⏳ {label} ({size_mb:.0f}MB)...", end="", flush=True)
@@ -157,19 +157,19 @@ def extract_archives():
 
 
 # ============================================================
-# Step 1: 数据自检
+# Step 1: 數據自檢
 # ============================================================
 
 def check_cbeta_data(cbeta_base):
     """
-    检查 CBETA 原始数据是否存在且有效。
+    檢查 CBETA 原始數據是否存在且有效。
     返回: (ok: bool, xml_count: int)
     """
     xml_dir = cbeta_base / "XML"
     if not xml_dir.exists():
         return False, 0
 
-    # 快速计数：查找 XML 子目录中是否有 .xml 文件
+    # 快速計數：查找 XML 子目錄中是否有 .xml 文件
     xml_count = 0
     for canon_dir in sorted(xml_dir.iterdir()):
         if canon_dir.is_dir():
@@ -179,40 +179,40 @@ def check_cbeta_data(cbeta_base):
                         if f.suffix == ".xml":
                             xml_count += 1
                             if xml_count >= 10:
-                                # 找到足够多的文件，确认数据有效
+                                # 找到足夠多的文件，確認數據有效
                                 return True, xml_count
     return xml_count > 0, xml_count
 
 
 # ============================================================
-# Step 2: 引导下载
+# Step 2: 引導下載
 # ============================================================
 
 def guide_download(cbeta_base):
-    """引导用户下载 CBETA 数据"""
-    W = 49  # 边框内部宽度
+    """引導用戶下載 CBETA 數據"""
+    W = 49  # 邊框內部寬度
     print()
     print(f"  ┌{'─' * W}┐")
-    box_center("📖 首次使用 · 数据下载引导", W, "│")
+    box_center("📖 首次使用 · 數據下載引導", W, "│")
     print(f"  ├{'─' * W}┤")
     box_empty(W)
-    box_left("  本程序需要 CBETA 经文数据才能运行。", W)
-    box_left("  请按以下步骤操作：", W)
+    box_left("  本程序需要 CBETA 經文數據才能運行。", W)
+    box_left("  請按以下步驟操作：", W)
     box_empty(W)
-    box_left("  1. 访问 CBETA 官网下载指定的经文数据包：", W)
+    box_left("  1. 訪問 CBETA 官網下載指定的經文數據包：", W)
     box_left("     【CBETA CBReader 2X 經文資料檔】", W)
-    box_left("     (注: 若官网有更新，请下载最新版本)", W)
+    box_left("     (注: 若官網有更新，請下載最新版本)", W)
     box_left("     https://www.cbeta.org/download", W)
     box_empty(W)
-    box_left("  2. 下载后解压，将文件夹重命名为小写 cbeta", W)
-    box_left("     放到以下目录（包含 XML/ 子目录）：", W)
+    box_left("  2. 下載後解壓，將文件夾重命名為小寫 cbeta", W)
+    box_left("     放到以下目錄（包含 XML/ 子目錄）：", W)
     box_left(f"     {cbeta_base}/", W)
     box_empty(W)
-    box_left("  3. 确保目录结构如下：", W)
-    box_left("     data/raw/cbeta/          （注意小写）", W)
-    box_left("     ├── XML/           （经文 XML 文件）", W)
-    box_left("     ├── toc/           （目录数据）", W)
-    box_left("     ├── sd-gif/        （悉昙字图片）", W)
+    box_left("  3. 確保目錄結構如下：", W)
+    box_left("     data/raw/cbeta/          （注意小寫）", W)
+    box_left("     ├── XML/           （經文 XML 文件）", W)
+    box_left("     ├── toc/           （目錄數據）", W)
+    box_left("     ├── sd-gif/        （悉曇字圖片）", W)
     box_left("     ├── advance_nav.xhtml", W)
     box_left("     ├── bulei_nav.xhtml", W)
     box_left("     └── ...", W)
@@ -221,18 +221,18 @@ def guide_download(cbeta_base):
     print()
 
     try:
-        input("  ✋ 数据放好后，按 Enter 键继续...")
+        input("  ✋ 數據放好後，按 Enter 鍵繼續...")
     except KeyboardInterrupt:
         print("\n\n  已取消。")
         sys.exit(0)
 
 
 # ============================================================
-# Step 3: 数据库构建
+# Step 3: 數據庫構建
 # ============================================================
 
 def quarantine_sqlite_artifacts(db_path, label):
-    """隔离可疑的 SQLite 主文件及其 wal/shm，避免重建时继续踩坏库。"""
+    """隔離可疑的 SQLite 主文件及其 wal/shm，避免重建時繼續踩壞庫。"""
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     moved = []
     for suffix in ("", "-wal", "-shm"):
@@ -244,37 +244,37 @@ def quarantine_sqlite_artifacts(db_path, label):
             candidate.rename(backup)
             moved.append(backup)
         except OSError as exc:
-            print(f"  ⚠️  无法隔离 {label} 文件 {candidate.name}: {exc}")
+            print(f"  ⚠️  無法隔離 {label} 文件 {candidate.name}: {exc}")
     if moved:
-        print(f"      已隔离 {label}:")
+        print(f"      已隔離 {label}:")
         for item in moved:
             print(f"        - {item.name}")
 
 
 def build_database(config):
-    """检查并构建搜索数据库"""
+    """檢查並構建搜索數據庫"""
     search_db = config.CBETA_SEARCH_DB
     status = check_search_db(search_db)
 
     if status["ok"]:
-        print_step(3, "搜索数据库", "✅ 已通过 schema 校验")
+        print_step(3, "搜索數據庫", "✅ 已通過 schema 校驗")
         return True
 
     if status["reason"] == "missing":
-        print_step(3, "搜索数据库", "⏳ 数据库不存在，开始构建...")
+        print_step(3, "搜索數據庫", "⏳ 數據庫不存在，開始構建...")
     else:
-        print_step(3, "搜索数据库", f"⚠️ {status['message']}，准备重建...")
-        quarantine_sqlite_artifacts(search_db, "搜索数据库")
-    print("      （首次构建约需 5-15 分钟，取决于机器性能）")
+        print_step(3, "搜索數據庫", f"⚠️ {status['message']}，準備重建...")
+        quarantine_sqlite_artifacts(search_db, "搜索數據庫")
+    print("      （首次構建約需 5-15 分鐘，取決於機器性能）")
     print()
 
-    # 确保数据库目录存在
+    # 確保數據庫目錄存在
     config.DB_DIR.mkdir(parents=True, exist_ok=True)
 
-    # 调用 ETL 脚本
+    # 調用 ETL 腳本
     etl_script = config.SRC_DIR / "etl" / "etl_build_search.py"
     if not etl_script.exists():
-        print(f"  ❌ ETL 脚本未找到: {etl_script}")
+        print(f"  ❌ ETL 腳本未找到: {etl_script}")
         return False
 
     try:
@@ -287,43 +287,43 @@ def build_database(config):
             final_status = check_search_db(search_db)
             if final_status["ok"]:
                 print()
-                print("      ✅ 搜索数据库构建完成并通过校验！")
+                print("      ✅ 搜索數據庫構建完成並通過校驗！")
                 return True
-            print(f"  ⚠️  搜索数据库构建后仍不可用: {final_status['message']}")
+            print(f"  ⚠️  搜索數據庫構建後仍不可用: {final_status['message']}")
             if final_status["detail"]:
                 print(f"      {final_status['detail']}")
-            print("      将以标题检索降级模式继续启动。")
+            print("      將以標題檢索降級模式繼續啟動。")
             return False
     except subprocess.CalledProcessError as e:
-        print(f"  ❌ 数据库构建失败: {e}")
-        print("      将以标题检索降级模式继续启动。")
+        print(f"  ❌ 數據庫構建失敗: {e}")
+        print("      將以標題檢索降級模式繼續啟動。")
         return False
     except KeyboardInterrupt:
-        print("\n  ⚠️  构建已中断。下次启动时会重新尝试。")
+        print("\n  ⚠️  構建已中斷。下次啟動時會重新嘗試。")
         return False
 
     return False
 
 
 def build_dict_database(config):
-    """检查并构建词典数据库"""
+    """檢查並構建詞典數據庫"""
     dict_db = config.DICTS_DB
     status = check_dict_db(dict_db)
 
     if status["ok"]:
-        print_step(3, "词典数据库", "✅ 已通过 schema 校验")
+        print_step(3, "詞典數據庫", "✅ 已通過 schema 校驗")
         return True
 
     if status["reason"] == "missing":
-        print_step(3, "词典数据库", "⏳ 数据库不存在，开始构建...")
+        print_step(3, "詞典數據庫", "⏳ 數據庫不存在，開始構建...")
     else:
-        print_step(3, "词典数据库", f"⚠️ {status['message']}，准备重建...")
-        quarantine_sqlite_artifacts(dict_db, "词典数据库")
+        print_step(3, "詞典數據庫", f"⚠️ {status['message']}，準備重建...")
+        quarantine_sqlite_artifacts(dict_db, "詞典數據庫")
 
     dict_script = PROJECT_ROOT / "tools" / "dict_converter" / "build_dict_db.py"
     if not dict_script.exists():
-        print(f"  ⚠️  词典构建脚本未找到: {dict_script}")
-        print("      将以用户词典降级模式继续启动。")
+        print(f"  ⚠️  詞典構建腳本未找到: {dict_script}")
+        print("      將以用戶詞典降級模式繼續啟動。")
         return False
 
     try:
@@ -335,35 +335,35 @@ def build_dict_database(config):
         if result.returncode == 0:
             final_status = check_dict_db(dict_db)
             if final_status["ok"]:
-                print("      ✅ 词典数据库构建完成并通过校验！")
+                print("      ✅ 詞典數據庫構建完成並通過校驗！")
                 return True
-            print(f"  ⚠️  词典数据库构建后仍不可用: {final_status['message']}")
+            print(f"  ⚠️  詞典數據庫構建後仍不可用: {final_status['message']}")
             if final_status["detail"]:
                 print(f"      {final_status['detail']}")
-            print("      将以用户词典降级模式继续启动。")
+            print("      將以用戶詞典降級模式繼續啟動。")
             return False
     except subprocess.CalledProcessError as e:
-        print(f"  ⚠️  词典数据库构建失败: {e}")
-        print("      将以用户词典降级模式继续启动。")
+        print(f"  ⚠️  詞典數據庫構建失敗: {e}")
+        print("      將以用戶詞典降級模式繼續啟動。")
         return False
     except KeyboardInterrupt:
-        print("\n  ⚠️  构建已中断。")
+        print("\n  ⚠️  構建已中斷。")
         return False
 
     return False
 
 
 def report_lineage_database():
-    """报告法脉数据库状态（可选依赖，不阻断启动）"""
+    """報告法脈數據庫狀態（可選依賴，不阻斷啟動）"""
     status = check_lineage_db(config.LINEAGE_DB)
     if status["ok"]:
-        print_step(3, "法脉数据库", "✅ 已通过 schema 校验")
+        print_step(3, "法脈數據庫", "✅ 已通過 schema 校驗")
         return True
 
-    print_step(3, "法脉数据库", f"⚠️ {status['message']}")
+    print_step(3, "法脈數據庫", f"⚠️ {status['message']}")
     if status["detail"]:
         print(f"      {status['detail']}")
-    print("      人物、法脉、地图相关接口将返回 503，其他功能不受影响。")
+    print("      人物、法脈、地圖相關接口將返回 503，其他功能不受影響。")
     return False
 
 
@@ -372,23 +372,23 @@ def report_lineage_database():
 # ============================================================
 
 def build_obsidian_vault():
-    """检查并生成 Obsidian Markdown Vault"""
+    """檢查並生成 Obsidian Markdown Vault"""
     vault_dir = PROJECT_ROOT / "obsidian_vault" / "output"
     marker = vault_dir / "首頁.md"
 
     if marker.exists():
-        # 统计已有 MD 文件数
+        # 統計已有 MD 文件數
         md_count = sum(1 for _ in (vault_dir / "經文").rglob("*.md")) if (vault_dir / "經文").exists() else 0
-        print_step(4, "Obsidian Vault", f"✅ 已存在 ({md_count} 部经典)")
+        print_step(4, "Obsidian Vault", f"✅ 已存在 ({md_count} 部經典)")
         return True
 
     print_step(4, "Obsidian Vault", "⏳ 生成 Obsidian Markdown 文件...")
-    print("      （首次生成约需 1-2 分钟）")
+    print("      （首次生成約需 1-2 分鐘）")
     print()
 
     md_script = PROJECT_ROOT / "obsidian_vault" / "xml_to_md.py"
     if not md_script.exists():
-        print(f"  ⚠️ Obsidian 转换脚本未找到: {md_script}")
+        print(f"  ⚠️ Obsidian 轉換腳本未找到: {md_script}")
         return False
 
     try:
@@ -400,61 +400,61 @@ def build_obsidian_vault():
         if result.returncode == 0:
             print()
             print("      ✅ Obsidian Vault 生成完成！")
-            print("      📂 输出目录: obsidian_vault/output/")
+            print("      📂 輸出目錄: obsidian_vault/output/")
             return True
     except subprocess.CalledProcessError as e:
-        print(f"  ❌ Obsidian Vault 生成失败: {e}")
+        print(f"  ❌ Obsidian Vault 生成失敗: {e}")
         return False
     except KeyboardInterrupt:
-        print("\n  ⚠️  生成已中断。下次启动时会重新尝试。")
+        print("\n  ⚠️  生成已中斷。下次啟動時會重新嘗試。")
         return False
 
     return False
 
 
 # ============================================================
-# Step 5 & 6: 服务启动 + 终端贴士
+# Step 5 & 6: 服務啟動 + 終端貼士
 # ============================================================
 
 def print_tips(host, port):
-    """打印使用说明"""
-    # 自动换算显示地址（0.0.0.0 → localhost）
+    """打印使用說明"""
+    # 自動換算顯示地址（0.0.0.0 → localhost）
     display_host = "localhost" if host in ("0.0.0.0", "::") else host
     url = f"http://{display_host}:{port}"
 
-    W = 49  # 边框内部宽度
+    W = 49  # 邊框內部寬度
     print()
     print(f"  ┌{'─' * W}┐")
-    box_left(f"  🌐 访问地址: {url}", W)
+    box_left(f"  🌐 訪問地址: {url}", W)
     print(f"  ├{'─' * W}┤")
     box_left("  📖 使用提示:", W)
-    box_left("    • 首页选择经文 → 点击卷号开始阅读", W)
-    box_left("    • 阅读页右上角工具栏：字典、笔记、AI 释义", W)
-    box_left("    • 支持划词查字典、选段 AI 释义", W)
+    box_left("    • 首頁選擇經文 → 點擊卷號開始閱讀", W)
+    box_left("    • 閱讀頁右上角工具欄：字典、筆記、AI 釋義", W)
+    box_left("    • 支持劃詞查字典、選段 AI 釋義", W)
     print(f"  ├{'─' * W}┤")
-    box_left("  📚 词典扩展:", W)
-    box_left("    内置 6 部精选词典", W)
-    box_left("    用户词典目录: data/dicts/user/", W)
+    box_left("  📚 詞典擴展:", W)
+    box_left("    內置 6 部精選詞典", W)
+    box_left("    用戶詞典目錄: data/dicts/user/", W)
     box_left("    支持格式: .mdx（MDict）/ .json / .csv", W)
-    box_left("    放入文件后重启即可自动加载", W)
+    box_left("    放入文件後重啟即可自動加載", W)
     print(f"  ├{'─' * W}┤")
-    box_left("  💾 数据备份:", W)
-    box_left("    个人笔记保存在 data/user_data/notes/", W)
+    box_left("  💾 數據備份:", W)
+    box_left("    個人筆記保存在 data/user_data/notes/", W)
     box_left("    收藏保存在     data/user_data/favorites.json", W)
-    box_left("    备份只需复制 data/user_data/ 整个文件夹即可", W)
+    box_left("    備份只需複製 data/user_data/ 整個文件夾即可", W)
     print(f"  ├{'─' * W}┤")
     box_left("  ⌨️  快捷操作:", W)
-    box_left("    Ctrl+C  停止服务", W)
-    box_left(f"    健康检查: {url}/api/health", W)
+    box_left("    Ctrl+C  停止服務", W)
+    box_left(f"    健康檢查: {url}/api/health", W)
     print(f"  ├{'─' * W}┤")
-    box_left("  🔗 项目主页:", W)
+    box_left("  🔗 項目主頁:", W)
     box_left("    https://github.com/maolibu/fa-yin", W)
     print(f"  └{'─' * W}┘")
     print()
 
 
 def open_browser_delayed(host, port):
-    """在后台线程中延迟打开浏览器"""
+    """在後臺線程中延遲打開瀏覽器"""
     display_host = "localhost" if host in ("0.0.0.0", "::") else host
     url = f"http://{display_host}:{port}"
 
@@ -462,22 +462,22 @@ def open_browser_delayed(host, port):
         try:
             webbrowser.open(url)
         except Exception:
-            pass  # 无图形环境（如 VPS）时静默忽略
+            pass  # 無圖形環境（如 VPS）時靜默忽略
 
 
 def start_server(host, port):
-    """启动 FastAPI 服务"""
-    print_step(5, "服务启动", f"⏳ 正在启动服务于 {host}:{port}...")
+    """啟動 FastAPI 服務"""
+    print_step(5, "服務啟動", f"⏳ 正在啟動服務於 {host}:{port}...")
 
-    # 检查端口
+    # 檢查端口
     if not check_port_available(host, port):
-        print(f"  ⚠️  端口 {port} 已被占用，尝试端口 {port + 1}...")
+        print(f"  ⚠️  端口 {port} 已被佔用，嘗試端口 {port + 1}...")
         port += 1
         if not check_port_available(host, port):
-            print(f"  ❌ 端口 {port} 也被占用，请手动指定: python launcher.py --port <端口号>")
+            print(f"  ❌ 端口 {port} 也被佔用，請手動指定: python launcher.py --port <端口號>")
             sys.exit(1)
 
-    # 后台线程打开浏览器
+    # 後臺線程打開瀏覽器
     browser_thread = threading.Thread(
         target=open_browser_delayed,
         args=(host, port),
@@ -485,10 +485,10 @@ def start_server(host, port):
     )
     browser_thread.start()
 
-    # 打印贴士
+    # 打印貼士
     print_tips(host, port)
 
-    # 启动 uvicorn（这会阻塞主线程）
+    # 啟動 uvicorn（這會阻塞主線程）
     import uvicorn
     uvicorn.run(
         "main:app",
@@ -506,124 +506,124 @@ def start_server(host, port):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="法印对照 (Fa-Yin) · 一键启动脚本",
+        description="法印對照 (Fa-Yin) · 一鍵啟動腳本",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "--check", action="store_true",
-        help="仅运行数据自检，不启动服务",
+        help="僅運行數據自檢，不啟動服務",
     )
     parser.add_argument(
         "--port", type=int, default=None,
-        help="指定服务端口（默认 8400）",
+        help="指定服務端口（默認 8400）",
     )
     parser.add_argument(
         "--host", type=str, default=None,
-        help="指定绑定地址（默认 0.0.0.0）",
+        help="指定綁定地址（默認 0.0.0.0）",
     )
     parser.add_argument(
         "--no-browser", action="store_true",
-        help="启动后不自动打开浏览器",
+        help="啟動後不自動打開瀏覽器",
     )
     parser.add_argument(
         "--skip-build", action="store_true",
-        help="跳过数据库构建步骤",
+        help="跳過數據庫構建步驟",
     )
     parser.add_argument(
         "--skip-obsidian", action="store_true",
-        help="跳过 Obsidian Vault 生成",
+        help="跳過 Obsidian Vault 生成",
     )
     args = parser.parse_args()
 
-    # 横幅
+    # 橫幅
     print_banner()
 
     host = args.host or config.DEV_HOST
     port = args.port or config.DEV_PORT
 
-    # Step 0: 数据解压（首次运行时解压词典/地图）
+    # Step 0: 數據解壓（首次運行時解壓詞典/地圖）
     extract_archives()
 
-    # Step 1: 数据自检
-    print_step(1, "数据自检", "⏳ 检查 CBETA 数据...")
+    # Step 1: 數據自檢
+    print_step(1, "數據自檢", "⏳ 檢查 CBETA 數據...")
     ok, xml_count = check_cbeta_data(config.CBETA_BASE)
 
     if ok:
-        print_step(1, "数据自检", f"✅ 已找到 CBETA 数据 ({xml_count}+ 个 XML 文件)")
+        print_step(1, "數據自檢", f"✅ 已找到 CBETA 數據 ({xml_count}+ 個 XML 文件)")
     else:
-        print_step(1, "数据自检", "❌ 未检测到 CBETA 原始数据")
+        print_step(1, "數據自檢", "❌ 未檢測到 CBETA 原始數據")
 
-        # Step 2: 引导下载
-        print_step(2, "引导下载")
+        # Step 2: 引導下載
+        print_step(2, "引導下載")
         guide_download(config.CBETA_BASE)
 
-        # 重新检查
+        # 重新檢查
         ok, xml_count = check_cbeta_data(config.CBETA_BASE)
         if not ok:
-            print("  ❌ 仍未检测到有效数据，请检查路径后重试。")
+            print("  ❌ 仍未檢測到有效數據，請檢查路徑後重試。")
             sys.exit(1)
-        print_step(1, "数据自检", f"✅ 已找到 CBETA 数据 ({xml_count}+ 个 XML 文件)")
+        print_step(1, "數據自檢", f"✅ 已找到 CBETA 數據 ({xml_count}+ 個 XML 文件)")
 
     if args.check:
-        # 仅自检模式
+        # 僅自檢模式
         print()
         config.print_config()
-        print("\n  ✅ 自检完成。使用 `python launcher.py` 启动完整服务。")
+        print("\n  ✅ 自檢完成。使用 `python launcher.py` 啟動完整服務。")
         return
 
-    # Step 3: 数据库构建
+    # Step 3: 數據庫構建
     if not args.skip_build:
         build_database(config)
     else:
         search_status = check_search_db(config.CBETA_SEARCH_DB)
         if search_status["ok"]:
-            print_step(3, "搜索数据库", "⏸️  已跳过构建（当前数据库可用）")
+            print_step(3, "搜索數據庫", "⏸️  已跳過構建（當前數據庫可用）")
         else:
-            print_step(3, "搜索数据库", f"⚠️ 已跳过构建，当前不可用：{search_status['message']}")
-            print("      将以标题检索降级模式继续启动。")
+            print_step(3, "搜索數據庫", f"⚠️ 已跳過構建，當前不可用：{search_status['message']}")
+            print("      將以標題檢索降級模式繼續啟動。")
 
-    # Step 3b: 词典数据库构建
+    # Step 3b: 詞典數據庫構建
     if not args.skip_build:
         build_dict_database(config)
     else:
         dict_status = check_dict_db(config.DICTS_DB)
         if dict_status["ok"]:
-            print_step(3, "词典数据库", "⏸️  已跳过构建（当前数据库可用）")
+            print_step(3, "詞典數據庫", "⏸️  已跳過構建（當前數據庫可用）")
         else:
-            print_step(3, "词典数据库", f"⚠️ 已跳过构建，当前不可用：{dict_status['message']}")
-            print("      将以用户词典降级模式继续启动。")
+            print_step(3, "詞典數據庫", f"⚠️ 已跳過構建，當前不可用：{dict_status['message']}")
+            print("      將以用戶詞典降級模式繼續啟動。")
 
-    # Step 3c: 法脉数据库状态
+    # Step 3c: 法脈數據庫狀態
     report_lineage_database()
 
     # Step 4: Obsidian Vault 生成
     if not args.skip_obsidian:
         build_obsidian_vault()
     else:
-        print_step(4, "Obsidian Vault", "⏸️  已跳过（--skip-obsidian）")
+        print_step(4, "Obsidian Vault", "⏸️  已跳過（--skip-obsidian）")
 
-    # 确保用户数据目录存在
+    # 確保用戶數據目錄存在
     config.USER_DATA_DIR.mkdir(parents=True, exist_ok=True)
     config.NOTES_DIR.mkdir(parents=True, exist_ok=True)
 
-    # 确保用户词典目录存在
+    # 確保用戶詞典目錄存在
     user_dict_dir = config.PROJECT_ROOT / "data" / "dicts" / "user"
     user_dict_dir.mkdir(parents=True, exist_ok=True)
     user_dict_count = sum(1 for f in user_dict_dir.iterdir()
                          if f.is_file() and f.suffix.lower() in ('.mdx', '.json', '.csv'))
     if user_dict_count:
-        print(f"  📚 发现 {user_dict_count} 部用户词典")
+        print(f"  📚 發現 {user_dict_count} 部用戶詞典")
 
-    # 复制默认收藏（如果用户还未个性化）
+    # 複製默認收藏（如果用戶還未個性化）
     if not config.FAVORITES_PATH.exists() and config.FAVORITES_DEFAULT_PATH.exists():
         import shutil
         shutil.copy2(str(config.FAVORITES_DEFAULT_PATH), str(config.FAVORITES_PATH))
-        print("  📋 已初始化默认收藏列表")
+        print("  📋 已初始化默認收藏列表")
 
-    # Step 5 & 6: 启动服务
+    # Step 5 & 6: 啟動服務
     if args.no_browser:
-        # 禁止自动打开浏览器时，直接启动不创建浏览器线程
-        print_step(5, "服务启动", f"⏳ 正在启动服务于 {host}:{port}...")
+        # 禁止自動打開瀏覽器時，直接啟動不創建瀏覽器線程
+        print_step(5, "服務啟動", f"⏳ 正在啟動服務於 {host}:{port}...")
         print_tips(host, port)
         import uvicorn
         uvicorn.run(
