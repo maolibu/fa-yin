@@ -306,22 +306,28 @@ async def index(request: Request):
     daily_verse = get_daily_verse()
     daily_index = get_daily_index()
     
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "cbeta_available": nav is not None,
-        "catalog_count": len(nav.catalog) if nav else 0,
-        "daily_verse": daily_verse,
-        "daily_index": daily_index,
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={
+            "cbeta_available": nav is not None,
+            "catalog_count": len(nav.catalog) if nav else 0,
+            "daily_verse": daily_verse,
+            "daily_index": daily_index,
+        },
+    )
 
 
 @app.get("/resources", response_class=HTMLResponse)
 async def resources(request: Request):
     """外部資源導航頁"""
-    return templates.TemplateResponse("resources.html", {
-        "request": request,
-        "resource_sections": RESOURCE_SECTIONS,
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="resources.html",
+        context={
+            "resource_sections": RESOURCE_SECTIONS,
+        },
+    )
 
 
 @app.get("/api/health")

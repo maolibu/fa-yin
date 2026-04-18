@@ -33,10 +33,14 @@ async def read_sutra(request: Request, sutra_id: str, juan: int = Query(1, ge=1)
 
     # 經號不在目錄中，返回 404
     if total_juan == 0 and not info:
-        return templates.TemplateResponse("404.html", {
-            "request": request,
-            "message": f"未找到經文：{sutra_id}",
-        }, status_code=404)
+        return templates.TemplateResponse(
+            request=request,
+            name="404.html",
+            context={
+                "message": f"未找到經文：{sutra_id}",
+            },
+            status_code=404,
+        )
 
     # 經藏名稱（如 "大正新修大藏經"）
     canon_code = info.get("canon", "") or ""
@@ -53,17 +57,20 @@ async def read_sutra(request: Request, sutra_id: str, juan: int = Query(1, ge=1)
     # 初始卷號校驗
     initial_juan = min(juan, total_juan) if total_juan > 0 else 1
 
-    return templates.TemplateResponse("read.html", {
-        "request": request,
-        "sutra_id": sutra_id,
-        "sutra_title": title or sutra_id,
-        "total_juan": total_juan,
-        "initial_juan": initial_juan,
-        "author": hm.get("author", "") or info.get("author", ""),
-        "category": info.get("category", ""),
-        "canon_name": canon_name,
-        "hm": hm,
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="read.html",
+        context={
+            "sutra_id": sutra_id,
+            "sutra_title": title or sutra_id,
+            "total_juan": total_juan,
+            "initial_juan": initial_juan,
+            "author": hm.get("author", "") or info.get("author", ""),
+            "category": info.get("category", ""),
+            "canon_name": canon_name,
+            "hm": hm,
+        },
+    )
 
 
 @router.get("/api/content/{sutra_id}/{scroll}", response_class=HTMLResponse)
