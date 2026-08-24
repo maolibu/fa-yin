@@ -28,6 +28,7 @@ logs/
 # ─── Obsidian Vault（启动时自动生成） ──────────────
 obsidian_vault/*.md
 obsidian_vault/**/*.md
+!obsidian_vault/README.md
 
 # ─── 从 tar.gz 解压生成的目录（不入仓库） ──────────
 # 字体文件已直接提交到 src/static/fonts/，无需解压
