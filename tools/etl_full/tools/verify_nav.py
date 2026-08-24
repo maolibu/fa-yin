@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """验证 cbeta_nav.db 的数据质量"""
+import argparse
 import sqlite3
 from pathlib import Path
 
-DB = Path("/data/fjlsc/10_etl/output/cbeta_nav.db")
+DEFAULT_DB = Path(__file__).resolve().parent.parent / "output" / "cbeta_nav.db"
+parser = argparse.ArgumentParser(description="验证 cbeta_nav.db 的数据质量")
+parser.add_argument("--db", type=Path, default=DEFAULT_DB, help="cbeta_nav.db 路径")
+DB = parser.parse_args().db.resolve()
 if not DB.exists():
     print("❌ 数据库不存在，请先运行 ETL")
     exit(1)

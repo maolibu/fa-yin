@@ -29,8 +29,8 @@ from pathlib import Path
 
 # 复用 ETL 的配置
 ETL_DIR = Path(__file__).resolve().parent.parent
-PROJECT_ROOT = ETL_DIR.parent
-XML_BASE = PROJECT_ROOT / "01_data_raw" / "cbeta_xml_p5"
+PROJECT_ROOT = ETL_DIR.parents[1]
+XML_BASE = PROJECT_ROOT / "data" / "raw" / "cbeta_xml_p5"
 DB_PATH = ETL_DIR / "output" / "cbeta.db"
 OUTPUT_DIR = ETL_DIR / "output"
 
@@ -39,7 +39,7 @@ TEI_NS = "http://www.tei-c.org/ns/1.0"
 CB_NS = "http://www.cbeta.org/ns/1.0"
 
 # 添加模块搜索路径（复用 gaiji_map）
-# tools/.. (10_etl)
+# 复用 tools/etl_full/gaiji_map.py
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import gaiji_map
 
@@ -293,11 +293,18 @@ def verify_sutra(sutra_id, conn):
 
 
 def main():
+    global XML_BASE, DB_PATH, OUTPUT_DIR
     parser = argparse.ArgumentParser(description="本地标签验证：XML vs 数据库")
+    parser.add_argument("--xml-base", type=Path, default=XML_BASE, help="CBETA P5 XML 根目录")
+    parser.add_argument("--db", type=Path, default=DB_PATH, help="待验证 SQLite 数据库")
+    parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR, help="报告目录")
     parser.add_argument("target", nargs="?", default=None, help="经号或藏经代码")
     parser.add_argument("--canon", type=str, help="按藏经验证（如 A）")
     parser.add_argument("--all", action="store_true", help="验证全部已转换经典")
     args = parser.parse_args()
+    XML_BASE = args.xml_base.resolve()
+    DB_PATH = args.db.resolve()
+    OUTPUT_DIR = args.output_dir.resolve()
 
     conn = sqlite3.connect(str(DB_PATH))
     gaiji_map.load_gaiji_map()

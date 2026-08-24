@@ -10,10 +10,12 @@
 import csv
 import re
 from collections import Counter
+from pathlib import Path
 
-INPUT_CSV = '大藏经偈颂.csv'
-OUTPUT_CSV = '精选教理偈颂.csv'
-EXISTING_CSV = '每日偈颂.csv'
+SCRIPT_DIR = Path(__file__).resolve().parent
+INPUT_CSV = SCRIPT_DIR / '大藏经偈颂.csv'
+OUTPUT_CSV = SCRIPT_DIR / '精选教理偈颂.csv'
+EXISTING_CSV = SCRIPT_DIR / '每日偈颂.csv'
 
 
 def load_existing_fps():

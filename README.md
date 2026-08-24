@@ -119,7 +119,7 @@ python launcher.py --no-browser   # 不自动打开浏览器
 python launcher.py --skip-build   # 跳过数据库构建
 ```
 
-开发依赖、21,960 个 Bookcase XML 全量扫描、隔离搜索库重建和中文路径回归的权威命令见[迁移与完整回归命令](docs/migration_testing.md)。迁移期间必须保持的数据版本、校验值和不可重建边界见[当前数据与静态资产保护边界](docs/data_assets.md)。
+开发依赖、21,960 个 Bookcase XML 全量扫描、隔离搜索库重建和中文路径回归的权威命令见[迁移与完整回归命令](docs/migration_testing.md)。数据版本、校验值与更新边界见[当前数据与静态资产保护边界](docs/data_assets.md)；字体、地图、佛典与前端库的来源和授权说明见[第三方数据与静态资产说明](THIRD_PARTY_NOTICES.md)。
 
 ### 运行状态与降级策略
 

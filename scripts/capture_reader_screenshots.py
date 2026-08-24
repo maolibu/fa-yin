@@ -97,7 +97,7 @@ def choose_sutra(db_path: Path) -> tuple[str, str, int]:
     if not db_path.exists():
         return PREFERRED_SUTRA_ID, PREFERRED_SUTRA_ID, 1
 
-    conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    conn = sqlite3.connect(f"file:{db_path}?mode=ro&immutable=1", uri=True)
     try:
         conn.row_factory = sqlite3.Row
 

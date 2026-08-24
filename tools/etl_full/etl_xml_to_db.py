@@ -32,8 +32,8 @@ import gaiji_map
 # 配置
 # ============================================================
 ETL_DIR = Path(__file__).resolve().parent
-PROJECT_ROOT = ETL_DIR.parent
-XML_BASE = PROJECT_ROOT / "01_data_raw" / "cbeta_xml_p5"
+PROJECT_ROOT = ETL_DIR.parents[1]
+XML_BASE = PROJECT_ROOT / "data" / "raw" / "cbeta_xml_p5"
 CANONS_JSON = XML_BASE / "canons.json"
 DB_PATH = ETL_DIR / "output" / "cbeta.db"
 SCHEMA_PATH = ETL_DIR / "schema" / "schema.sql"
@@ -1103,7 +1103,11 @@ def find_xml_files(target):
 # 主程序
 # ============================================================
 def main():
+    global XML_BASE, CANONS_JSON, DB_PATH, LOG_DIR
     parser = argparse.ArgumentParser(description="CBETA XML → SQLite 转换工具")
+    parser.add_argument("--xml-base", type=Path, default=XML_BASE, help="CBETA P5 XML 根目录")
+    parser.add_argument("--db", type=Path, default=DB_PATH, help="输出 SQLite 数据库")
+    parser.add_argument("--log-dir", type=Path, default=LOG_DIR, help="日志目录")
     parser.add_argument(
         "target", nargs="?", default=None,
         help="经号（如 T08n0251）或藏经代码（如 T）",
@@ -1111,6 +1115,10 @@ def main():
     parser.add_argument("--canon", type=str, help="按藏经代码转换（如 T, X）")
     parser.add_argument("--all", action="store_true", help="转换全部")
     args = parser.parse_args()
+    XML_BASE = args.xml_base.resolve()
+    CANONS_JSON = XML_BASE / "canons.json"
+    DB_PATH = args.db.resolve()
+    LOG_DIR = args.log_dir.resolve()
 
     if args.all:
         target = "--all"

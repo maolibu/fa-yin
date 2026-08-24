@@ -1,14 +1,14 @@
 """
 从 CBETA 大藏经 Markdown 文件中提取精短偈颂
 =============================================
-扫描 60_ready/obsidian_vault/output/經文/ 下所有 .md 文件，
+扫描本项目 obsidian_vault/output/經文/ 下所有 .md 文件，
 提取 blockquote（> ）格式的偈颂段落，筛选出：
   - 句式整齐（每句等长±1字）
   - 精短（4-12句，每句3-7字）
   - 有教理深度（排除过于叙事性的段落）
 输出 CSV：偈颂, 出處
 """
-import os
+import argparse
 import re
 import csv
 import yaml
@@ -16,19 +16,21 @@ import sys
 from pathlib import Path
 from collections import Counter
 
-BASE_DIR = Path("/data/fjlsc/60_ready/obsidian_vault/output/經文")
-OUTPUT_CSV = Path("/data/fjlsc/60_ready/tools/大藏经偈颂.csv")
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+SCRIPT_DIR = Path(__file__).resolve().parent
+BASE_DIR = PROJECT_ROOT / "obsidian_vault" / "output" / "經文"
+OUTPUT_CSV = SCRIPT_DIR / "大藏经偈颂.csv"
 
 # 已有偈颂指纹（用于去重）
-EXISTING_CSV = Path("/data/fjlsc/60_ready/tools/每日偈颂.csv")
+EXISTING_CSV = SCRIPT_DIR / "每日偈颂.csv"
 
 
-def load_existing_fingerprints():
+def load_existing_fingerprints(existing_csv=EXISTING_CSV):
     """加载现有偈颂指纹"""
     fps = set()
-    if not EXISTING_CSV.exists():
+    if not existing_csv.exists():
         return fps
-    with open(EXISTING_CSV, 'r', encoding='utf-8') as f:
+    with open(existing_csv, 'r', encoding='utf-8') as f:
         reader = csv.reader(f)
         next(reader, None)
         for row in reader:
@@ -274,12 +276,18 @@ def process_file(md_path, fingerprints):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="从 CBETA Vault 提取偈颂候选")
+    parser.add_argument("--vault", type=Path, default=BASE_DIR, help="经文 Markdown 目录")
+    parser.add_argument("--existing", type=Path, default=EXISTING_CSV, help="已有偈颂 CSV")
+    parser.add_argument("--output", type=Path, default=OUTPUT_CSV, help="候选输出 CSV")
+    args = parser.parse_args()
+
     print("加载现有偈颂指纹...")
-    fingerprints = load_existing_fingerprints()
+    fingerprints = load_existing_fingerprints(args.existing)
     print(f"  已有 {len(fingerprints)} 条指纹")
     
     # 扫描所有MD文件
-    md_files = list(BASE_DIR.rglob('*.md'))
+    md_files = list(args.vault.rglob('*.md'))
     print(f"找到 {len(md_files)} 个MD文件")
     
     all_verses = []
@@ -299,13 +307,14 @@ def main():
     all_verses.sort(key=lambda x: x['score'], reverse=True)
     
     # 输出CSV
-    with open(OUTPUT_CSV, 'w', encoding='utf-8', newline='') as f:
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    with open(args.output, 'w', encoding='utf-8', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(['偈颂', '出處'])
         for v in all_verses:
             writer.writerow([v['text'], v['source']])
     
-    print(f"\n结果已保存到 {OUTPUT_CSV}")
+    print(f"\n结果已保存到 {args.output}")
     print(f"共 {len(all_verses)} 条偈颂")
     
     # 预览前30条

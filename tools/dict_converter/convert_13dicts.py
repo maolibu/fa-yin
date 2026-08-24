@@ -4,9 +4,10 @@
 使用 PyGlossary 将 Babylon (.bgl) 和 StarDict 格式的词典转换为统一的 JSON 格式。
 
 用法：
-    python convert_13dicts.py
+    python convert_13dicts.py --input /path/to/13Dicts
 """
 
+import argparse
 import gzip
 import json
 import struct
@@ -17,8 +18,8 @@ from pyglossary import Glossary
 
 
 # Configuration
-RAW_DIR = Path("/data/fjlsc/01_data_raw/dicts/13Dicts")
-OUTPUT_DIR = Path(__file__).resolve().parent / "13dicts"
+SCRIPT_DIR = Path(__file__).resolve().parent
+OUTPUT_DIR = SCRIPT_DIR / "13dicts"
 
 # Dictionary metadata mapping
 DICT_NAMES = {
@@ -125,15 +126,22 @@ def convert_dictionary(item: Path) -> dict | None:
 
 def main():
     """Convert all 13 dictionaries to JSON."""
+    parser = argparse.ArgumentParser(description="Convert DILA/DDBC 13Dicts to JSON")
+    parser.add_argument("--input", type=Path, required=True, help="13Dicts source directory")
+    parser.add_argument("--output", type=Path, default=OUTPUT_DIR, help="JSON output directory")
+    args = parser.parse_args()
+    raw_dir = args.input.resolve()
+    output_dir = args.output.resolve()
+
     print("=" * 60)
     print("13Dicts (DILA/DDBC) Converter")
     print("=" * 60)
     
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
     
     # Find all dictionary items (files and directories)
     items = []
-    for item in RAW_DIR.iterdir():
+    for item in raw_dir.iterdir():
         if item.is_dir() and item.name.startswith("stardict"):
             items.append(item)
         elif item.suffix == ".bgl":
@@ -154,7 +162,7 @@ def main():
             
             if result and result["entries"]:
                 output_name = item.stem if item.is_file() else item.name
-                output_file = OUTPUT_DIR / f"{output_name}.json"
+                output_file = output_dir / f"{output_name}.json"
                 
                 with open(output_file, "w", encoding="utf-8") as f:
                     json.dump(result, f, ensure_ascii=False, indent=2)
@@ -173,7 +181,7 @@ def main():
     print("\n" + "=" * 60)
     print(f"Conversion complete: {successful}/{len(items)} dictionaries")
     print(f"Total entries: {total_entries:,}")
-    print(f"Output directory: {OUTPUT_DIR}")
+    print(f"Output directory: {output_dir}")
     print("=" * 60)
 
 

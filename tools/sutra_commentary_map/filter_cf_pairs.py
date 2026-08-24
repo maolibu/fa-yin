@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from collections import defaultdict
 
-DIR = Path('/data/fjlsc/60_ready/tools/sutra_commentary_map')
+DIR = Path(__file__).resolve().parent
 
 with open(DIR / 'work_title_cache.json', encoding='utf-8') as f:
     titles = json.load(f)

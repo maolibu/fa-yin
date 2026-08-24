@@ -5,12 +5,14 @@
 供 FastAPI 后端读取。
 
 用法：
-    python tools/csv_to_verses_json.py
+    python tools/daily_verses/csv_to_verses_json.py
+    python tools/daily_verses/csv_to_verses_json.py --output /tmp/verses.json
 
-输入：tools/每日偈颂.csv
+输入：tools/daily_verses/每日偈颂.csv
 输出：data/db/verses.json
 """
 
+import argparse
 import csv
 import json
 import re
@@ -69,9 +71,20 @@ def convert_csv_to_json(csv_path: Path, json_path: Path):
 
 
 if __name__ == "__main__":
-    # 路径：相对于项目根目录 (60_ready/)
     project_root = Path(__file__).resolve().parent.parent.parent
-    csv_path = Path(__file__).resolve().parent / "每日偈颂.csv"
-    json_path = project_root / "data" / "db" / "verses.json"
+    parser = argparse.ArgumentParser(description="将每日偈颂 CSV 转换为 JSON")
+    parser.add_argument(
+        "--input",
+        type=Path,
+        default=Path(__file__).resolve().parent / "每日偈颂.csv",
+        help="偈颂 CSV 路径",
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=project_root / "data" / "db" / "verses.json",
+        help="输出 JSON 路径",
+    )
+    args = parser.parse_args()
 
-    convert_csv_to_json(csv_path, json_path)
+    convert_csv_to_json(args.input, args.output)

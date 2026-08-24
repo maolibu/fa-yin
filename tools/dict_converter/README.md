@@ -7,8 +7,9 @@
 
 ## 13 Dictionaries (13Dicts) - DILA/DDBC
 
-**Location / 位置:** `/data/fjlsc/data_raw/dicts/13Dicts`  
-**Output / 输出:** `71_dict_converter/13dicts/`  
+**Input / 输入:** 由 `--input` 显式指定的 13Dicts 源目录
+
+**Output / 输出:** 默认为本目录的 `13dicts/`
 **Total Entries / 总条目:** 116,657
 
 | ID  | Filename / 文件名                 | Name / 词典名称                                      | Entries | 字符 | Format   |
@@ -31,8 +32,9 @@
 
 ## 28 Dictionaries (28Dicts) - fodict2
 
-**Location / 位置:** `/data/fjlsc/data_raw/dicts/fodict2_public-win32-j28/repo`  
-**Output / 输出:** `71_dict_converter/28dicts/`  
+**Input / 输入:** 由 `--input` 显式指定的 fodict2 `repo/` 目录
+
+**Output / 输出:** 默认为本目录的 `28dicts/`
 **Total Entries / 总条目:** 120,614
 
 | ID  | Folder / 目录        | Name / 词典名称               | Entries | 字符 | Unique |
@@ -99,7 +101,9 @@
 
 2. **转换状态：**
    - 所有词典已转换为 JSON 格式
-   - 转换脚本: `71_dict_converter/`
+   - 转换脚本: `tools/dict_converter/`
+   - 例如：`python tools/dict_converter/convert_13dicts.py --input /path/to/13Dicts`
+   - 例如：`python tools/dict_converter/convert_28dicts.py --input /path/to/fodict2/repo`
 
 3. **特殊词典：**
    - `018.chanzongyulu-j` (禅宗语录): 仅13条，每条代表一部完整语录

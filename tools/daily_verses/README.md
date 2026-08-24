@@ -1,44 +1,52 @@
-# 每日偈頌（Daily Verses）
+# 每日偈颂（Daily Verses）
 
-佛教經典偈頌的校對、轉換工具。為首頁「警策」欄目提供每日一偈。
+佛教经典偈颂的校对、转换工具，为首页“警策”栏目提供每日一偈。
 
-## 數據文件
+## 数据文件
 
-| 文件 | 說明 |
-|------|------|
-| `每日偈颂.csv` | **正式數據**：365 條校對版偈頌（偈頌、出處） |
-| `校对报告.md` | 校對修改明細（700 處修改記錄） |
+| 文件 | 说明 |
+|---|---|
+| `每日偈颂.csv` | **正式数据**：365 条偈颂（偈颂、出处） |
+| `校对报告.md` | 数据来源、恢复方式与校验记录 |
 
-## 腳本
+## 脚本
 
 ### `csv_to_verses_json.py`
-將 `每日偈颂.csv` 轉換為 `data/db/verses.json`，供 FastAPI 後端讀取。
-自動按全角 `｜` 分段、生成序號 1-365。
+
+将 `每日偈颂.csv` 转换为 `data/db/verses.json`，供 FastAPI 后端读取。
+脚本自动按全角 `｜` 分段，并生成 1–365 的序号。
 
 ```bash
-python csv_to_verses_json.py
+python tools/daily_verses/csv_to_verses_json.py
+
+# 先写入临时目录核对，不覆盖正式数据
+python tools/daily_verses/csv_to_verses_json.py --output /tmp/verses.json
 ```
 
 ### `proofread_verses.py`
-CSV 校對腳本，包含：
-- OpenCC 簡→繁轉換（含佛經特有過度轉換修正）
-- OCR 錯字修正（經 CBETA 原文比對確認）
-- 出處格式統一（書名號、經名補全、作者分隔）
-- 分段符統一（全角 `｜`）
-- 重複檢測
 
-### `extract_cbeta_verses.py`
-從 CBETA Markdown 文件中提取 blockquote 格式的偈頌段落。
+CSV 校对脚本，包含：
 
-### `select_doctrinal.py`
-從大藏經提取結果中精選教理偈頌（評分排序）。
+- OpenCC 简→繁转换（含佛经特有过度转换修正）
+- OCR 错字修正（经 CBETA 原文比对确认）
+- 出处格式统一（书名号、经名补全、作者分隔）
+- 分段符统一（全角 `｜`）
+- 重复检测
 
-### `ocr_pdf.py`
-掃描 PDF 的 OCR 識別工具。
+### 其他脚本
 
-## 依賴
+- `extract_cbeta_verses.py`：从 CBETA Markdown 文件中提取 blockquote 格式偈颂。
+- `select_doctrinal.py`：从大藏经提取结果中精选教理偈颂。
+- `ocr_pdf.py`：扫描 PDF 的 OCR 识别工具。
 
-```
+## 一致性保证
+
+`tests/test_daily_verses.py` 会把 CSV 转成临时 JSON，并与仓内
+`data/db/verses.json` 进行逐字段比对。未通过此测试时不应发布新版偈颂。
+
+## 依赖
+
+```text
 opencc-python-reimplemented
 PyYAML
 ```

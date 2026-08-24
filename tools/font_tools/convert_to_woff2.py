@@ -2,7 +2,7 @@
 """
 将 TTF/OTF 字体转换为 WOFF2 格式
 
-从 font/ 目录（或子目录）读取源文件，输出到 fa_yin/public/fonts/（扁平结构）。
+从 font/ 目录（或子目录）读取源文件，输出到 fonts_woff2/（扁平结构）。
 支持增量转换——已存在的 WOFF2 文件会跳过，使用 --force 强制重新转换。
 
 用法：
@@ -86,7 +86,7 @@ def main():
 
     if not FONT_DIR.exists():
         print(f"\n❌ 字体源目录不存在: {FONT_DIR}")
-        print("   请将 TTF/OTF 字体文件放入 72_font_tester/font/ 目录")
+        print("   请将 TTF/OTF 字体文件放入 tools/font_tools/font/ 目录")
         return
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)

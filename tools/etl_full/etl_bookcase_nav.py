@@ -17,9 +17,10 @@ Bookcase 导航数据 ETL — 重写版
   └─────────────────────────┴────────────────────┴─────────────┘
 
 用法：
-  ~/miniforge3/envs/fjlsc/bin/python 10_etl/etl_bookcase_nav.py
+  python tools/etl_full/etl_bookcase_nav.py
 """
 
+import argparse
 import json
 import logging
 import re
@@ -32,11 +33,12 @@ import lxml.etree as ET
 # ============================================================
 # 路径配置
 # ============================================================
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-BOOKCASE_DIR = PROJECT_ROOT / "01_data_raw" / "cbeta"
+ETL_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = ETL_DIR.parents[1]
+BOOKCASE_DIR = PROJECT_ROOT / "data" / "raw" / "cbeta"
 TOC_DIR = BOOKCASE_DIR / "toc"
 MULU_DIR = BOOKCASE_DIR / "mulu"
-OUTPUT_DIR = PROJECT_ROOT / "10_etl" / "output"
+OUTPUT_DIR = ETL_DIR / "output"
 NAV_DB = OUTPUT_DIR / "cbeta_nav.db"
 
 # 日志配置
@@ -617,6 +619,17 @@ def process_all_mulu(conn: sqlite3.Connection):
 # ============================================================
 def main():
     """ETL 主流程"""
+    global BOOKCASE_DIR, TOC_DIR, MULU_DIR, OUTPUT_DIR, NAV_DB
+    parser = argparse.ArgumentParser(description="从 CBETA Bookcase 构建导航数据库")
+    parser.add_argument("--bookcase", type=Path, default=BOOKCASE_DIR, help="Bookcase 根目录")
+    parser.add_argument("--output", type=Path, default=NAV_DB, help="输出 cbeta_nav.db")
+    args = parser.parse_args()
+    BOOKCASE_DIR = args.bookcase.resolve()
+    TOC_DIR = BOOKCASE_DIR / "toc"
+    MULU_DIR = BOOKCASE_DIR / "mulu"
+    NAV_DB = args.output.resolve()
+    OUTPUT_DIR = NAV_DB.parent
+
     log.info("=" * 60)
     log.info("开始导航数据 ETL")
     log.info("=" * 60)
@@ -625,7 +638,7 @@ def main():
     # 检查数据源目录
     if not BOOKCASE_DIR.exists():
         log.error(f"Bookcase 目录不存在: {BOOKCASE_DIR}")
-        log.error("请确认 01_data_raw/cbeta/ 目录存在")
+        log.error("请用 --bookcase 指定 CBETA Bookcase 目录")
         return
 
     # 初始化数据库

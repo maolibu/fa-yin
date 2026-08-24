@@ -152,7 +152,7 @@ async def get_sutra_persons(request: Request, sutra_id: str):
 
     db_path = config.LINEAGE_DB
     try:
-        conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+        conn = sqlite3.connect(f"file:{db_path}?mode=ro&immutable=1", uri=True)
         conn.row_factory = sqlite3.Row
     except sqlite3.Error as exc:
         return JSONResponse({

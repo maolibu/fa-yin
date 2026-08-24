@@ -78,13 +78,13 @@
 ## 使用方法
 
 ```bash
-cd 60_ready/tools/sutra_commentary_map
+cd /path/to/fa-yin/tools/sutra_commentary_map
 
 # 第一步：提取（V10）
-~/miniforge3/envs/fjlsc/bin/python extract_v10.py
+python extract_v10.py
 
 # 第二步：合并生成最终 JSON
-~/miniforge3/envs/fjlsc/bin/python merge_final.py
+python merge_final.py
 ```
 
 ## 当前结果（V10）

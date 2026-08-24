@@ -16,7 +16,7 @@ def load_gaiji_map(json_path=None):
     加载 cbeta_gaiji.json 映射表。
     
     参数:
-        json_path: JSON 文件路径，默认为 01_data_raw/cbeta_gaiji/cbeta_gaiji.json
+        json_path: JSON 文件路径，默认为主仓 data/raw/cbeta_gaiji.json
     
     返回:
         dict: CB 编号 → 字符信息的映射字典
@@ -26,10 +26,8 @@ def load_gaiji_map(json_path=None):
         return _gaiji_map
 
     if json_path is None:
-        # 从本模块位置向上找到 etl，再定位到 data_raw
-        base_dir = Path(__file__).resolve().parent
-        project_root = base_dir.parent
-        json_path = project_root / "01_data_raw" / "cbeta_gaiji" / "cbeta_gaiji.json"
+        project_root = Path(__file__).resolve().parents[2]
+        json_path = project_root / "data" / "raw" / "cbeta_gaiji.json"
 
     with open(json_path, "r", encoding="utf-8") as f:
         _gaiji_map = json.load(f)

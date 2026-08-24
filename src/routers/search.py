@@ -47,7 +47,7 @@ def _sanitize_snippet(raw: str) -> str:
 def _get_search_db():
     """獲取搜索數據庫只讀連接"""
     conn = sqlite3.connect(
-        f"file:{config.CBETA_SEARCH_DB}?mode=ro", uri=True
+        f"file:{config.CBETA_SEARCH_DB}?mode=ro&immutable=1", uri=True
     )
     conn.row_factory = sqlite3.Row
     return conn

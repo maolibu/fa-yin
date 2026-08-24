@@ -10,6 +10,7 @@
 5. 核心词汇抽样检查。
 """
 
+import argparse
 import json
 import struct
 from pathlib import Path
@@ -19,7 +20,7 @@ from collections import Counter
 # Directories
 OUTPUT_13 = Path(__file__).resolve().parent / "13dicts"
 OUTPUT_28 = Path(__file__).resolve().parent / "28dicts"
-RAW_28 = Path("/data/fjlsc/01_data_raw/dicts/fodict2_public-win32-j28/repo")
+RAW_28: Path | None = None
 
 # Known terms that MUST exist (spot check)
 # 13Dicts are mainly Traditional Chinese, 28Dicts are Simplified Chinese.
@@ -143,8 +144,8 @@ def verify_28dicts():
         
         # Get expected count from source
         dict_id = json_file.stem
-        source_dir = RAW_28 / dict_id
-        expected = get_expected_count_28(source_dir)
+        source_dir = RAW_28 / dict_id if RAW_28 else None
+        expected = get_expected_count_28(source_dir) if source_dir else -1
         
         # Compare with expected
         actual = stats.get("entry_count", 0)
@@ -264,6 +265,12 @@ def sample_comparison():
 
 
 def main():
+    global RAW_28
+    parser = argparse.ArgumentParser(description="Verify converted dictionary JSON files")
+    parser.add_argument("--raw-28", type=Path, help="Optional fodict2 source directory for count checks")
+    args = parser.parse_args()
+    RAW_28 = args.raw_28.resolve() if args.raw_28 else None
+
     print("=" * 60)
     print("Dictionary Conversion Verification")
     print("=" * 60)

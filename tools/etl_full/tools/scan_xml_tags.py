@@ -9,6 +9,7 @@ CBETA XML 标签扫描器
 3. 未在 README 中记录的标签
 """
 
+import argparse
 import xml.etree.ElementTree as ET
 import json
 import os
@@ -18,8 +19,8 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 DATAETL_DIR = Path(__file__).resolve().parent.parent
-PROJECT_ROOT = DATAETL_DIR.parent
-XML_BASE = PROJECT_ROOT / "01_data_raw" / "cbeta_xml_p5"
+PROJECT_ROOT = DATAETL_DIR.parents[1]
+XML_BASE = PROJECT_ROOT / "data" / "raw" / "cbeta_xml_p5"
 
 # README 已记录的标签（用于对比）
 README_TAGS = {
@@ -81,13 +82,16 @@ def scan_file(xml_path, tag_counter, attr_counter, ns_set, sample_attrs):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="扫描 CBETA P5 XML 标签")
+    parser.add_argument("--xml-base", type=Path, default=XML_BASE, help="CBETA P5 XML 根目录")
+    args = parser.parse_args()
     tag_counter = Counter()
     attr_counter = defaultdict(Counter)  # tag -> {attr: count}
     ns_set = set()
     sample_attrs = defaultdict(set)  # "tag@attr" -> {val1, val2, ...}
 
     # 找到所有 XML 文件
-    xml_files = sorted(XML_BASE.rglob("*.xml"))
+    xml_files = sorted(args.xml_base.resolve().rglob("*.xml"))
     print(f"📂 找到 {len(xml_files)} 个 XML 文件")
 
     # 扫描每个文件

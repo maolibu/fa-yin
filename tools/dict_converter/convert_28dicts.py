@@ -9,9 +9,10 @@
 3. 跳过仅包含子节点 ID 的目录节点（Parent Nodes）。
 
 用法：
-    python convert_28dicts.py
+    python convert_28dicts.py --input /path/to/fodict2/repo
 """
 
+import argparse
 import json
 import re
 import struct
@@ -19,8 +20,8 @@ from pathlib import Path
 
 
 # Configuration
-RAW_DIR = Path("/data/fjlsc/01_data_raw/dicts/fodict2_public-win32-j28/repo")
-OUTPUT_DIR = Path(__file__).resolve().parent / "28dicts"
+SCRIPT_DIR = Path(__file__).resolve().parent
+OUTPUT_DIR = SCRIPT_DIR / "28dicts"
 
 # Dictionary metadata (ID -> Chinese name)
 DICT_NAMES = {
@@ -235,14 +236,21 @@ def convert_dictionary(dict_dir: Path) -> dict | None:
 
 def main():
     """Convert all 28 dictionaries to JSON."""
+    parser = argparse.ArgumentParser(description="Convert fodict2 28Dicts to JSON")
+    parser.add_argument("--input", type=Path, required=True, help="fodict2 repository directory")
+    parser.add_argument("--output", type=Path, default=OUTPUT_DIR, help="JSON output directory")
+    args = parser.parse_args()
+    raw_dir = args.input.resolve()
+    output_dir = args.output.resolve()
+
     print("=" * 60)
     print("28Dicts (fodict2) Converter")
     print("=" * 60)
     
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
     
     # Find all dictionary directories
-    dict_dirs = sorted([d for d in RAW_DIR.iterdir() if d.is_dir() and d.name[0].isdigit()])
+    dict_dirs = sorted([d for d in raw_dir.iterdir() if d.is_dir() and d.name[0].isdigit()])
     
     print(f"\nFound {len(dict_dirs)} dictionaries to convert.\n")
     
@@ -256,7 +264,7 @@ def main():
             result = convert_dictionary(dict_dir)
             
             if result and result["entries"]:
-                output_file = OUTPUT_DIR / f"{dict_dir.name}.json"
+                output_file = output_dir / f"{dict_dir.name}.json"
                 with open(output_file, "w", encoding="utf-8") as f:
                     json.dump(result, f, ensure_ascii=False, indent=2)
                 
@@ -274,7 +282,7 @@ def main():
     print("\n" + "=" * 60)
     print(f"Conversion complete: {successful}/{len(dict_dirs)} dictionaries")
     print(f"Total entries: {total_entries:,}")
-    print(f"Output directory: {OUTPUT_DIR}")
+    print(f"Output directory: {output_dir}")
     print("=" * 60)
 
 

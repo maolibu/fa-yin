@@ -44,7 +44,7 @@ def _get_user_mgr() -> UserDictManager:
 
 def _get_conn() -> sqlite3.Connection:
     """獲取內置詞典只讀連接"""
-    conn = sqlite3.connect(f"file:{DICT_DB}?mode=ro", uri=True)
+    conn = sqlite3.connect(f"file:{DICT_DB}?mode=ro&immutable=1", uri=True)
     conn.row_factory = sqlite3.Row
     return conn
 

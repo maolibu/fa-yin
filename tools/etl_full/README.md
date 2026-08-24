@@ -17,7 +17,7 @@ flowchart LR
 ## 目录结构
 
 ```
-10_etl/
+tools/etl_full/
 ├── etl_xml_to_db.py              # 主转换脚本 ⭐ (XML → cbeta.db)
 ├── etl_bookcase_nav.py           # 导航库构建脚本 ⭐ (Bookcase → cbeta_nav.db)
 ├── gaiji_map.py                  # Gaiji 缺字映射模块（被主脚本 import）
@@ -233,9 +233,9 @@ CBETA 用 `<g ref="#CB00178"/>` 表示缺字。该模块加载 `cbeta_gaiji.json
 | `split_html_to_blocks(html_string)` | 基于 lxml 将整卷 HTML 切分为顶层块列表  |
 | `GET /compare/{a}/{ja}/{b}/{jb}`    | 对照阅读路由，双栏 CSS Grid 布局        |
 
-### dict_converter — 字典转换（已移至 `71_dict_converter/`）
+### dict_converter — 字典转换（已移至 `tools/dict_converter/`）
 
-已移至项目顶层独立目录，详见 `71_dict_converter/`。
+已移至项目独立目录，详见 `tools/dict_converter/`。
 
 ### etl_bookcase_nav.py — 导航数据构建
 
@@ -252,8 +252,7 @@ CBETA 用 `<g ref="#CB00178"/>` 表示缺字。该模块加载 `cbeta_gaiji.json
 ## 常用命令
 
 ```bash
-cd /data/fjlsc/10_etl
-conda activate fjlsc
+cd /path/to/fa-yin/tools/etl_full
 
 # 转换单部经
 python etl_xml_to_db.py T08n0251
@@ -286,8 +285,7 @@ python viewer.py
 全量转换 4990 个 XML 文件耗时约 10 分钟，建议用后台方式执行：
 
 ```bash
-cd /data/fjlsc/10_etl
-conda activate fjlsc
+cd /path/to/fa-yin/tools/etl_full
 
 # 先删除旧数据库（确保干净重建，避免残留数据/FTS 索引不一致）
 rm -f output/cbeta.db
@@ -317,9 +315,8 @@ python etl_xml_to_db.py --all 2>&1 | tee logs/etl_full.log
 
 | 数据         | 路径                                       | 说明                              |
 | ------------ | ------------------------------------------ | --------------------------------- |
-| P5 XML       | `data_raw/cbeta_xml_p5/`                   | ⭐ 主数据源，每经一文件            |
-| canons.json  | `data_raw/cbeta_xml_p5/canons.json`        | 藏经代码→中文名映射 JSON           |
-| Gaiji 映射   | `data_raw/cbeta_gaiji/cbeta_gaiji.json`    | CB 编号→Unicode/组字式            |
-| 13 部字典    | `data_raw/dicts/13Dicts/`                  | DILA/DDBC 发布                    |
-| 28 部字典    | `data_raw/dicts/fodict2_public-*/`         | fodict2 佛学字典集                |
-
+| P5 XML       | `data/raw/cbeta_xml_p5/`                   | 实验 ETL 可选源，也可用 `--xml-base` 指定 |
+| canons.json  | `data/raw/cbeta_xml_p5/canons.json`        | 藏经代码→中文名映射 JSON           |
+| Gaiji 映射   | `data/raw/cbeta_gaiji.json`                 | CB 编号→Unicode/组字式            |
+| 13 部字典    | 由转换脚本 `--input` 指定               | DILA/DDBC 发布                    |
+| 28 部字典    | 由转换脚本 `--input` 指定               | fodict2 佛学字典集                |
