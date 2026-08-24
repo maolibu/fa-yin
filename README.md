@@ -119,6 +119,8 @@ python launcher.py --no-browser   # 不自动打开浏览器
 python launcher.py --skip-build   # 跳过数据库构建
 ```
 
+开发依赖、21,960 个 Bookcase XML 全量扫描、隔离搜索库重建和中文路径回归的权威命令见[迁移与完整回归命令](docs/migration_testing.md)。迁移期间必须保持的数据版本、校验值和不可重建边界见[当前数据与静态资产保护边界](docs/data_assets.md)。
+
 ### 运行状态与降级策略
 
 - **必需组件**：`data/raw/cbeta/XML/` 经文数据。缺失时阅读与经目录功能不可用，启动脚本会先引导下载。

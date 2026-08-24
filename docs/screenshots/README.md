@@ -5,10 +5,9 @@ README 引用的 12 张截图（暗 6 + 浅 6）由脚本自动捕获，UI 改�
 ## 一键重拍
 
 ```bash
-cd /data/fjlsc/80demo
+cd /path/to/fa_yin
 python3 launcher.py &              # 服务必须在 8400 上跑
 python3 scripts/capture_readme_screenshots.py
-cp docs/screenshots/*.png /data/fjlsc/90_fa_yin/docs/screenshots/   # 同步
 ```
 
 约 30 秒。Chrome headless，1280×820（双栏 1680×820），1x 像素比，Pillow 优化，整个目录约 2.7 MB。
@@ -46,3 +45,12 @@ cp docs/screenshots/*.png /data/fjlsc/90_fa_yin/docs/screenshots/   # 同步
 - 6 个场景 × 2 主题 = 12 次 capture，每次：设 viewport → 跑 setup_js → 等 ready_js → 截图 → 保存。
 - setup_js 通过 Alpine `$data` 直接操控状态（`splitMode`、`activePanel`、`writingMode`、`dictQuery`），不模拟点击。
 - 所有写服务器的 sync 都被 monkey-patch 成 noop，截图过程不污染 user_data。
+
+用于迁移/页面回归的批量阅读器截图不要写入本目录；改用：
+
+```bash
+python3 scripts/capture_reader_screenshots.py \
+  --output-dir /path/to/test-run/screenshots/reader
+```
+
+该命令的输出目录为必填，截图和`manifest.json`均属于测试产物。

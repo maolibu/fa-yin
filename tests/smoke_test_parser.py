@@ -3,6 +3,7 @@
 全部结果写入 smoke_test_report.txt。
 """
 
+import argparse
 import sys
 import os
 import re
@@ -11,16 +12,20 @@ from pathlib import Path
 from html import unescape
 from lxml import etree
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+SRC_DIR = PROJECT_ROOT / "src"
+sys.path.insert(0, str(SRC_DIR))
 
 import config
+from core.cbeta_ids import discover_bookcase_xml_files
 from core.cbeta_parser import CBETAParser, TEI_NS
 
 # ============================================================
 # 配置
 # ============================================================
-CBETA_XML_DIR = config.CBETA_BASE / "XML"
-REPORT_PATH = Path(__file__).parent / "smoke_test_report.txt"
+DEFAULT_REPORT_PATH = Path(os.getenv(
+    "TEST_OUTPUT_DIR", str(Path(__file__).parent)
+)) / "smoke_test_report.txt"
 
 # 去除 HTML 标签
 TAG_RE = re.compile(r'<[^>]+>')
@@ -40,7 +45,7 @@ LEAK_PATTERNS = [
 ]
 
 # 未解析缺字
-UNRESOLVED_GAIJI = re.compile(r'#CB\d+')
+UNRESOLVED_GAIJI = re.compile(r'\[CB\d+\]')
 
 NS_MAP = {'tei': TEI_NS}
 
@@ -51,20 +56,40 @@ def strip_html(html):
     return TAG_RE.sub('', unescape(cleaned))
 
 
-def find_xml_files():
+def find_xml_files(xml_dir):
     """找到所有经文 XML 文件"""
-    pattern = re.compile(r'^[A-Z]\d+n\d+[a-zA-Z]?_\d+\.xml$')
-    return sorted(f for f in CBETA_XML_DIR.rglob("*.xml") if pattern.match(f.name))
+    return discover_bookcase_xml_files(xml_dir)
 
 
 def main():
-    # 初始化解析器（只加载 gaiji 数据）
-    parser = CBETAParser()
+    cli = argparse.ArgumentParser(description="全量 CBETA 阅读解析器回归")
+    cli.add_argument(
+        "--cbeta-base", type=Path, default=config.CBETA_BASE,
+        help="Bookcase 根目录（包含 XML/）",
+    )
+    cli.add_argument(
+        "--gaiji-path", type=Path, default=config.GAIJI_PATH,
+        help="cbeta_gaiji.json 路径",
+    )
+    cli.add_argument(
+        "--report", type=Path, default=DEFAULT_REPORT_PATH,
+        help="报告输出路径",
+    )
+    cli.add_argument("--expected-count", type=int, default=21960)
+    args = cli.parse_args()
 
-    xml_files = find_xml_files()
+    # 初始化解析器（只加载 gaiji 数据）
+    parser = CBETAParser(
+        cbeta_dir=args.cbeta_base,
+        gaiji_path=args.gaiji_path,
+        nav=object(),
+    )
+
+    xml_files = find_xml_files(args.cbeta_base / "XML")
     total = len(xml_files)
 
-    f = open(REPORT_PATH, 'w', encoding='utf-8')
+    args.report.parent.mkdir(parents=True, exist_ok=True)
+    f = open(args.report, 'w', encoding='utf-8')
     f.write(f"CBETA 解析器烟雾测试报告\n")
     f.write(f"时间: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
     f.write(f"总文件: {total}\n")
@@ -76,7 +101,7 @@ def main():
     gaiji_count = 0
     start = time.time()
 
-    xml_parser = etree.XMLParser(recover=True)
+    xml_parser = etree.XMLParser(recover=False, huge_tree=True)
 
     for i, xml_path in enumerate(xml_files):
         file_label = xml_path.stem  # 如 T03n0152_001
@@ -142,8 +167,21 @@ def main():
     f.write(f"解析错误: {errors}\n")
     f.close()
 
-    print(f"Done. {total} files in {elapsed:.1f}s. Report: {REPORT_PATH}")
+    failures = []
+    if total != args.expected_count:
+        failures.append(f"文件数 {total} != {args.expected_count}")
+    if errors:
+        failures.append(f"解析错误 {errors}")
+    if leak_count:
+        failures.append(f"注释泄漏 {leak_count}")
+    if gaiji_count:
+        failures.append(f"未解析缺字 {gaiji_count}")
+    print(f"Done. {total} files in {elapsed:.1f}s. Report: {args.report}")
+    if failures:
+        print("FAIL: " + "; ".join(failures))
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

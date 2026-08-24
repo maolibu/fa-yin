@@ -1,0 +1,7 @@
+-r requirements.txt
+
+# Test runner for unit, security, parser, and ETL regression tests.
+pytest>=8.0,<10.0
+
+# README baseline screenshot optimization.
+Pillow>=10.0,<13.0

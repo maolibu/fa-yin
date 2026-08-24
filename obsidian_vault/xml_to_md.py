@@ -22,7 +22,6 @@ CBETA XML → Obsidian Markdown 转换脚本
 """
 
 import argparse
-import glob
 import json
 import os
 import re
@@ -35,15 +34,26 @@ from pathlib import Path
 # 配置
 # ============================================================
 SCRIPT_DIR = Path(__file__).resolve().parent
-PROJECT_ROOT = SCRIPT_DIR.parent  # 60_ready/
+PROJECT_ROOT = SCRIPT_DIR.parent
+SRC_DIR = PROJECT_ROOT / "src"
+sys.path.insert(0, str(SRC_DIR))
+
+import config
+from core.cbeta_ids import (
+    discover_bookcase_xml_files,
+    filename_matches_xml_id,
+    parse_bookcase_id,
+    split_sutra_id,
+    try_parse_bookcase_id,
+)
 
 # Bookcase 分卷版数据（与阅读器共用）
-CBETA_BASE = PROJECT_ROOT / "data" / "raw" / "cbeta"
+CBETA_BASE = config.CBETA_BASE
 XML_BASE = CBETA_BASE / "XML"
-GAIJI_JSON = PROJECT_ROOT.parent / "01_data_raw" / "cbeta_gaiji" / "cbeta_gaiji.json"
-CANONS_JSON = PROJECT_ROOT.parent / "01_data_raw" / "cbeta_xml_p5" / "canons.json"
+GAIJI_JSON = config.GAIJI_PATH
+BOOKDATA_TXT = CBETA_BASE / "bookdata.txt"
 BULEI_NAV = CBETA_BASE / "bulei_nav.xhtml"
-OUTPUT_DIR = SCRIPT_DIR / "output"
+OUTPUT_DIR = config.OBSIDIAN_VAULT_DIR
 
 # XML 命名空间
 TEI_NS = "http://www.tei-c.org/ns/1.0"
@@ -90,18 +100,22 @@ def resolve_gaiji(cb_id):
 _canons_cache = None
 
 def _load_canons():
-    """从 canons.json 解析藏经代码 → 中文名映射"""
+    """从当前 Bookcase bookdata.txt 解析藏经代码 → 中文名映射。"""
     global _canons_cache
     if _canons_cache is not None:
         return _canons_cache
     _canons_cache = {}
-    if not CANONS_JSON.exists():
+    if not BOOKDATA_TXT.exists():
         return _canons_cache
     try:
-        with open(CANONS_JSON, "r", encoding="utf-8") as f:
-            _canons_cache = json.load(f)
+        for line in BOOKDATA_TXT.read_text(
+            encoding="utf-16", errors="replace"
+        ).splitlines():
+            parts = [part.strip() for part in line.split(",")]
+            if len(parts) >= 4 and parts[0] and parts[3]:
+                _canons_cache[parts[0]] = {"title-zh": parts[3]}
     except Exception as e:
-        print(f"  ⚠️ 读取 canons.json 失败: {e}")
+        print(f"  ⚠️ 读取 Bookcase bookdata.txt 失败: {e}")
     return _canons_cache
 
 # ============================================================
@@ -124,6 +138,11 @@ def _clean_text(text):
         return text
     # 将换行符和首尾空白清除（XML 中的换行只是格式化）
     return text.replace('\n', '').replace('\r', '')
+
+
+def _yaml_quote(value):
+    """Return a JSON string, which is also a safe YAML double-quoted scalar."""
+    return json.dumps(str(value), ensure_ascii=False)
 
 # 跳过标签集
 SKIP_TAGS = {
@@ -211,11 +230,9 @@ def _parse_ref_target(target):
     """
     if not target:
         return ""
-    # 提取文件名中的经号：T30n1579.xml → T30n1579
-    match = re.search(r'([A-Z]+\d+n[a-z]?\d+[a-z]?)', target)
-    if match:
-        return match.group(1)
-    return ""
+    file_part = target.split("#", 1)[0].rsplit("/", 1)[-1]
+    parsed = try_parse_bookcase_id(file_part)
+    return parsed.file_id if parsed else ""
 
 
 class MarkdownBuilder:
@@ -514,19 +531,10 @@ def extract_metadata(tree):
 
     xml_id = root.get(f"{{{XML_NS}}}id", "")
 
-    # 解析经号（支持 T08n0251, J01nA042, X10na096 等格式）
-    match = re.match(r"([A-Z]+)(\d+)n([A-Za-z]*)(\d+[a-z]?)", xml_id)
-    if match:
-        canon = match.group(1)
-        volume = match.group(2)
-        sutra_no_prefix = match.group(3)
-        sutra_no_digits = match.group(4)
-        sutra_no = sutra_no_prefix + sutra_no_digits
-        sutra_id = f"{canon}{sutra_no.zfill(4)}"
-    else:
-        canon = ""
-        volume = ""
-        sutra_id = xml_id
+    parsed_id = parse_bookcase_id(xml_id)
+    canon = parsed_id.canon
+    volume = parsed_id.volume
+    sutra_id = parsed_id.sutra_id
 
     # 经名
     title = xml_id
@@ -598,24 +606,52 @@ def convert_sutra_group(xml_files, output_base, verbose=True):
     builder = MarkdownBuilder()
     all_parts = []
     back_notes_parts = []
+    source_xml_ids = []
+    source_volumes = []
+    available_juans = set()
+    last_heading_juan = None
 
     for idx, xml_path in enumerate(xml_files):
         juan_num = _parse_juan_from_filename(xml_path)
 
         try:
             t = ET.parse(str(xml_path))
-        except ET.ParseError:
-            continue
+        except ET.ParseError as exc:
+            print(f"  ❌ XML 解析失败: {xml_path} - {exc}")
+            return None
 
         root = t.getroot()
+        xml_id = root.get(f"{{{XML_NS}}}id", "")
+        filename_id = parse_bookcase_id(xml_path, require_juan=True)
+        authoritative_id = parse_bookcase_id(xml_id)
+        if not filename_matches_xml_id(filename_id, authoritative_id):
+            print(
+                f"  ❌ 文件名/XML ID 不一致: {xml_path} "
+                f"({filename_id.file_id} != {authoritative_id.file_id})"
+            )
+            return None
+        if authoritative_id.sutra_id != meta["sutra_id"]:
+            print(
+                f"  ❌ 分组混入其他经号: {xml_path} "
+                f"({authoritative_id.sutra_id} != {meta['sutra_id']})"
+            )
+            return None
+        if authoritative_id.file_id not in source_xml_ids:
+            source_xml_ids.append(authoritative_id.file_id)
+        if authoritative_id.volume not in source_volumes:
+            source_volumes.append(authoritative_id.volume)
+        available_juans.add(juan_num)
+
         body = root.find(f".//{{{TEI_NS}}}body")
         if body is None:
-            continue
+            print(f"  ❌ XML 缺少 body: {xml_path}")
+            return None
 
         # 卷标题分隔（多卷经才输出）
-        if len(xml_files) > 1:
+        if len(xml_files) > 1 and juan_num != last_heading_juan:
             juan_cn = juan_to_cn(juan_num)
             all_parts.append(f"\n\n## 卷{juan_cn}\n\n")
+            last_heading_juan = juan_num
 
         # 转换正文
         md_text = builder.get_md_recursive(body)
@@ -627,20 +663,35 @@ def convert_sutra_group(xml_files, output_base, verbose=True):
         return None
 
     # 3. 组装完整 Markdown
-    frontmatter = f"""---
-sutra_id: {meta['sutra_id']}
-title: {meta['title']}
-author: {meta['author']}
-canon: {meta['category']}
-volume: "{meta['volume']}"
-total_juan: {meta['total_juan']}
-cbeta_id: {meta['xml_id']}
-tags:
-  - 佛經
-  - {meta['canon']}藏
----
+    meta["total_juan"] = len(available_juans)
+    meta["source_xml_count"] = len(xml_files)
+    meta["cbeta_ids"] = source_xml_ids
+    meta["volumes"] = source_volumes
 
-"""
+    frontmatter_lines = [
+        "---",
+        f"sutra_id: {_yaml_quote(meta['sutra_id'])}",
+        f"title: {_yaml_quote(meta['title'])}",
+        f"author: {_yaml_quote(meta['author'])}",
+        f"canon: {_yaml_quote(meta['category'])}",
+        f"volume: {_yaml_quote(meta['volume'])}",
+        "volumes:",
+        *[f"  - {_yaml_quote(volume)}" for volume in source_volumes],
+        f"total_juan: {meta['total_juan']}",
+        f"source_xml_count: {meta['source_xml_count']}",
+        f"cbeta_id: {_yaml_quote(source_xml_ids[0])}",
+        "cbeta_ids:",
+        *[f"  - {_yaml_quote(cbeta_id)}" for cbeta_id in source_xml_ids],
+        "aliases:",
+        *[f"  - {_yaml_quote(cbeta_id)}" for cbeta_id in source_xml_ids],
+        "tags:",
+        "  - 佛經",
+        f"  - {meta['canon']}藏",
+        "---",
+        "",
+        "",
+    ]
+    frontmatter = "\n".join(frontmatter_lines)
     header = f"# {meta['title']}\n\n"
     content = "".join(all_parts).strip()
     content = re.sub(r'\n{3,}', '\n\n', content)
@@ -655,7 +706,7 @@ tags:
     sutra_dir = Path(output_base) / "經文" / meta['canon'] / f"{meta['canon']}{meta['volume']}"
     sutra_dir.mkdir(parents=True, exist_ok=True)
 
-    filename = f"{meta['xml_id']}_{safe_title}.md"
+    filename = f"{meta['sutra_id']}_{safe_title}.md"
     filepath = sutra_dir / filename
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(full_md)
@@ -664,17 +715,16 @@ tags:
         print(f"     ✅ → {filepath.relative_to(output_base)}")
 
     # 保存文件名信息，供目录生成时使用
-    meta['_link_name'] = f"{meta['xml_id']}_{safe_title}"
+    meta['_link_name'] = f"{meta['sutra_id']}_{safe_title}"
 
     return meta
 
 
 def _parse_juan_from_filename(xml_path):
     """从 Bookcase 文件名解析卷号：T01n0001_003.xml → 3"""
-    m = re.search(r"_(\d+)\.xml$", str(xml_path))
-    if m:
-        return int(m.group(1))
-    return 1
+    parsed = parse_bookcase_id(xml_path, require_juan=True)
+    assert parsed.juan is not None
+    return parsed.juan
 
 
 # ============================================================
@@ -707,7 +757,7 @@ def _load_bulei_map():
 
         # 匹配经文条目
         # <cblink href="XML/T/T01/T01n0001_001.xml">T0001 長阿含經</cblink>
-        entry_match = re.search(r'>([A-Z]+\d+[a-z]?)\s', line)
+        entry_match = re.search(r'<cblink[^>]*>([A-Za-z0-9]+)\s', line)
         if entry_match and '<cblink' in line:
             sutra_id = entry_match.group(1)
             _bulei_map[sutra_id] = current_category
@@ -724,7 +774,7 @@ def get_category(meta):
         return cat
     # 回退：用藏经名
     canons = _load_canons()
-    name = canons.get(meta.get('canon', ''), {}).get("short-title-zh", "")
+    name = canons.get(meta.get('canon', ''), {}).get("title-zh", "")
     return name if name else (meta.get('canon', '') or "其他")
 
 
@@ -844,31 +894,44 @@ def find_sutra_groups(canon=None):
     """扫描 Bookcase XML 文件，按经号分组
     
     返回: [(sutra_key, [xml_file_paths_sorted_by_juan])]
-    sutra_key = 如 "T01n0001"（用于排序和去重）
+    sutra_key = 如 "T0001"（用于排序和去重）
     """
+    all_paths = discover_bookcase_xml_files(XML_BASE)
     if canon:
-        pattern = str(XML_BASE / canon / "**" / "*.xml")
-    else:
-        pattern = str(XML_BASE / "**" / "*.xml")
+        all_paths = [
+            path for path in all_paths
+            if parse_bookcase_id(path, require_juan=True).canon == canon
+        ]
 
-    all_files = sorted(glob.glob(pattern, recursive=True))
-
-    # 按经号前缀分组：T01n0001_001.xml → T01n0001
+    # 以 XML 权威经号分组；同一部经跨册时仍只生成一个 Markdown。
     groups = {}
-    for f in all_files:
-        basename = Path(f).stem  # T01n0001_001
-        # 去掉 _NNN 后缀
-        sutra_key = re.sub(r'_\d+$', '', basename)
+    for path in all_paths:
+        filename_id = parse_bookcase_id(path, require_juan=True)
+        _event, root = next(ET.iterparse(path, events=("start",)))
+        xml_id = root.get(f"{{{XML_NS}}}id", "")
+        authoritative_id = parse_bookcase_id(xml_id)
+        if not filename_matches_xml_id(filename_id, authoritative_id):
+            raise ValueError(
+                f"Bookcase filename/XML ID mismatch: {path}: "
+                f"{filename_id.file_id} != {authoritative_id.file_id}"
+            )
+        sutra_key = authoritative_id.sutra_id
         if sutra_key not in groups:
             groups[sutra_key] = []
-        groups[sutra_key].append(f)
+        groups[sutra_key].append(str(path))
 
     # 每组内按文件名排序（确保卷次顺序）
     result = []
     for key in sorted(groups.keys()):
-        result.append((key, sorted(groups[key])))
+        result.append((key, sorted(groups[key], key=_sutra_file_sort_key)))
 
     return result
+
+
+def _sutra_file_sort_key(xml_path):
+    parsed = parse_bookcase_id(xml_path, require_juan=True)
+    assert parsed.juan is not None
+    return parsed.juan, parsed.file_id, str(xml_path)
 
 
 # ============================================================
@@ -878,7 +941,9 @@ def main():
     parser = argparse.ArgumentParser(
         description="CBETA Bookcase XML → Obsidian Markdown 转换器（一经一文件）"
     )
-    parser.add_argument("--sutra", type=str, help="转换单部经，如 T08n0251")
+    parser.add_argument(
+        "--sutra", type=str, help="转换单部经，如 T0251 或 T08n0251"
+    )
     parser.add_argument("--canon", type=str, help="转换整个藏经，如 T, X, J")
     parser.add_argument("--all", action="store_true", help="转换全部")
     parser.add_argument("--limit", type=int, default=0, help="限制转换数量")
@@ -901,16 +966,20 @@ def main():
     all_meta = []
 
     if args.sutra:
-        # 单经模式：T08n0251 → 找 T/T08/T08n0251_*.xml
-        match = re.match(r"([A-Z]+)(\d+)n", args.sutra)
-        if match:
-            canon = match.group(1)
-            vol = match.group(1) + match.group(2)
-            pattern = str(XML_BASE / canon / vol / f"{args.sutra}_*.xml")
-            xml_files = sorted(glob.glob(pattern))
-        else:
-            print(f"❌ 无法解析经号: {args.sutra}")
-            sys.exit(1)
+        groups = dict(find_sutra_groups())
+        try:
+            requested_id = parse_bookcase_id(args.sutra).sutra_id
+        except ValueError:
+            canon_codes = {
+                path.name for path in XML_BASE.iterdir() if path.is_dir()
+            }
+            try:
+                canon, work = split_sutra_id(args.sutra, canon_codes)
+                requested_id = f"{canon}{work}"
+            except ValueError:
+                print(f"❌ 无法解析经号: {args.sutra}")
+                sys.exit(1)
+        xml_files = groups.get(requested_id, [])
 
         if not xml_files:
             print(f"❌ 找不到文件: {args.sutra}")
@@ -930,6 +999,8 @@ def main():
         if args.limit > 0:
             groups = groups[:args.limit]
         print(f"找到 {total} 部经，将转换 {len(groups)} 部\n")
+        source_count = sum(len(xml_files) for _, xml_files in groups)
+        print(f"源 XML: {source_count} 个\n")
 
         for i, (sutra_key, xml_files) in enumerate(groups, 1):
             print(f"[{i}/{len(groups)}]")
@@ -942,7 +1013,7 @@ def main():
 
     else:
         parser.print_help()
-        sys.exit(0)
+        return 2
 
     # 生成 Vault 结构
     if all_meta:
@@ -957,8 +1028,8 @@ def main():
     print(f"  ⏱️  耗时: {elapsed:.1f} 秒")
     print(f"  📂 输出: {output_dir}")
     print("=" * 60)
+    return 1 if fail_count else 0
 
 
 if __name__ == "__main__":
-    main()
-
+    raise SystemExit(main())

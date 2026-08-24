@@ -16,6 +16,9 @@ opencc-python-reimplemented>=0.1.7
 # ─── HTTP 客户端（AI 释义 API 调用） ─────────────────────────
 httpx>=0.25.0
 
+# ─── 浏览器截图（Chrome DevTools Protocol） ──────────────────
+websockets>=12.0,<18.0
+
 # ─── AI 释义（SSE 流式调用，可选） ───────────────────────────
 openai>=1.0.0
 

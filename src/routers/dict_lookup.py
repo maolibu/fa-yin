@@ -13,7 +13,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Query
 
-from config import DATA_DIR, PROJECT_ROOT
+import config
 from core.runtime_status import check_dict_db
 from core.user_dicts import UserDictManager
 
@@ -22,13 +22,13 @@ log = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/dict", tags=["dict"])
 
 # 內置詞典數據庫路徑
-DICT_DB = DATA_DIR / "dicts.db"
+DICT_DB = config.DICTS_DB
 
 # 啟動時校驗 schema，避免每次請求都嘗試連接損壞的數據庫
 _builtin_ok: bool = check_dict_db(DICT_DB)["ok"] if DICT_DB.exists() else False
 
 # 用戶詞典目錄
-USER_DICT_DIR = PROJECT_ROOT / "data" / "dicts" / "user"
+USER_DICT_DIR = config.USER_DICT_DIR
 
 # 用戶詞典管理器（延遲加載，首次查詢時才真正讀取詞典文件）
 _user_mgr: Optional[UserDictManager] = None

@@ -12,8 +12,6 @@ CBETA Bookcase XML → 搜索專用 SQLite 數據庫
 """
 
 import argparse
-import glob
-import json
 import os
 import re
 import sqlite3
@@ -29,6 +27,11 @@ sys.path.insert(0, str(ETL_DIR))
 sys.path.insert(0, str(SRC_DIR))
 import gaiji_map
 import config
+from core.cbeta_ids import (
+    discover_bookcase_xml_files,
+    filename_matches_xml_id,
+    parse_bookcase_id,
+)
 
 # OpenCC 繁→簡
 from opencc import OpenCC
@@ -47,7 +50,7 @@ XML_BASE = Path(os.getenv(
 # 搜索數據庫輸出路徑
 DB_PATH = config.CBETA_SEARCH_DB
 
-LOG_DIR = ETL_DIR / "logs"
+LOG_DIR = config.ETL_LOG_DIR
 GAIJI_PATH = config.GAIJI_PATH
 
 # XML 命名空間
@@ -79,6 +82,13 @@ CREATE TABLE IF NOT EXISTS content (
     plain_text_sc TEXT,
     FOREIGN KEY (sutra_id) REFERENCES catalog(sutra_id),
     UNIQUE(sutra_id, juan)
+);
+
+CREATE TABLE IF NOT EXISTS content_source (
+    source_path TEXT PRIMARY KEY,
+    sutra_id    TEXT NOT NULL,
+    juan        INTEGER NOT NULL,
+    FOREIGN KEY (sutra_id) REFERENCES catalog(sutra_id)
 );
 
 CREATE VIRTUAL TABLE IF NOT EXISTS content_fts USING fts5(
@@ -200,14 +210,9 @@ def extract_metadata(tree):
     root = tree.getroot()
     xml_id = root.get(f"{{{XML_NS}}}id", "")
 
-    match = re.match(r"([A-Z]+)(\d+)n([a-z]*)(\d+[a-z]?)", xml_id)
-    if match:
-        canon = match.group(1)
-        sutra_no = match.group(3) + match.group(4)
-        sutra_id = f"{canon}{sutra_no.zfill(4)}"
-    else:
-        canon = ""
-        sutra_id = xml_id
+    parsed_id = parse_bookcase_id(xml_id)
+    canon = parsed_id.canon
+    sutra_id = parsed_id.sutra_id
 
     title = xml_id
     for title_elem in root.iter(f"{{{TEI_NS}}}title"):
@@ -235,6 +240,8 @@ def extract_metadata(tree):
     return {
         "sutra_id": sutra_id,
         "canon": canon,
+        "volume": parsed_id.volume,
+        "file_id": parsed_id.file_id,
         "title": title,
         "title_sc": cc_t2s.convert(title),
         "author": author,
@@ -247,10 +254,9 @@ def extract_metadata(tree):
 # ============================================================
 def parse_juan_from_filename(filename):
     """從 Bookcase 文件名解析卷號，如 T08n0251_001.xml → 1"""
-    m = re.search(r"_(\d+)\.xml$", filename)
-    if m:
-        return int(m.group(1))
-    return 1
+    parsed = parse_bookcase_id(filename, require_juan=True)
+    assert parsed.juan is not None
+    return parsed.juan
 
 
 # ============================================================
@@ -261,14 +267,23 @@ _processed_sutras = set()
 def process_file(xml_path, conn):
     """處理單個 Bookcase XML 文件（一卷），寫入搜索數據庫"""
     global _processed_sutras
+    xml_path = Path(xml_path)
+    conn.execute("SAVEPOINT process_file")
     try:
+        source_id = parse_bookcase_id(xml_path, require_juan=True)
         with open(str(xml_path), "r", encoding="utf-8") as f:
             content = f.read()
         tree = ET.ElementTree(ET.fromstring(content))
 
         meta = extract_metadata(tree)
+        metadata_id = parse_bookcase_id(meta["file_id"])
+        if not filename_matches_xml_id(source_id, metadata_id):
+            raise ValueError(
+                f"filename/XML ID mismatch: {source_id.file_id} != {meta['file_id']}"
+            )
         sutra_id = meta["sutra_id"]
-        juan = parse_juan_from_filename(os.path.basename(xml_path))
+        assert source_id.juan is not None
+        juan = source_id.juan
 
         # 首次遇到此經，寫入 catalog
         if sutra_id not in _processed_sutras:
@@ -284,21 +299,39 @@ def process_file(xml_path, conn):
         # 直接提取 body 純文本（每文件就是一卷，不需要 milestone 分卷）
         root = tree.getroot()
         body = root.find(f".//{{{TEI_NS}}}body")
-        if body is not None:
-            plain_text = get_text_recursive(body)
-            plain_text_sc = cc_t2s.convert(plain_text)
+        if body is None:
+            raise ValueError("missing TEI body")
 
-            conn.execute(
-                """INSERT OR REPLACE INTO content
-                   (sutra_id, juan, plain_text, plain_text_sc)
-                   VALUES (?, ?, ?, ?)""",
-                (sutra_id, juan, plain_text, plain_text_sc),
-            )
+        plain_text = get_text_recursive(body)
+        plain_text_sc = cc_t2s.convert(plain_text)
+
+        # A few cross-volume works contain two source segments for the same
+        # logical juan.  Preserve both in volume/file order instead of using
+        # INSERT OR REPLACE, which silently discarded the earlier segment.
+        conn.execute(
+            """INSERT INTO content
+               (sutra_id, juan, plain_text, plain_text_sc)
+               VALUES (?, ?, ?, ?)
+               ON CONFLICT(sutra_id, juan) DO UPDATE SET
+                   plain_text = content.plain_text || excluded.plain_text,
+                   plain_text_sc = content.plain_text_sc || excluded.plain_text_sc""",
+            (sutra_id, juan, plain_text, plain_text_sc),
+        )
+        relative_source = xml_path.relative_to(XML_BASE).as_posix()
+        conn.execute(
+            """INSERT INTO content_source (source_path, sutra_id, juan)
+               VALUES (?, ?, ?)
+               ON CONFLICT(source_path) DO UPDATE SET
+                   sutra_id=excluded.sutra_id, juan=excluded.juan""",
+            (relative_source, sutra_id, juan),
+        )
+        conn.execute("RELEASE SAVEPOINT process_file")
 
         return sutra_id, juan
 
     except Exception as e:
-        conn.rollback()
+        conn.execute("ROLLBACK TO SAVEPOINT process_file")
+        conn.execute("RELEASE SAVEPOINT process_file")
         print(f"  ❌ 處理失敗 {xml_path}: {e}")
         import traceback
         traceback.print_exc()
@@ -312,34 +345,31 @@ def process_file(xml_path, conn):
 # ============================================================
 def find_xml_files(target):
     """根據目標參數找到要處理的 XML 文件列表"""
+    all_files = discover_bookcase_xml_files(XML_BASE)
     if target == "--all":
-        return sorted(glob.glob(str(XML_BASE / "*" / "*" / "*.xml")))
+        return all_files
 
-    # 藏經代碼（如 T, X, A）
+    # 藏經代碼（如 T, X, CC, GA）
     canon_dir = XML_BASE / target
     if canon_dir.is_dir():
-        return sorted(glob.glob(str(canon_dir / "*" / "*.xml")))
+        return [
+            path for path in all_files
+            if parse_bookcase_id(path, require_juan=True).canon == target
+        ]
 
-    # 經號（如 T0251 或 T08n0251）
-    # 嘗試匹配所有卷
-    match_short = re.match(r"([A-Z]+)(\d+)$", target)
-    if match_short:
-        canon = match_short.group(1)
-        sutra_no = match_short.group(2)
-        # 搜索所有卷冊目錄
-        pattern = str(XML_BASE / canon / "*" / f"*n{sutra_no}_*.xml")
-        files = sorted(glob.glob(pattern))
-        if files:
-            return files
-        # 也嘗試不補零
-        pattern2 = str(XML_BASE / canon / "*" / f"*n{sutra_no.lstrip('0')}_*.xml")
-        files = sorted(glob.glob(pattern2))
-        if files:
-            return files
-        print(f"❌ 找不到經號 {target} 的文件")
-        return []
+    # 經號簡寫（T0251/JB392/T1987A）或卷冊限定 ID（T08n0251）。
+    try:
+        requested_sutra_id = parse_bookcase_id(target).sutra_id
+    except ValueError:
+        requested_sutra_id = target
+    files = [
+        path for path in all_files
+        if parse_bookcase_id(path, require_juan=True).sutra_id == requested_sutra_id
+    ]
+    if files:
+        return files
 
-    print(f"❌ 無法識別目標: {target}")
+    print(f"❌ 找不到或無法識別經號: {target}")
     return []
 
 
@@ -366,11 +396,14 @@ def main():
         target = args.target
     else:
         parser.print_help()
-        return
+        return 2
 
     xml_files = find_xml_files(target)
     if not xml_files:
-        return
+        return 2
+
+    expected_sutras = set()
+    expected_content = set()
 
     print(f"📚 找到 {len(xml_files)} 個 XML 文件待轉換")
     print(f"📂 數據源: {XML_BASE}")
@@ -397,6 +430,9 @@ def main():
 
         result = process_file(xml_path, conn)
         if result:
+            result_sutra_id, result_juan = result
+            expected_sutras.add(result_sutra_id)
+            expected_content.add((result_sutra_id, result_juan))
             if i % 100 == 1 or i == len(xml_files):
                 sutra_id, juan = result
                 print(f"✅ {sutra_id} 卷{juan}")
@@ -417,9 +453,11 @@ def main():
     print(f"❌ 失敗: {len(errors)}/{len(xml_files)}")
     print(f"⏱️ 耗時: {elapsed:.1f} 秒")
 
-    for table in ["catalog", "content"]:
+    table_counts = {}
+    for table in ["catalog", "content", "content_source", "content_fts_docsize"]:
         try:
             count = conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+            table_counts[table] = count
             print(f"📊 {table}: {count} 條")
         except Exception:
             pass
@@ -437,9 +475,36 @@ def main():
                 f.write(f"{e}\n")
         print(f"  日誌已保存: {log_path}")
 
+    validation_errors = []
+    if success != len(xml_files):
+        validation_errors.append(f"processed sources {success} != {len(xml_files)}")
+    if target == "--all":
+        expected_counts = {
+            "catalog": len(expected_sutras),
+            "content": len(expected_content),
+            "content_source": len(xml_files),
+            "content_fts_docsize": len(expected_content),
+        }
+        for table, expected in expected_counts.items():
+            actual = table_counts.get(table)
+            if actual != expected:
+                validation_errors.append(f"{table} {actual} != {expected}")
+
+    if not validation_errors:
+        try:
+            conn.execute("INSERT INTO content_fts(content_fts) VALUES('integrity-check')")
+        except sqlite3.DatabaseError as exc:
+            validation_errors.append(f"FTS5 integrity-check failed: {exc}")
+
     conn.close()
-    print(f"\n✅ 搜索數據庫已生成: {DB_PATH}")
+    if validation_errors:
+        for message in validation_errors:
+            print(f"❌ 驗收失敗: {message}")
+        return 1
+
+    print(f"\n✅ 搜索數據庫已生成並通過計數/FTS 驗收: {DB_PATH}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

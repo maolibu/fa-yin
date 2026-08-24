@@ -26,73 +26,58 @@ APP_VERSION_DISPLAY = f"v{APP_VERSION}"
 # src/config.py → 上一級就是項目根
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
+
+def _env_path(name: str, default: Path) -> Path:
+    """Resolve path settings consistently, independent of the current cwd."""
+    value = Path(os.getenv(name, str(default))).expanduser()
+    if not value.is_absolute():
+        value = PROJECT_ROOT / value
+    return value.resolve(strict=False)
+
 # ─── src 目錄（源代碼所在位置） ───────────────────────────────
 SRC_DIR = Path(__file__).resolve().parent
 
 # ─── CBETA 原始數據（用戶需自行下載） ────────────────────────
 # 默認位於 data/raw/cbeta/，可通過環境變量覆蓋
-CBETA_BASE = Path(os.getenv(
-    "CBETA_BASE",
-    str(PROJECT_ROOT / "data" / "raw" / "cbeta")
-))
+CBETA_BASE = _env_path("CBETA_BASE", PROJECT_ROOT / "data" / "raw" / "cbeta")
 
 # ─── 悉曇 GIF 圖片目錄（CBETA 悉曇字符渲染） ────────────────
-SD_GIF_DIR = Path(os.getenv(
-    "SD_GIF_DIR",
-    str(CBETA_BASE / "sd-gif")
-))
+SD_GIF_DIR = _env_path("SD_GIF_DIR", CBETA_BASE / "sd-gif")
 
 # ─── 組字數據（gaiji） ──────────────────────────────────────
-GAIJI_PATH = Path(os.getenv(
-    "GAIJI_PATH",
-    str(PROJECT_ROOT / "data" / "raw" / "cbeta_gaiji.json")
-))
+GAIJI_PATH = _env_path(
+    "GAIJI_PATH", PROJECT_ROOT / "data" / "raw" / "cbeta_gaiji.json"
+)
 
 # ─── 數據庫目錄 ──────────────────────────────────────────────
-DB_DIR = Path(os.getenv(
-    "DB_DIR",
-    str(PROJECT_ROOT / "data" / "db")
-))
+DB_DIR = _env_path("DB_DIR", PROJECT_ROOT / "data" / "db")
 
 # ─── CBETA 搜索數據庫（ETL 生成，含簡體列 + FTS5） ──────────
-CBETA_SEARCH_DB = Path(os.getenv(
-    "CBETA_SEARCH_DB",
-    str(DB_DIR / "cbeta_search.db")
-))
+CBETA_SEARCH_DB = _env_path("CBETA_SEARCH_DB", DB_DIR / "cbeta_search.db")
 cbeta_search_available = CBETA_SEARCH_DB.exists()
 
 # ─── 字典數據庫 ──────────────────────────────────────────────
-DICTS_DB = Path(os.getenv(
-    "DICTS_DB",
-    str(DB_DIR / "dicts.db")
-))
+DICTS_DB = _env_path("DICTS_DB", DB_DIR / "dicts.db")
 
 # ─── 佛教拼音數據 ───────────────────────────────────────────
-BUDDHIST_PINYIN_PATH = Path(os.getenv(
-    "BUDDHIST_PINYIN_PATH",
-    str(DB_DIR / "buddhist_pinyin.json")
-))
+BUDDHIST_PINYIN_PATH = _env_path(
+    "BUDDHIST_PINYIN_PATH", DB_DIR / "buddhist_pinyin.json"
+)
 
 # ─── 祖師法脈數據庫 ──────────────────────────────────────────
-LINEAGE_DB = Path(os.getenv(
-    "LINEAGE_DB",
-    str(DB_DIR / "lineage.db")
-))
+LINEAGE_DB = _env_path("LINEAGE_DB", DB_DIR / "lineage.db")
 
 # ─── 內置數據（兼容舊代碼引用） ──────────────────────────────
 DATA_DIR = DB_DIR
 
 # ─── 離線地圖瓦片（可選，由 scripts/download_tiles.py 生成） ──
-TILES_DIR = Path(os.getenv(
-    "TILES_DIR",
-    str(PROJECT_ROOT / "data" / "tiles")
-))
+TILES_DIR = _env_path("TILES_DIR", PROJECT_ROOT / "data" / "tiles")
 
 # ─── 用戶數據（運行時生成/修改） ─────────────────────────────
-USER_DATA_DIR = Path(os.getenv(
-    "USER_DATA_DIR",
-    str(PROJECT_ROOT / "data" / "user_data")
-))
+USER_DATA_DIR = _env_path("USER_DATA_DIR", PROJECT_ROOT / "data" / "user_data")
+USER_DICT_DIR = _env_path(
+    "USER_DICT_DIR", PROJECT_ROOT / "data" / "dicts" / "user"
+)
 FAVORITES_PATH = USER_DATA_DIR / "favorites.json"
 FAVORITES_DEFAULT_PATH = DB_DIR / "favorites.default.json"
 PREFERENCES_PATH = USER_DATA_DIR / "preferences.json"
@@ -102,15 +87,16 @@ COMMENTARY_MAP_DEFAULT = DB_DIR / "commentary_map.default.json"
 COMMENTARY_MAP_USER = USER_DATA_DIR / "commentary_map.json"
 
 # ─── 每日偈頌 ────────────────────────────────────────────────
-VERSES_PATH = Path(os.getenv(
-    "VERSES_PATH",
-    str(DB_DIR / "verses.json")
-))
+VERSES_PATH = _env_path("VERSES_PATH", DB_DIR / "verses.json")
 USER_VERSES_PATH = USER_DATA_DIR / "user_verses.json"
 
 # ─── 筆記導出 ────────────────────────────────────────────────
 NOTES_DIR = USER_DATA_DIR / "notes"
 OBSIDIAN_INBOX = os.getenv("OBSIDIAN_INBOX_PATH", "")
+OBSIDIAN_VAULT_DIR = _env_path(
+    "OBSIDIAN_VAULT_DIR", PROJECT_ROOT / "obsidian_vault" / "output"
+)
+ETL_LOG_DIR = _env_path("ETL_LOG_DIR", PROJECT_ROOT / "logs" / "etl")
 
 # ─── 靜態資源與模板 ──────────────────────────────────────────
 STATIC_DIR = SRC_DIR / "static"
@@ -198,6 +184,8 @@ def print_config():
     print(f"  字典數據庫:    {DICTS_DB}  {'✓' if dict_status['ok'] else '✗'}")
     print(f"  法脈數據庫:    {LINEAGE_DB}  {'✓' if lineage_status['ok'] else '✗'}")
     print(f"  用戶數據:      {USER_DATA_DIR}")
+    print(f"  用戶詞典:      {USER_DICT_DIR}")
+    print(f"  Vault 輸出:     {OBSIDIAN_VAULT_DIR}")
     print(f"  服務地址:      http://{DEV_HOST}:{DEV_PORT}")
     print("=" * 50)
 

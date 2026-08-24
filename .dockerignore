@@ -1,0 +1,22 @@
+# Version-control metadata is preserved in the repository, not copied into images.
+.git
+.gitignore
+
+# Local environments, caches, reports, and secrets.
+.env
+.venv
+venv
+**/__pycache__/
+**/*.py[cod]
+.pytest_cache/
+logs/
+tests/
+
+# Runtime/downloaded data is mounted or unpacked from the tracked archives.
+data/raw/cbeta/**
+!data/raw/cbeta/.gitkeep
+data/tiles/
+data/user_data/**
+!data/user_data/.gitkeep
+data/dicts/user/
+obsidian_vault/output/

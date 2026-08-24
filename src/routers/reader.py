@@ -9,6 +9,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 import logging
 import sqlite3
 import config
+from core.name_matcher import count_keywords
 from core.runtime_status import check_lineage_db
 
 log = logging.getLogger(__name__)
@@ -246,9 +247,10 @@ async def get_sutra_persons(request: Request, sutra_id: str):
                     name_to_persons.keys(),
                     key=len, reverse=True
                 )
+                name_counts = count_keywords(full_text, sorted_names)
                 found_pids = set()
                 for name in sorted_names:
-                    cnt = full_text.count(name)
+                    cnt = name_counts.get(name, 0)
                     if cnt > 0:
                         pr = name_to_persons[name]
                         pid = pr["person_id"]

@@ -21,6 +21,10 @@ data/db/*.db
 # ─── 用户个人数据 ──────────────────────────────────
 data/user_data/
 
+# ─── 本地测试报告与运行日志 ─────────────────────────
+tests/*_report.txt
+logs/
+
 # ─── Obsidian Vault（启动时自动生成） ──────────────
 obsidian_vault/*.md
 obsidian_vault/**/*.md

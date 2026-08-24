@@ -132,6 +132,38 @@ _ARCHIVES = [
 ]
 
 
+def _validated_tar_members(tf, destination):
+    """Reject traversal, links, devices, and other unsafe tar members."""
+    destination = Path(destination).resolve()
+    members = tf.getmembers()
+    for member in members:
+        member_path = Path(member.name)
+        if member_path.is_absolute():
+            raise ValueError(f"壓縮包含絕對路徑: {member.name}")
+        target = (destination / member_path).resolve(strict=False)
+        try:
+            target.relative_to(destination)
+        except ValueError as exc:
+            raise ValueError(f"壓縮包路徑越界: {member.name}") from exc
+        if member.issym() or member.islnk():
+            raise ValueError(f"壓縮包不允許鏈接: {member.name}")
+        if not (member.isfile() or member.isdir()):
+            raise ValueError(f"壓縮包含不安全文件類型: {member.name}")
+    return members
+
+
+def safe_extract_tar(tf, destination):
+    """Safely extract a trusted data tar on Python 3.10 through 3.13+."""
+    members = _validated_tar_members(tf, destination)
+    try:
+        # Python 3.12+ applies the standard library's additional data filter.
+        tf.extractall(path=destination, members=members, filter="data")
+    except TypeError:
+        # Python 3.10/3.11 have no filter argument; validation above supplies
+        # the traversal/link/device guarantees required by these archives.
+        tf.extractall(path=destination, members=members)
+
+
 def extract_archives():
     """檢查並解壓 tar.gz 數據包（僅在目標目錄不存在時執行）"""
     import tarfile
@@ -151,7 +183,7 @@ def extract_archives():
         print(f"      ⏳ {label} ({size_mb:.0f}MB)...", end="", flush=True)
         dest_path.mkdir(parents=True, exist_ok=True)
         with tarfile.open(arc_path, "r:gz") as tf:
-            tf.extractall(path=dest_path)
+            safe_extract_tar(tf, dest_path)
         print(" ✅")
     print()
 
@@ -373,7 +405,7 @@ def report_lineage_database():
 
 def build_obsidian_vault():
     """檢查並生成 Obsidian Markdown Vault"""
-    vault_dir = PROJECT_ROOT / "obsidian_vault" / "output"
+    vault_dir = config.OBSIDIAN_VAULT_DIR
     marker = vault_dir / "首頁.md"
 
     if marker.exists():
@@ -541,9 +573,6 @@ def main():
     host = args.host or config.DEV_HOST
     port = args.port or config.DEV_PORT
 
-    # Step 0: 數據解壓（首次運行時解壓詞典/地圖）
-    extract_archives()
-
     # Step 1: 數據自檢
     print_step(1, "數據自檢", "⏳ 檢查 CBETA 數據...")
     ok, xml_count = check_cbeta_data(config.CBETA_BASE)
@@ -565,11 +594,14 @@ def main():
         print_step(1, "數據自檢", f"✅ 已找到 CBETA 數據 ({xml_count}+ 個 XML 文件)")
 
     if args.check:
-        # 僅自檢模式
+        # 僅自檢模式必须只读，不解压归档、不创建用户目录。
         print()
         config.print_config()
         print("\n  ✅ 自檢完成。使用 `python launcher.py` 啟動完整服務。")
         return
+
+    # Step 0: 数据解压只在正式启动时进行；--check 保持只读。
+    extract_archives()
 
     # Step 3: 數據庫構建
     if not args.skip_build:
@@ -607,7 +639,7 @@ def main():
     config.NOTES_DIR.mkdir(parents=True, exist_ok=True)
 
     # 確保用戶詞典目錄存在
-    user_dict_dir = config.PROJECT_ROOT / "data" / "dicts" / "user"
+    user_dict_dir = config.USER_DICT_DIR
     user_dict_dir.mkdir(parents=True, exist_ok=True)
     user_dict_count = sum(1 for f in user_dict_dir.iterdir()
                          if f.is_file() and f.suffix.lower() in ('.mdx', '.json', '.csv'))

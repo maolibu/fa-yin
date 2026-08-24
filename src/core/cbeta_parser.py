@@ -292,8 +292,14 @@ class CBETAParser:
                     f"title='悉曇字 {gid}'>")
         ginfo = self.gaiji_data.get(gid)
         if ginfo:
-            return ginfo.get('uni_char') or ginfo.get('composition') or gid
-        return gid
+            for key in (
+                'uni_char', 'norm_uni_char', 'norm_big5_char', 'composition'
+            ):
+                if ginfo.get(key):
+                    return ginfo[key]
+        # Match the search/Vault fallback so unresolved gaiji are explicit
+        # and can be detected by automated scans.
+        return f"[{gid}]"
 
     def _escape(self, text):
         """HTML 轉義（用於屬性值）"""

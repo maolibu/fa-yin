@@ -4,6 +4,7 @@
 结果写入 tests/note_formats_report.txt
 """
 
+import argparse
 import sys
 import os
 import re
@@ -11,11 +12,15 @@ from pathlib import Path
 from collections import Counter
 from lxml import etree
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+SRC_DIR = PROJECT_ROOT / "src"
+sys.path.insert(0, str(SRC_DIR))
 import config
+from core.cbeta_ids import discover_bookcase_xml_files
 
-CBETA_XML_DIR = config.CBETA_BASE / "XML"
-REPORT_PATH = Path(__file__).parent / "note_formats_report.txt"
+DEFAULT_REPORT_PATH = Path(os.getenv(
+    "TEST_OUTPUT_DIR", str(Path(__file__).parent)
+)) / "note_formats_report.txt"
 TEI_NS = "http://www.tei-c.org/ns/1.0"
 CB_NS = "http://www.cbeta.org/ns/1.0"
 
@@ -27,13 +32,24 @@ def local_tag(tag):
     return tag
 
 
-def find_xml_files():
-    pattern = re.compile(r'^[A-Z]\d+n\d+[a-zA-Z]?_\d+\.xml$')
-    return sorted(f for f in CBETA_XML_DIR.rglob("*.xml") if pattern.match(f.name))
+def find_xml_files(xml_dir):
+    return discover_bookcase_xml_files(xml_dir)
 
 
 def main():
-    xml_files = find_xml_files()
+    cli = argparse.ArgumentParser(description="全量 CBETA note 格式扫描")
+    cli.add_argument(
+        "--cbeta-base", type=Path, default=config.CBETA_BASE,
+        help="Bookcase 根目录（包含 XML/）",
+    )
+    cli.add_argument(
+        "--report", type=Path, default=DEFAULT_REPORT_PATH,
+        help="报告输出路径",
+    )
+    cli.add_argument("--expected-count", type=int, default=21960)
+    args = cli.parse_args()
+
+    xml_files = find_xml_files(args.cbeta_base / "XML")
     total = len(xml_files)
 
     # 计数器
@@ -45,7 +61,8 @@ def main():
     note_inside_lem = Counter()   # lem 内 note type
     note_inside_app = Counter()   # app 内 note type
 
-    xml_parser = etree.XMLParser(recover=True)
+    xml_parser = etree.XMLParser(recover=False, huge_tree=True)
+    parse_errors = []
 
     for i, xml_path in enumerate(xml_files):
         try:
@@ -78,11 +95,12 @@ def main():
                 children = tuple(local_tag(c.tag) for c in app)
                 app_children[children] += 1
 
-        except Exception:
-            pass
+        except Exception as exc:
+            parse_errors.append(f"{xml_path}: {type(exc).__name__}: {exc}")
 
     # 写报告
-    f = open(REPORT_PATH, 'w', encoding='utf-8')
+    args.report.parent.mkdir(parents=True, exist_ok=True)
+    f = open(args.report, 'w', encoding='utf-8')
     f.write(f"CBETA <note> 格式统计报告\n")
     f.write(f"扫描文件数: {total}\n")
     f.write(f"{'='*70}\n\n")
@@ -136,9 +154,22 @@ def main():
         ntype, place, ptag, has_n = combo
         f.write(f"  type={ntype:12s} place={place:15s} parent={ptag:10s} n={has_n:3s}  {cnt:>8,d}\n")
 
+    f.write(f"\n八、解析错误: {len(parse_errors)}\n")
+    for error in parse_errors:
+        f.write(f"  {error}\n")
+
     f.close()
-    print(f"Done. {total} files. Report: {REPORT_PATH}")
+    failures = []
+    if total != args.expected_count:
+        failures.append(f"文件数 {total} != {args.expected_count}")
+    if parse_errors:
+        failures.append(f"解析错误 {len(parse_errors)}")
+    print(f"Done. {total} files. Report: {args.report}")
+    if failures:
+        print("FAIL: " + "; ".join(failures))
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

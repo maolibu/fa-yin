@@ -15,6 +15,8 @@ from pathlib import Path
 
 import lxml.etree as ET
 
+from core.cbeta_ids import parse_bookcase_id, split_sutra_id
+
 log = logging.getLogger(__name__)
 
 
@@ -378,11 +380,18 @@ class CBETANav:
         bulei_extra = len(self.catalog) - canon_count
         log.info(f"  從目錄樹提取: {canon_count} 個經文 (經藏) + {bulei_extra} 個補充 (部類)")
 
-    @staticmethod
-    def _guess_canon(sutra_id: str) -> str:
+    def _guess_canon(self, sutra_id: str) -> str:
         """從經號推斷 canon 代碼：T0001→T, Ba001→B, JA042→J, GA0026→GA"""
-        m = re.match(r"^([A-Z]+)", sutra_id)
-        return m.group(1) if m else ""
+        canon_codes = set(self.canon_names)
+        if self.xml_dir.exists():
+            canon_codes.update(
+                path.name for path in self.xml_dir.iterdir() if path.is_dir()
+            )
+        try:
+            canon, _ = split_sutra_id(sutra_id, canon_codes)
+            return canon
+        except ValueError:
+            return ""
 
     def _get_juan_count_from_toc(self, sutra_id: str, canon: str) -> int:
         """從 toc 文件獲取卷數"""
@@ -490,15 +499,6 @@ class CBETANav:
         if not canon:
             return None
 
-        no = sutra_id[len(canon):]
-        # 針對諸如 J15nB005 這樣的經號，文件名中往往只有 nB005_
-        # 我們尋找 'n' 後面的部分作為實際要匹配的經號特徵
-        actual_no = no
-        if 'n' in no.lower():
-            actual_no = no.lower().split('n')[-1]
-
-        juan_str = f"_{juan:03d}.xml"
-
         canon_dir = self.xml_dir / canon
         if not canon_dir.exists():
             return None
@@ -506,8 +506,14 @@ class CBETANav:
         for vol_dir in sorted(canon_dir.iterdir()):
             if not vol_dir.is_dir():
                 continue
-            for f in vol_dir.iterdir():
-                if f.name.endswith(juan_str) and f"n{actual_no}_" in f.name.lower():
+            for f in sorted(vol_dir.iterdir()):
+                if not f.is_file() or f.suffix.lower() != ".xml":
+                    continue
+                try:
+                    parsed = parse_bookcase_id(f, require_juan=True)
+                except ValueError:
+                    continue
+                if parsed.sutra_id == sutra_id and parsed.juan == juan:
                     return f
 
         return None

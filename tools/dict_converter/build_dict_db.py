@@ -9,21 +9,28 @@
   5. 三藏法数·明一如 (28Dicts, 公有领域)
   6. 祖庭事苑·北宋陈善卿 (28Dicts, 古典公有)
 
-用法: python build_dict_db.py
-输出: 60_ready/data/dicts/dicts.db
+用法: python build_dict_db.py [--output /path/to/dicts.db]
+输出: config.DICTS_DB 或 --output 指定的隔离路径
 """
+import argparse
 import json
 import re
 import sqlite3
 import time
 from pathlib import Path
+import sys
 
 import opencc
 
 # ═══ 配置 ═══
 ROOT = Path(__file__).resolve().parent
-PROJECT_ROOT = ROOT.parent.parent  # tools/dict_converter → tools → 90_fa_yin
-OUTPUT_DB = PROJECT_ROOT / "data" / "db" / "dicts.db"
+PROJECT_ROOT = ROOT.parent.parent
+SRC_DIR = PROJECT_ROOT / "src"
+sys.path.insert(0, str(SRC_DIR))
+
+import config
+
+OUTPUT_DB = config.DICTS_DB
 
 # 繁简转换器
 s2t = opencc.OpenCC("s2t")
@@ -234,14 +241,14 @@ def import_moedict(conn) -> int:
     return len(valid_entries)
 
 
-def build_db():
+def build_db(output_db: Path):
     """主构建流程"""
     # 创建输出目录
-    OUTPUT_DB.parent.mkdir(parents=True, exist_ok=True)
-    if OUTPUT_DB.exists():
-        OUTPUT_DB.unlink()
+    output_db.parent.mkdir(parents=True, exist_ok=True)
+    if output_db.exists():
+        raise FileExistsError(f"拒绝覆盖现有词典数据库: {output_db}")
 
-    conn = sqlite3.connect(str(OUTPUT_DB))
+    conn = sqlite3.connect(str(output_db))
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA synchronous=NORMAL")
 
@@ -317,8 +324,8 @@ def build_db():
     # 统计
     print(f"\n{'=' * 50}")
     print(f"  ✅ 完成: {total_dicts} 部词典, {total_entries:,} 条目")
-    print(f"  📁 输出: {OUTPUT_DB}")
-    size_mb = OUTPUT_DB.stat().st_size / 1024 / 1024
+    print(f"  📁 输出: {output_db}")
+    size_mb = output_db.stat().st_size / 1024 / 1024
     print(f"  💾 大小: {size_mb:.1f} MB")
     print(f"{'=' * 50}")
 
@@ -326,8 +333,11 @@ def build_db():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="构建法印对照内置词典数据库")
+    parser.add_argument("--output", type=Path, default=OUTPUT_DB)
+    args = parser.parse_args()
     start = time.time()
     print("═══ 佛学词典数据库构建（6 部精选）═══\n")
-    build_db()
+    build_db(args.output.resolve(strict=False))
     elapsed = time.time() - start
     print(f"\n  ⏱️  耗时: {elapsed:.1f} 秒")
