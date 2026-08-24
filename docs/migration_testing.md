@@ -67,7 +67,33 @@ OBSIDIAN_VAULT_DIR=/path/to/test-run/obsidian-vault \
 /path/to/test-run/venv/bin/python launcher.py --check
 ```
 
-## 7. 隔离截图冒烟
+## 7. 隔离重建 DILA 法脉库
+
+目标数据库和报告必须预先不存在；默认模式不会复制现用库的已知异常：
+
+```bash
+/path/to/test-run/venv/bin/python tools/lineage_builder/build_lineage_db.py \
+  --person-xml /path/to/DILA/person.xml \
+  --place-xml /path/to/DILA/place.xml \
+  --time-sql /path/to/DILA/authority_time.sql \
+  --checksum-manifest /path/to/DILA/SHA256SUMS.txt \
+  --output /path/to/test-run/lineage/lineage.db \
+  --manifest /path/to/test-run/lineage/build-manifest.json \
+  --audit-report /path/to/test-run/lineage/source-audit.json \
+  --compare-to data/db/lineage.db \
+  --diff-report /path/to/test-run/lineage/legacy-diff.json
+
+/path/to/test-run/venv/bin/python tools/lineage_builder/regression_lineage_api.py \
+  --lineage-db /path/to/test-run/lineage/lineage.db \
+  --report /path/to/test-run/lineage/lineage-api-regression.json
+```
+
+第一条命令内建执行 SQLite `integrity_check`、`foreign_key_check` 和必需索引检查，
+并生成六表逐主键、逐字段 JSON 差异。第二条命令通过生产启动处理访问
+`src/routers/lineage.py` 的全部 7 个 GET 端点。规则、两种模式及覆盖审计格式见
+[`tools/lineage_builder/README.md`](../tools/lineage_builder/README.md)。
+
+## 8. 隔离截图冒烟
 
 先用上节的全部隔离环境变量启动本地服务，再把截图明确写入测试产物目录：
 

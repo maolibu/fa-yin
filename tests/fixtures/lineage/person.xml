@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+  <text>
+    <body>
+      <listPerson>
+        <person xml:id="A000001">
+          <persName xml:lang="zho-Hant">甲師</persName>
+          <persName type="alternative" xml:lang="zho-Hant">甲別名</persName>
+          <sex value="1"/>
+          <birth>-0500-01-01</birth>
+          <death>+0500-12-31</death>
+          <note type="dynasty">前朝
+後朝</note>
+          <note type="monk">是</note>
+          <note type="sect">測試宗</note>
+          <note type="concise">含<ref target="https://example.test/bio">嵌套文字</ref>的簡傳。</note>
+          <note type="placeOfOrigin"><placeName>測試地<ref>PL000000000001</ref></placeName></note>
+          <listRelation>
+            <relation type="teacher" active="A000002">
+              <desc><bibl>教師聲明</bibl><ref type="url">https://example.test/teacher</ref></desc>
+            </relation>
+            <relation type="teacher" active="invalid-id"><desc><bibl>無效關係</bibl></desc></relation>
+            <relation type="student" active="A999999"><desc><bibl>快照外弟子</bibl></desc></relation>
+          </listRelation>
+          <listBibl>
+            <bibl>( CBETA T01n0001_p0001a01 ) 測試經</bibl>
+            <bibl><ref target="https://example.test/nested">嵌套書目</ref></bibl>
+          </listBibl>
+          <note type="worksInTripitaka">測試論（選錄）(T0002)
+額外藏經(A1504)
+大藏經補編說明(Ba001)
+大寫後綴(T1986B)
+分會經(T0310.37)
+無經號條目</note>
+        </person>
+        <person xml:id="A000002">
+          <persName xml:lang="zho-Hant">乙師</persName>
+          <sex value="9"/>
+          <note type="monk">否</note>
+          <listRelation>
+            <relation type="student" active="A000001">
+              <desc><bibl>弟子聲明的不同描述</bibl></desc>
+            </relation>
+          </listRelation>
+        </person>
+      </listPerson>
+    </body>
+  </text>
+</TEI>

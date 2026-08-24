@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+  <text>
+    <body>
+      <listPlace>
+        <place xml:id="PL000000000001">
+          <placeName xml:lang="zho-Hant">測試地</placeName>
+          <placeName type="alternative" xml:lang="zho-Hant">最後中文名</placeName>
+          <placeName xml:lang="eng-Latn">Fixture Place</placeName>
+          <placeName xml:lang="jpn">テスト</placeName>
+          <placeName xml:lang="jpn-Latn">Tesuto</placeName>
+          <location>
+            <place xml:id="PL_NESTED_SHOULD_NOT_LOAD">上層地</place>
+            <geo>120.5 30.25</geo>
+          </location>
+          <district>測試國-測試省</district>
+          <note>含<ref target="https://example.test/place-note">嵌套文字</ref>的地點說明。</note>
+          <note type="category">寺廟</note>
+          <listBibl>
+            <bibl>( CBETA X01n0002_p0001a01 ) 地點出處</bibl>
+            <bibl><ref target="https://example.test/place-bibl">嵌套地點書目</ref></bibl>
+          </listBibl>
+        </place>
+        <place xml:id="PL000000000002">
+          <district/>
+        </place>
+        <place><placeName xml:lang="zho-Hant">無識別碼地點</placeName></place>
+      </listPlace>
+    </body>
+  </text>
+</TEI>

@@ -119,7 +119,7 @@ python launcher.py --no-browser   # 不自动打开浏览器
 python launcher.py --skip-build   # 跳过数据库构建
 ```
 
-开发依赖、21,960 个 Bookcase XML 全量扫描、隔离搜索库重建和中文路径回归的权威命令见[迁移与完整回归命令](docs/migration_testing.md)。数据版本、校验值与更新边界见[当前数据与静态资产保护边界](docs/data_assets.md)；字体、地图、佛典与前端库的来源和授权说明见[第三方数据与静态资产说明](THIRD_PARTY_NOTICES.md)。
+开发依赖、21,960 个 Bookcase XML 全量扫描、隔离数据库重建和中文路径回归的权威命令见[迁移与完整回归命令](docs/migration_testing.md)；DILA 人物/地点/时间原料的法脉库重建见[`tools/lineage_builder/`](tools/lineage_builder/README.md)。数据版本、校验值与更新边界见[当前数据与静态资产保护边界](docs/data_assets.md)；字体、地图、佛典与前端库的来源和授权说明见[第三方数据与静态资产说明](THIRD_PARTY_NOTICES.md)。
 
 ### 运行状态与降级策略
 
@@ -162,7 +162,7 @@ fa-yin/
 │   ├── raw/cbeta/       # CBETA 原始数据（用户自行下载）
 │   ├── db/              # SQLite 数据库（ETL 生成）
 │   └── user_data/       # 用户笔记、收藏、偏好
-├── tools/               # 辅助工具（词典转换、偈颂提取等）
+├── tools/               # 辅助工具（法脉库重建、词典转换、偈颂提取等）
 ├── tests/               # 测试脚本
 └── scripts/             # 地图瓦片下载等脚本
 ```
