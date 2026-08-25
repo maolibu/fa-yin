@@ -48,7 +48,7 @@ Source Han、WenJinMincho、Jigmo 与 NanoOldSong。上游链接、许可类型�
 TEI `student` 声明中，因此全部保留；其中 4 条端点人物不在当前快照中，已明示审计。
 
 隔离产物位于
-`/data/代码如诗/阅藏/测试运行/2026-08-24_DILA_lineage_builder/release-candidate/`，
+`/data/工作区/阅藏/测试运行/2026-08-24_DILA_lineage_builder/release-candidate/`，
 其中 `build-manifest.json`、`source-audit.json`、`legacy-diff.json` 和
 `lineage-api-regression.json` 分别记录哈希/规则、源异常、逐字段差异和全部 7 个
 lineage API 端点回归。`integrity_check=ok`、`foreign_key_check` 无问题，9 个必需索引齐全。
